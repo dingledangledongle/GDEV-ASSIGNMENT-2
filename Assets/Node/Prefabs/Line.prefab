@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3488907244510023550}
   m_Layer: 0
   m_Name: Line
-  m_TagString: Tile
+  m_TagString: Node
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -130,4 +130,4 @@ LineRenderer:
     shadowBias: 0.5
     generateLightingData: 0
   m_UseWorldSpace: 0
-  m_Loop: 0
+  m_Loop: 1

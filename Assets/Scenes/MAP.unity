@@ -456,8 +456,8 @@ GameObject:
   m_Component:
   - component: {fileID: 807932460}
   m_Layer: 5
-  m_Name: Stuff
-  m_TagString: Stuff
+  m_Name: Graph
+  m_TagString: Graph
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -555,8 +555,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 991879691}
-  - component: {fileID: 991879693}
   - component: {fileID: 991879692}
+  - component: {fileID: 991879693}
   m_Layer: 0
   m_Name: MapGenerator
   m_TagString: Untagged
@@ -605,15 +605,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   depthCount: 15
-  minNodePerDepth: 1
-  maxNodePerDepth: 4
+  minNodePerDepth: 3
+  maxNodePerDepth: 5
   spacing: 2
   offSetRange: 4
-  maxDistanceForConnection: 4
+  maxDistanceForConnection: 3
   nodePrefab: {fileID: 4380469970867035881, guid: 9a58d546b2b062749aa51e8d0746bd99, type: 3}
   linePrefab: {fileID: 5127830268853031341, guid: 0440f491d6d170c4b9d20b5448e7e90f, type: 3}
   randSeed: {fileID: 991879692}
-  pManager: {fileID: 1146410587}
 --- !u!1 &1003272080
 GameObject:
   m_ObjectHideFlags: 0
@@ -746,7 +745,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79d3d2cacf20b0940805f599337ece38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weightedOutcomes: []
 --- !u!4 &1146410588
 Transform:
   m_ObjectHideFlags: 0
@@ -797,7 +795,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -720, y: 379.55}
+  m_AnchoredPosition: {x: -720, y: 345}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1437100891

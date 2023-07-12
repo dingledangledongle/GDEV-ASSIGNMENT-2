@@ -8,6 +8,8 @@ TagManager:
   - Canvas
   - MapScroll
   - Stuff
+  - Graph
+  - Node
   layers:
   - Default
   - TransparentFX
