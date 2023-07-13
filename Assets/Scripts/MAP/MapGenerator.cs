@@ -38,7 +38,7 @@ public class MapGenerator : MonoBehaviour
 
             for (int i = 0; i < nodesPerDepth; i++)
             {
-                float x = i * spacing;
+                float x = i * spacing + 1;
                 float y = depth * spacing;
 
                 int nodeId = graph.NodeCount;
@@ -54,6 +54,7 @@ public class MapGenerator : MonoBehaviour
                 graph.AddNode(node);
             }
         }
+
 
         //adding the edges of the nodes
         for (int depth = 0; depth < depthCount; depth++) //run through each depth
@@ -73,8 +74,8 @@ public class MapGenerator : MonoBehaviour
                     if (distance < maxDistanceForConnection)
                     {
 
-                        if (Random.Range(0, 6) != 0)
-                        {
+                        //if (Random.Range(0, 4) != 0)
+                        ///{
                             graph.AddEdge(source.Id, target); //adds an edge if within distance 
 
                             //VISUAL
@@ -82,15 +83,16 @@ public class MapGenerator : MonoBehaviour
                             graph.AddToEdgeList(edgeCount, target);
                             edgeCount++;
                             //...
-                        }
+                        //}
                         
                     }
                     
                 }
             }
         }
-
+        AddMasterNode();
         DisplayGraph();
+
         PruneGraph();
         while (hasDanglingNodes)
         {
@@ -100,6 +102,27 @@ public class MapGenerator : MonoBehaviour
         {
             GenerateGraph();
         }
+
+    }
+    private void AddMasterNode()
+    {
+        float x = spacing;
+        float y = depthCount * spacing;
+
+        int nodeId = graph.NodeCount;
+        Vector3 position = new(x, y, 0);
+        Node node = new();
+        node.Id = nodeId;
+        node.Depth = depthCount;
+        node.Position = position;
+
+        graph.AddNode(node);
+        List<Node> precedingNodes = graph.GetNodesInDepth(depthCount - 1);
+        foreach(Node precedingNode in precedingNodes)
+        {
+            graph.AddEdge(precedingNode.Id, node);
+        }
+
         
     }
     
@@ -228,6 +251,10 @@ public class MapGenerator : MonoBehaviour
             return false;
         }else if(connectedNodes.Count < 1 && node.Depth != depthCount - 1)
         {
+            if(node.Depth == depthCount)
+            {
+                return true;
+            }
             return false;
         }
         else
