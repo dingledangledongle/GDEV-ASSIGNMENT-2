@@ -57,7 +57,6 @@ public class Graph
             List<Node> connectedNodes = item.Value;
             if (connectedNodes.Contains(node))
             {
-
                 connectedNodes.Remove(node);
             }
         }
@@ -65,14 +64,6 @@ public class Graph
         AdjacencyList.Remove(node.Id);
         NodeList.Remove(node);
 
-     
-        foreach (var item in EdgeList)
-        {
-            if (item.Value.Contains(node.Id))
-            {
-                Debug.Log("EDGE"+item.Key + " REMOVED");
-            }
-        }
     }
 
     public List<Node> GetConnected(int id)

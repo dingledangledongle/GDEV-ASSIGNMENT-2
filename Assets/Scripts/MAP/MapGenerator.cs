@@ -18,6 +18,9 @@ public class MapGenerator : MonoBehaviour
     public GameObject linePrefab;
     public RandSeedManager randSeed;
 
+    private bool hasDanglingNodes = false;
+
+
     //VISUAL
     private int edgeCount = 0;
     //...
@@ -27,7 +30,6 @@ public class MapGenerator : MonoBehaviour
         graph = new Graph();
         DestroyMap();   //destroying the current map if one exists
         randSeed.GenerateSeed();    //randomising the seed
-
         //creating the randomized amount of nodes for each depth
         for (int depth = 0; depth < depthCount; depth++)
         {   
@@ -42,8 +44,8 @@ public class MapGenerator : MonoBehaviour
                 int nodeId = graph.NodeCount;
                 int offsetX = Random.Range(-offSetRange / 2, offSetRange);
 
-                //Vector3 position = new(x + offsetX, y, 0);
-                Vector3 position = new(x, y, 0); //change back ltr
+                Vector3 position = new(x + offsetX, y, 0);
+                //Vector3 position = new(x, y, 0); //change back ltr
                 Node node = new();
                 node.Id = nodeId;
                 node.Depth = depth;
@@ -76,7 +78,8 @@ public class MapGenerator : MonoBehaviour
                             graph.AddEdge(source.Id, target); //adds an edge if within distance 
 
                             //VISUAL
-                            graph.AddToEdgeList(edgeCount,target);
+                            graph.AddToEdgeList(edgeCount,source);
+                            graph.AddToEdgeList(edgeCount, target);
                             edgeCount++;
                             //...
                         }
@@ -87,12 +90,17 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        //clean graph
-
-
-        //show
         DisplayGraph();
         PruneGraph();
+        while (hasDanglingNodes)
+        {
+            PruneGraph();
+        }
+        if(graph.NodeList.Count < 35)
+        {
+            GenerateGraph();
+        }
+        
     }
     
     private void DisplayGraph()
@@ -158,12 +166,16 @@ public class MapGenerator : MonoBehaviour
         //creating a list of nodes to remove
         foreach (Node node in graph.NodeList)
         {
-            AddNodeNotConnected(nodesToRemove, node);
+            bool Connected = CheckIfNodeIsConnected(node);
+            if (!Connected) // if not connected to any nodes => add to the list of nodes to remove
+            {
+                nodesToRemove.Add(node);
+            }
         }
 
         //removing the nodes and edges
         foreach (Node node in nodesToRemove)
-        { 
+        {
             //VISUALS ON WHAT IS BEING REMOVED
             foreach (var item in graph.EdgeList)
             {
@@ -179,8 +191,7 @@ public class MapGenerator : MonoBehaviour
                 {
                     obj.GetComponent<SpriteRenderer>().color = Color.red;
                 }
-
-                
+               
                 foreach (int id in edgesRemove)
                 {
                     string edgeName = "Edge" + id.ToString();
@@ -189,42 +200,52 @@ public class MapGenerator : MonoBehaviour
                         obj.GetComponent<LineRenderer>().startColor = Color.red;
                         obj.GetComponent<LineRenderer>().endColor = Color.red;
                     }
-
                 }
                 
             }
             //...
 
             graph.RemoveNode(node);
+            hasDanglingNodes = CheckRemainingNodes();
         }
     }
 
-    private void AddNodeNotConnected(List<Node> RemoveList,Node node)
+    private bool CheckIfNodeIsConnected(Node node)
     {
         List<Node> connectedNodes = graph.GetConnected(node.Id);
 
         List<Node> nodesInPrevDepth = graph.GetNodesInDepth(node.Depth - 1);
         bool connected = false;
-        foreach (Node nodeInDepth in nodesInPrevDepth)
+        foreach (Node nodeInDepth in nodesInPrevDepth) //check if the node is connected to any node from the previous depth
         {
-
             if (graph.AdjacencyList[nodeInDepth.Id].Contains(node))
             {
                 connected = true;
-            }
+            }            
         }
-        if (!connected && node.Depth != 0)
+        if ((!connected && node.Depth != 0))
         {
-            RemoveList.Add(node);
-            Debug.Log("NODE" + node.Id + " ADDED");
+            return false;
+        }else if(connectedNodes.Count < 1 && node.Depth != depthCount - 1)
+        {
+            return false;
         }
+        else
+        {
+            return true;
+        }
+    }
 
-        if (connectedNodes.Count < 1) //if it does not connect to any other node
+    private bool CheckRemainingNodes()  //check if there are any remainingnodes
+    {
+        foreach (Node node in graph.NodeList)
         {
-            if (node.Depth != depthCount - 1 && !RemoveList.Contains(node))
+            bool Connected = CheckIfNodeIsConnected(node);
+            if (!Connected)
             {
-                RemoveList.Add(node);
+                return true;
             }
         }
+        return false;
     }
 }
