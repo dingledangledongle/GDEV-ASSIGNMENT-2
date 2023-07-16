@@ -9,6 +9,9 @@ public class Graph
     
     public int NodeCount = 0;
 
+
+
+
     //VISUAL
     public int EdgeCount = 0;
     public Dictionary<int, List<int>> EdgeList;
@@ -28,6 +31,7 @@ public class Graph
         AdjacencyList[node.Id] = new List<Node>();
         EdgeList[node.Id] = new List<int>();
         NodeCount++;
+
     }
 
     public void AddEdge(int sourceId, Node target)
@@ -63,6 +67,8 @@ public class Graph
         //removing the node from the adjacency list
         AdjacencyList.Remove(node.Id);
         NodeList.Remove(node);
+
+        //NO IMPLEMENTATION OF REMOVING EDGES FROM EDGELIST YET
 
     }
 

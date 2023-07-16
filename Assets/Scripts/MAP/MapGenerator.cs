@@ -24,12 +24,13 @@ public class MapGenerator : MonoBehaviour
     //VISUAL
     private int edgeCount = 0;
     //...
+
     public void GenerateGraph()
-    {
-        
+    {   
         graph = new Graph();
         DestroyMap();   //destroying the current map if one exists
         randSeed.GenerateSeed();    //randomising the seed
+
         //creating the randomized amount of nodes for each depth
         for (int depth = 0; depth < depthCount; depth++)
         {   
@@ -50,11 +51,25 @@ public class MapGenerator : MonoBehaviour
                 node.Id = nodeId;
                 node.Depth = depth;
                 node.Position = position;
-
+                if(node.Depth == 0)
+                {
+                    node.EncounterType = Node.Encounter.ENEMY;
+                }else if(node.Depth == 14)
+                {
+                    node.EncounterType = Node.Encounter.REST;
+                }
+                else if(node.Depth == depthCount / 2)
+                {
+                    node.EncounterType = Node.Encounter.CHEST;
+                }
+                else
+                {
+                    GetRandomEncounter(node);
+                }
+                
                 graph.AddNode(node);
             }
         }
-
 
         //adding the edges of the nodes
         for (int depth = 0; depth < depthCount; depth++) //run through each depth
@@ -66,16 +81,14 @@ public class MapGenerator : MonoBehaviour
             foreach (Node source in sourceNodes) // loop through the list of nodes at current depth
             {
                 //check for nodes that are within distance to be connected
-
                 foreach (Node target in targetNodes)// loop through list of nodes at next depth
                 {
                     float distance = Vector3.Distance(source.Position, target.Position); //getting the distance between the nodes
 
                     if (distance < maxDistanceForConnection)
                     {
-
-                        //if (Random.Range(0, 4) != 0)
-                        ///{
+                        if (Random.Range(0, 4) != 0)
+                        {
                             graph.AddEdge(source.Id, target); //adds an edge if within distance 
 
                             //VISUAL
@@ -83,13 +96,12 @@ public class MapGenerator : MonoBehaviour
                             graph.AddToEdgeList(edgeCount, target);
                             edgeCount++;
                             //...
-                        //}
-                        
-                    }
-                    
+                        }                   
+                    }                  
                 }
             }
         }
+               
         AddMasterNode();
         DisplayGraph();
 
@@ -101,8 +113,30 @@ public class MapGenerator : MonoBehaviour
         if(graph.NodeList.Count < 35)
         {
             GenerateGraph();
+        }    
+    }
+    private void GetRandomEncounter(Node node)
+    {
+        //GET WEIGHTED PROBABILITY
+        int ranInt = Random.Range(0, 4);
+        if(node.Depth < 6)
+        {
+            ranInt = Random.Range(0, 3);
         }
-
+        switch(ranInt){
+            case 0:
+                node.EncounterType = Node.Encounter.ENEMY;
+                break;
+            case 1:
+                node.EncounterType = Node.Encounter.EVENT;
+                break;
+            case 2:
+                node.EncounterType = Node.Encounter.REST;
+                break;
+            case 3:
+                node.EncounterType = Node.Encounter.ELITE;
+                break; 
+        }
     }
     private void AddMasterNode()
     {
@@ -115,15 +149,14 @@ public class MapGenerator : MonoBehaviour
         node.Id = nodeId;
         node.Depth = depthCount;
         node.Position = position;
+        node.EncounterType = Node.Encounter.BOSS;
 
         graph.AddNode(node);
         List<Node> precedingNodes = graph.GetNodesInDepth(depthCount - 1);
         foreach(Node precedingNode in precedingNodes)
         {
             graph.AddEdge(precedingNode.Id, node);
-        }
-
-        
+        }      
     }
     
     private void DisplayGraph()
@@ -138,10 +171,13 @@ public class MapGenerator : MonoBehaviour
 
     private void DisplayNodes(Node node)
     {
-        GameObject nodeObject = Instantiate(nodePrefab, node.Position, Quaternion.identity);    //spawn an instance of a node
-        nodeObject.transform.SetParent(GameObject.FindGameObjectWithTag("Graph").transform, false); //setting the parent as "Graph"
-        nodeObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = node.Id.ToString();
-        nodeObject.name = "Node" + node.Id.ToString();
+        GameObject nodeGameObject = Instantiate(nodePrefab, node.Position, Quaternion.identity);    //spawn an instance of a node
+        nodeGameObject.transform.SetParent(GameObject.FindGameObjectWithTag("Graph").transform, false); //setting the parent as "Graph"
+        nodeGameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = node.Id.ToString();
+        nodeGameObject.name = "Node" + node.Id.ToString();
+
+        NodeObject nodeObject = nodeGameObject.AddComponent<NodeObject>();
+        nodeObject.Node = node;
     }
     private void DisplayLines(Node source)
     {
