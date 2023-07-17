@@ -5,14 +5,29 @@ using TMPro;
 
 public class MapGenerator : MonoBehaviour
 {
-    public int depthCount = 15;
-    public int minNodePerDepth = 3;
-    public int maxNodePerDepth = 5;
-    public float spacing = 2f;
-    public int offSetRange = 4;
-    public float maxDistanceForConnection = 2f;
+    [SerializeField]
+    private int depthCount = 15;
+    [SerializeField]
+    private int minNodePerDepth = 3;
+    [SerializeField]
+    private int maxNodePerDepth = 5;
+    [SerializeField]
+    private float spacing = 2f;
+    [SerializeField]
+    private int offSetRange = 4;
+    [SerializeField]
+    private float maxDistanceForConnection = 2f;
+    private Dictionary<Node.Encounter, float> encounterProbability = new Dictionary<Node.Encounter, float>() {
+        {Node.Encounter.ELITE,1f},
+        {Node.Encounter.ENEMY,3f},
+        {Node.Encounter.EVENT,2f},
+        {Node.Encounter.REST,2f}
+    };
+        
+    
 
     private Graph graph;
+    private ProbabilityManager probability;
 
     public GameObject nodePrefab;
     public GameObject linePrefab;
@@ -28,6 +43,7 @@ public class MapGenerator : MonoBehaviour
     public void GenerateGraph()
     {   
         graph = new Graph();
+        probability = new();
         DestroyMap();   //destroying the current map if one exists
         randSeed.GenerateSeed();    //randomising the seed
 
@@ -118,24 +134,21 @@ public class MapGenerator : MonoBehaviour
     private void GetRandomEncounter(Node node)
     {
         //GET WEIGHTED PROBABILITY
-        int ranInt = Random.Range(0, 4);
-        if(node.Depth < 6)
+        if(node.Depth < 7)
         {
-            ranInt = Random.Range(0, 3);
+            bool isElite = true;
+            while (isElite)
+            {
+                node.EncounterType = probability.SelectWeightedItem(encounterProbability);
+                if (node.EncounterType != Node.Encounter.ELITE) 
+                {
+                    isElite = false;
+                }
+            }
         }
-        switch(ranInt){
-            case 0:
-                node.EncounterType = Node.Encounter.ENEMY;
-                break;
-            case 1:
-                node.EncounterType = Node.Encounter.EVENT;
-                break;
-            case 2:
-                node.EncounterType = Node.Encounter.REST;
-                break;
-            case 3:
-                node.EncounterType = Node.Encounter.ELITE;
-                break; 
+        else
+        {
+            node.EncounterType = probability.SelectWeightedItem(encounterProbability);
         }
     }
     private void AddMasterNode()
@@ -176,8 +189,9 @@ public class MapGenerator : MonoBehaviour
         nodeGameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = node.Id.ToString();
         nodeGameObject.name = "Node" + node.Id.ToString();
 
-        NodeObject nodeObject = nodeGameObject.AddComponent<NodeObject>();
+        NodeObject nodeObject = nodeGameObject.GetComponent<NodeObject>();
         nodeObject.Node = node;
+        nodeObject.SetSprite();
     }
     private void DisplayLines(Node source)
     {
@@ -198,6 +212,7 @@ public class MapGenerator : MonoBehaviour
         }
 
     }
+
 
     private void DestroyMap()
     {

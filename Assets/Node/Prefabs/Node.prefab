@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3284652188875302147}
   - component: {fileID: 4056839966989100866}
-  - component: {fileID: 3785599811480312518}
   - component: {fileID: 2342152254627370296}
+  - component: {fileID: 1320146468871534593}
   m_Layer: 5
   m_Name: Node
   m_TagString: Node
@@ -27,7 +27,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4380469970867035881}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -7082.395}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 0.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -93,18 +93,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &3785599811480312518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4380469970867035881}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 873d1d84560398c46a7d2c57a16225a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!61 &2342152254627370296
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -131,6 +119,26 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1320146468871534593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4380469970867035881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 873d1d84560398c46a7d2c57a16225a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteArray:
+  - {fileID: 21300000, guid: 01f960fbd2955a145973e1a48d0febee, type: 3}
+  - {fileID: 21300000, guid: 3a6932e60bae2ea4f97b7b81588b0f8d, type: 3}
+  - {fileID: 21300000, guid: 6c06848b2ee28f94e886c8265feb9b7b, type: 3}
+  - {fileID: 21300000, guid: fd20a3b592c6490419aa2978c7a6bf3d, type: 3}
+  - {fileID: 21300000, guid: 9794d7f740308f84f856db1057718ef5, type: 3}
+  - {fileID: 21300000, guid: e4c8e727a3c1d2d4292cf95e7ffd3f27, type: 3}
+  spriteRender: {fileID: 4056839966989100866}
 --- !u!1 &6615336465206810051
 GameObject:
   m_ObjectHideFlags: 0
