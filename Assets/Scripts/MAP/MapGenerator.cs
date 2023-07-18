@@ -191,7 +191,7 @@ public class MapGenerator : MonoBehaviour
 
         NodeObject nodeObject = nodeGameObject.GetComponent<NodeObject>();
         nodeObject.Node = node;
-        nodeObject.SetSprite();
+        //nodeObject.SetSprite();
     }
     private void DisplayLines(Node source)
     {
