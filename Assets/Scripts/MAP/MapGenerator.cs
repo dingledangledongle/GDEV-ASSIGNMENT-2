@@ -128,7 +128,7 @@ public class MapGenerator : MonoBehaviour
         }
         if(graph.NodeList.Count < 35)
         {
-            GenerateGraph();
+            //GenerateGraph();
         }    
     }
     private void GetRandomEncounter(Node node)
@@ -186,7 +186,6 @@ public class MapGenerator : MonoBehaviour
     {
         GameObject nodeGameObject = Instantiate(nodePrefab, node.Position, Quaternion.identity);    //spawn an instance of a node
         nodeGameObject.transform.SetParent(GameObject.FindGameObjectWithTag("Graph").transform, false); //setting the parent as "Graph"
-        nodeGameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = node.Id.ToString();
         nodeGameObject.name = "Node" + node.Id.ToString();
 
         NodeObject nodeObject = nodeGameObject.GetComponent<NodeObject>();
@@ -199,7 +198,7 @@ public class MapGenerator : MonoBehaviour
 
         foreach (Node node in connectedNodes)
         {
-            Vector3 linePosition = new Vector3(0, 0, 1);    //start point of the edge
+            Vector3 linePosition = new Vector3(0, 0, 20);    //start point of the edge
             GameObject lineObject = Instantiate(linePrefab, linePosition, Quaternion.identity); //spawn an instance of the edge
             Vector3[] linePath = { source.Position, node.Position };    //start point and end point of the edge
             lineObject.GetComponent<LineRenderer>().SetPositions(linePath); //setting the start and end
