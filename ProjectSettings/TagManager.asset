@@ -10,6 +10,8 @@ TagManager:
   - Stuff
   - Graph
   - Node
+  - Enemy
+  - ActionBar
   layers:
   - Default
   - TransparentFX
