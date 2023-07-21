@@ -4,14 +4,14 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Tile
   - Canvas
   - MapScroll
-  - Stuff
   - Graph
   - Node
   - Enemy
   - ActionBar
+  - StatusBar
+  - HealthBar
   layers:
   - Default
   - TransparentFX

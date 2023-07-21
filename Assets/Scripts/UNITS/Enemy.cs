@@ -1,23 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public class Enemy : Unit
+public class Enemy :MonoBehaviour
 {
-    string[] moveSet = { "attack", "defend" };
+    public int maxHP;
+    public int currentHP;
+    public int def;
+    public int dmg;
+    public bool isShielded;
+ 
 
-
-    public string GenerateIntent()
+    public void Attack(Player target)
     {
-        int intNum = Random.Range(0, 2);
-        string intent = moveSet[intNum];
-        return intent;
+        int hpDmg = this.dmg;
+        if (target.isShielded)
+        {
+            hpDmg = this.dmg - target.def;
+            target.def = Math.Max(target.def - this.dmg, 0);
+
+            //change to observer?
+            if (target.def == 0)
+            {
+                target.isShielded = false;
+            }
+
+            target.currentHP = Math.Max(target.currentHP - hpDmg, 0);
+        }
+        else
+        {
+            target.currentHP -= hpDmg;
+        }
+
     }
 
-    public void Attack(Unit self, Unit target)
+    public void Defend(Enemy target)
     {
-        target.currentHP -= self.dmg;
+        target.isShielded = true;
+        target.def += 3;
     }
-
 
 }

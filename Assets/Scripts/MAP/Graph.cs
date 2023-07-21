@@ -9,9 +9,6 @@ public class Graph
     
     public int NodeCount = 0;
 
-
-
-
     //VISUAL
     public int EdgeCount = 0;
     public Dictionary<int, List<int>> EdgeList;

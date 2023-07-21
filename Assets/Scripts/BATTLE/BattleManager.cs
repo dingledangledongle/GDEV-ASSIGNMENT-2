@@ -2,107 +2,94 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-enum State
-    {
-        STATE_START,
-        STATE_PLAYERTURN,
-        STATE_END,
-        STATE_ENEMYTURN,
-        STATE_ENEMYEND
-    }
 
+enum State
+{
+    STATE_START,
+    STATE_PLAYERSTART,
+    STATE_PLAYERTURN,
+    STATE_PLAYEREND,
+    STATE_ENEMYSTART,
+    STATE_ENEMYTURN,
+    STATE_ENEMYEND,
+    STATE_END     
+}
+public delegate void PlayerTurnStartEvent();
+public delegate void PlayerTurnEndEvent();
+public delegate void EnemyTurnStartEvent();
+public delegate void EnemyTurnEndEvent();
 public class BattleManager : MonoBehaviour
 {
-    [SerializeField] State state;
-    [SerializeField] BattleHud HUD;
-    [SerializeField] Player player;
-    [SerializeField] Enemy enemy;
+    private HUDHandler hudHandler;
+    private Player player;
+    private List<Enemy> enemyList;
+    private State currentState = State.STATE_START;
 
+    public event PlayerTurnStartEvent OnPlayerTurnStart;
+    public event PlayerTurnEndEvent OnPlayerTurnEnd;
+    public event EnemyTurnStartEvent OnEnemyTurnStart;
+    public event EnemyTurnEndEvent OnEnemyTurnEnd;
 
-    void setupBattle()
+    private void Start()
+    {
+        hudHandler = new();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        enemyList = new();
+        foreach (GameObject enemyObject in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            enemyList.Add(enemyObject.GetComponent<Enemy>());
+        }
+        setupBattle();
+        UpdateHud();
+    }
+
+    private void StartPlayer()
+    {
+        currentState = State.STATE_PLAYERTURN;
+        OnPlayerTurnStart?.Invoke();
+    }
+    private void EndPlayer()
+    {
+        currentState = State.STATE_PLAYEREND;
+        OnPlayerTurnEnd?.Invoke();
+    }
+    private void StartEnemy()
+    {
+        currentState = State.STATE_ENEMYSTART;
+        OnEnemyTurnStart?.Invoke();
+    }
+    private void EndEnemy()
+    {
+        currentState = State.STATE_ENEMYEND;
+        OnEnemyTurnEnd?.Invoke();
+    }
+    private void setupBattle()
     {
         player.currentEnergy = player.maxEnergy;
         player.currentHP = player.maxHP;
-        enemy.currentHP = enemy.maxHP;
-        //START FIRST TURN STUFF
-
-        HUD.setHUD(player, enemy);
-        playerTurn();
-    }
-
-    void updateHUD()
-    {
-        HUD.setHUD(player, enemy);
-    }
-
-
-    void playerTurn()
-    {
-        //roll stuff
-        //start turn effects
-
-        state = State.STATE_PLAYERTURN;
-        player.currentEnergy = player.maxEnergy;
-        player.def = 0;
-        updateHUD();
-
-    }
-
-    public void AtkBtn()
-    {
-        if(state != State.STATE_PLAYERTURN)
-            return;
-        if (player.currentEnergy == 0)
-            return;
-
-        player.Attack(enemy);
-        player.currentEnergy -= 1;
-        updateHUD();
-    }
-
-    public void EndTurnBtn()
-    {
-        endTurn();
-    }
-
-    void endTurn()
-    {
-        state = State.STATE_END;
-        // do all the end turn effects
-
-        enemyMove();
-    }
-
-    void enemyMove()
-    {
-        state = State.STATE_ENEMYTURN;
-        enemy.def = 0;
-        string intent = enemy.GenerateIntent();
-        switch (intent)
+        foreach (Enemy enemy in enemyList)
         {
-            case "attack":
-                enemy.Attack(enemy,player);
-                break;
-            case "defend":
-                enemy.Defend(enemy);
-                break;
+            enemy.currentHP = enemy.maxHP;
         }
-        updateHUD();
-
-        enemyEnd();
+        //START FIRST TURN STUFF
+        StartPlayer();
     }
 
-    void enemyEnd()
+    private void UpdateHud()
     {
-        state = State.STATE_ENEMYEND;
-        //do enemy turn end stuff
-
-        playerTurn();
+        //hudHandler.setHUD(player,enemy);
+        Debug.Log(player.transform.Find("HealthBar/HealthNum").name);
+        
     }
 
-    void Start()
+    public void EndTurn()
     {
-        state = State.STATE_START;
-        setupBattle();
+        if(currentState == State.STATE_PLAYERTURN)
+        {
+            EndPlayer();
+            StartEnemy();
+        }
     }
+
+    
 }
