@@ -5,23 +5,22 @@ using System;
 
 public class Enemy :MonoBehaviour
 {
-    public int maxHP;
-    public int currentHP;
-    public int def;
-    public int dmg;
+    public float maxHP;
+    public float currentHP;
+    public float def;
+    public float dmg;
     public bool isShielded;
  
 
     public void Attack(Player target)
     {
-        int hpDmg = this.dmg;
+        float hpDmg = this.dmg;
         if (target.isShielded)
         {
-            hpDmg = this.dmg - target.def;
-            target.def = Math.Max(target.def - this.dmg, 0);
-
+            hpDmg = this.dmg - target.currentDef;
+            target.currentDef = Mathf.Max(target.currentDef - this.dmg, 0);
             //change to observer?
-            if (target.def == 0)
+            if (target.currentDef == 0)
             {
                 target.isShielded = false;
             }

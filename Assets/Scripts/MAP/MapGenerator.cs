@@ -5,18 +5,14 @@ using TMPro;
 
 public class MapGenerator : MonoBehaviour
 {
-    [SerializeField]
     private int depthCount = 15;
-    [SerializeField]
     private int minNodePerDepth = 3;
-    [SerializeField]
     private int maxNodePerDepth = 5;
-    [SerializeField]
     private float spacing = 2f;
-    [SerializeField]
     private int offSetRange = 4;
-    [SerializeField]
     private float maxDistanceForConnection = 2f;
+
+    //Dictionary of the weighted probability of each encounter, it is to be passed into the SelectWeightedItem() method to get a random encounter
     private Dictionary<Node.Encounter, float> encounterProbability = new Dictionary<Node.Encounter, float>() {
         {Node.Encounter.ELITE,1f},
         {Node.Encounter.ENEMY,3f},
@@ -24,8 +20,6 @@ public class MapGenerator : MonoBehaviour
         {Node.Encounter.REST,2f}
     };
         
-    
-
     private Graph graph;
     private ProbabilityManager probability;
 
@@ -40,7 +34,27 @@ public class MapGenerator : MonoBehaviour
     private int edgeCount = 0;
     //...
 
-    public void GenerateGraph()
+    /* This method is called at the moment when the player presses start game.
+     * Firstly, it destroyed any map that is existing and it also generates a seed for the random number generator
+     *
+     * Then, it goes through a for-loop whereby each loop is a depth on the graph.
+     * It places a random amount of nodes in each depth from minNodePerDepth to maxNodePerDepth and also determine the properties of the node
+     * in the inner for-loop.
+     * 
+     * After adding the nodes, it will run through another for-loop to place down the edges connecting nearby nodes on the next depth.
+     * There is a 1/4 chance of it not placing an edge even though it meets the distance requirement in order to trim down the amount of edges.
+     * 
+     * It then adds a Master Node at the end which is the boss encounter for the level.
+     * 
+     * From here, it will run through the graph to check if there is any outlying nodes which does not connect to the next or previous depth and it will proceed
+     * to remove the node and its corresponding edges.
+     * It will then repeat this process until there are no more outlying nodes in the graph.
+     * 
+     * If it does not meet the minimum requirement of number of nodes in the graph, it will generate the graph again and repeat the process.
+     * 
+     * After all the requirements are met, it will display the graph for the player to interact with.
+     */
+    public void GenerateGraph() 
     {   
         graph = new Graph();
         probability = new();
@@ -50,11 +64,11 @@ public class MapGenerator : MonoBehaviour
         //creating the randomized amount of nodes for each depth
         for (int depth = 0; depth < depthCount; depth++)
         {   
-            //turn this part into weighted chances
             int nodesPerDepth = Random.Range(minNodePerDepth, maxNodePerDepth);
 
             for (int i = 0; i < nodesPerDepth; i++)
             {
+                //determining the place where the node will be placed
                 float x = i * spacing + 1;
                 float y = depth * spacing;
 
@@ -62,11 +76,14 @@ public class MapGenerator : MonoBehaviour
                 int offsetX = Random.Range(-offSetRange / 2, offSetRange);
 
                 Vector3 position = new(x + offsetX, y, 0);
-                //Vector3 position = new(x, y, 0); //change back ltr
                 Node node = new();
                 node.Id = nodeId;
                 node.Depth = depth;
                 node.Position = position;
+
+                /* This places fixed encounter at depth [0 ,14 , half of the map]
+                 * If the node is not located in any of those depth, it will get a random encounter instead
+                 */
                 if(node.Depth == 0)
                 {
                     node.EncounterType = Node.Encounter.ENEMY;
@@ -131,6 +148,10 @@ public class MapGenerator : MonoBehaviour
             //GenerateGraph();
         }    
     }
+
+    /*
+     *  TYPE COMMENT HERE
+     */
     private void GetRandomEncounter(Node node)
     {
         //GET WEIGHTED PROBABILITY
@@ -151,6 +172,9 @@ public class MapGenerator : MonoBehaviour
             node.EncounterType = probability.SelectWeightedItem(encounterProbability);
         }
     }
+    /*
+     *  TYPE COMMENT HERE
+     */
     private void AddMasterNode()
     {
         float x = spacing;
@@ -171,7 +195,10 @@ public class MapGenerator : MonoBehaviour
             graph.AddEdge(precedingNode.Id, node);
         }      
     }
-    
+
+    /*
+     *  TYPE COMMENT HERE
+     */
     private void DisplayGraph()
     {
         edgeCount = 0;
@@ -182,6 +209,9 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    /*
+     *  TYPE COMMENT HERE
+     */
     private void DisplayNodes(Node node)
     {
         GameObject nodeGameObject = Instantiate(nodePrefab, node.Position, Quaternion.identity);    //spawn an instance of a node
@@ -192,6 +222,10 @@ public class MapGenerator : MonoBehaviour
         nodeObject.Node = node;
         //nodeObject.SetSprite();
     }
+
+    /*
+     *  TYPE COMMENT HERE
+     */
     private void DisplayLines(Node source)
     {
         List<Node> connectedNodes = graph.GetConnected(source.Id);
@@ -212,7 +246,9 @@ public class MapGenerator : MonoBehaviour
 
     }
 
-
+    /*
+     *  TYPE COMMENT HERE
+     */
     private void DestroyMap()
     {
         GameObject[] tilesArray = GameObject.FindGameObjectsWithTag("Node");    //get list of objects in the map
@@ -226,6 +262,9 @@ public class MapGenerator : MonoBehaviour
         //...
     }
 
+    /*
+     *  TYPE COMMENT HERE
+     */
     private void PruneGraph()
     {
         List<Node> nodesToRemove = new List<Node>();
@@ -283,6 +322,12 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    /*
+     *  This method check the specific node that was passed into it
+     *  if it has any edges connecting it to the nodes in the next depth or previous depth
+     *  
+     *  If there are either no connection to the next or previous depth, it will return false
+     */
     private bool CheckIfNodeIsConnected(Node node)
     {
         List<Node> connectedNodes = graph.GetConnected(node.Id);
@@ -313,6 +358,10 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    /*
+     *  Checks through the entire list of nodes if any of them is not connected, returning true if any
+     *  of the node is not connected
+     */
     private bool CheckRemainingNodes()  //check if there are any remainingnodes
     {
         foreach (Node node in graph.NodeList)

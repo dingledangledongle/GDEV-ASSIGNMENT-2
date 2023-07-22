@@ -10,8 +10,8 @@ public class BezierArrow : MonoBehaviour
     public GameObject ArrowHead;
     public GameObject ArrowBody;
 
-    public int arrowNodeNum;
-    public float scaleFactor = 1f;
+    private int arrowNodeNum = 12;
+    private float scaleFactor = 0.75f;
 
     private RectTransform origin;
     private List<RectTransform> arrowNodes = new();

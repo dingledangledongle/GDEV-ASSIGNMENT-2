@@ -5,17 +5,27 @@ using System;
 
 public class Player : MonoBehaviour
 {
-    public int maxHP = 100;
-    public int currentHP;
-    public int def = 0;
-    public int dmg = 5;
+    public float maxHP = 100;
+    public float currentHP;
+    public float currentDef = 0;
+    public float dmg = 5;
+    public float defValue = 5;
     public bool isShielded = false;
     public int currentEnergy;
     public int maxEnergy = 3;
+    
+    private void Start()
+    {
+        currentHP = this.maxHP;
+        AttackAction.OnTargetGet += Attack;
+        AttackAction.OnAfterAttack += ReduceCurrentEnergy;
+        DefendAction.OnDefend += Defend;
 
+
+    }
     public void Attack(Enemy target)
     {
-        int hpDmg = this.dmg;
+        float hpDmg = this.dmg;
         if (target.isShielded)
         {
             hpDmg = this.dmg - target.def;
@@ -31,15 +41,24 @@ public class Player : MonoBehaviour
         }
         else
         {
-            target.currentHP -= hpDmg;
+            target.currentHP = Math.Max(target.currentHP - hpDmg, 0);
         }
 
     }
 
-    public void Defend(Unit target)
+    public void Defend() 
     {
-        target.isShielded = true;
-        target.def += 3;
+        this.isShielded = true;
+        this.currentDef += defValue;
+    }
+
+    public void ReduceCurrentEnergy(int energyCost)
+    {
+        if(currentEnergy!= 0)
+        {
+            Debug.Log("MINUS" + currentEnergy);
+            currentEnergy -= energyCost;
+        }
     }
 
 }
