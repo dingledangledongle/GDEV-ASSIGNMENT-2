@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class MapGenerator : MonoBehaviour
 {
@@ -19,7 +17,7 @@ public class MapGenerator : MonoBehaviour
         {Node.Encounter.EVENT,2f},
         {Node.Encounter.REST,2f}
     };
-        
+
     private Graph graph;
     private ProbabilityManager probability;
 
@@ -54,8 +52,8 @@ public class MapGenerator : MonoBehaviour
      * 
      * After all the requirements are met, it will display the graph for the player to interact with.
      */
-    public void GenerateGraph() 
-    {   
+    public void GenerateGraph()
+    {
         graph = new Graph();
         probability = new();
         DestroyMap();   //destroying the current map if one exists
@@ -63,7 +61,7 @@ public class MapGenerator : MonoBehaviour
 
         //creating the randomized amount of nodes for each depth
         for (int depth = 0; depth < depthCount; depth++)
-        {   
+        {
             int nodesPerDepth = Random.Range(minNodePerDepth, maxNodePerDepth);
 
             for (int i = 0; i < nodesPerDepth; i++)
@@ -84,14 +82,15 @@ public class MapGenerator : MonoBehaviour
                 /* This places fixed encounter at depth [0 ,14 , half of the map]
                  * If the node is not located in any of those depth, it will get a random encounter instead
                  */
-                if(node.Depth == 0)
+                if (node.Depth == 0)
                 {
                     node.EncounterType = Node.Encounter.ENEMY;
-                }else if(node.Depth == 14)
+                }
+                else if (node.Depth == 14)
                 {
                     node.EncounterType = Node.Encounter.REST;
                 }
-                else if(node.Depth == depthCount / 2)
+                else if (node.Depth == depthCount / 2)
                 {
                     node.EncounterType = Node.Encounter.CHEST;
                 }
@@ -99,7 +98,7 @@ public class MapGenerator : MonoBehaviour
                 {
                     GetRandomEncounter(node);
                 }
-                
+
                 graph.AddNode(node);
             }
         }
@@ -110,7 +109,7 @@ public class MapGenerator : MonoBehaviour
             List<Node> sourceNodes = graph.GetNodesInDepth(depth); //getting the nodes at the current depth
             List<Node> targetNodes = graph.GetNodesInDepth(depth + 1); //getting nodes at the next depth
 
-            
+
             foreach (Node source in sourceNodes) // loop through the list of nodes at current depth
             {
                 //check for nodes that are within distance to be connected
@@ -125,16 +124,16 @@ public class MapGenerator : MonoBehaviour
                             graph.AddEdge(source.Id, target); //adds an edge if within distance 
 
                             //VISUAL
-                            graph.AddToEdgeList(edgeCount,source);
+                            graph.AddToEdgeList(edgeCount, source);
                             graph.AddToEdgeList(edgeCount, target);
                             edgeCount++;
                             //...
-                        }                   
-                    }                  
+                        }
+                    }
                 }
             }
         }
-               
+
         AddMasterNode();
         DisplayGraph();
 
@@ -143,10 +142,10 @@ public class MapGenerator : MonoBehaviour
         {
             PruneGraph();
         }
-        if(graph.NodeList.Count < 35)
+        if (graph.NodeList.Count < 35)
         {
             //GenerateGraph();
-        }    
+        }
     }
 
     /*
@@ -155,13 +154,13 @@ public class MapGenerator : MonoBehaviour
     private void GetRandomEncounter(Node node)
     {
         //GET WEIGHTED PROBABILITY
-        if(node.Depth < 7)
+        if (node.Depth < 7)
         {
             bool isElite = true;
             while (isElite)
             {
                 node.EncounterType = probability.SelectWeightedItem(encounterProbability);
-                if (node.EncounterType != Node.Encounter.ELITE) 
+                if (node.EncounterType != Node.Encounter.ELITE)
                 {
                     isElite = false;
                 }
@@ -190,10 +189,10 @@ public class MapGenerator : MonoBehaviour
 
         graph.AddNode(node);
         List<Node> precedingNodes = graph.GetNodesInDepth(depthCount - 1);
-        foreach(Node precedingNode in precedingNodes)
+        foreach (Node precedingNode in precedingNodes)
         {
             graph.AddEdge(precedingNode.Id, node);
-        }      
+        }
     }
 
     /*
@@ -239,7 +238,7 @@ public class MapGenerator : MonoBehaviour
             lineObject.transform.SetParent(GameObject.FindGameObjectWithTag("Graph").transform, false); //setting the parent as "Graph"
 
             //VISUAL
-            lineObject.name = "Edge"+edgeCount;
+            lineObject.name = "Edge" + edgeCount;
             edgeCount++;
             //...
         }
@@ -270,7 +269,7 @@ public class MapGenerator : MonoBehaviour
         List<Node> nodesToRemove = new List<Node>();
         Dictionary<int, List<Node>> AdjacencyList = graph.AdjacencyList;
         GameObject[] listObject = GameObject.FindGameObjectsWithTag("Node");
-        
+
         //VISUAL
         List<int> edgesRemove = new List<int>();
         //...
@@ -291,29 +290,30 @@ public class MapGenerator : MonoBehaviour
             //VISUALS ON WHAT IS BEING REMOVED
             foreach (var item in graph.EdgeList)
             {
-                if (item.Value.Contains(node.Id)){
+                if (item.Value.Contains(node.Id))
+                {
                     edgesRemove.Add(item.Key);
                 }
             }
-           
+
             string nodeName = "Node" + node.Id.ToString();
             foreach (GameObject obj in listObject)
             {
-                if(nodeName == obj.name)
+                if (nodeName == obj.name)
                 {
                     obj.GetComponent<SpriteRenderer>().color = Color.red;
                 }
-               
+
                 foreach (int id in edgesRemove)
                 {
                     string edgeName = "Edge" + id.ToString();
-                    if(edgeName == obj.name)
+                    if (edgeName == obj.name)
                     {
                         obj.GetComponent<LineRenderer>().startColor = Color.red;
                         obj.GetComponent<LineRenderer>().endColor = Color.red;
                     }
                 }
-                
+
             }
             //...
 
@@ -339,14 +339,15 @@ public class MapGenerator : MonoBehaviour
             if (graph.AdjacencyList[nodeInDepth.Id].Contains(node))
             {
                 connected = true;
-            }            
+            }
         }
         if ((!connected && node.Depth != 0))
         {
             return false;
-        }else if(connectedNodes.Count < 1 && node.Depth != depthCount - 1)
+        }
+        else if (connectedNodes.Count < 1 && node.Depth != depthCount - 1)
         {
-            if(node.Depth == depthCount)
+            if (node.Depth == depthCount)
             {
                 return true;
             }

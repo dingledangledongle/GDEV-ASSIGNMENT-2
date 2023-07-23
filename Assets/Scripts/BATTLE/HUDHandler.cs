@@ -1,16 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using System;
 
 public class HUDHandler
 {
-    public TMP_Text PlayerDefText;
-    public TMP_Text PlayerEnergyText;
-    public TMP_Text EnemyDefText;
-   
-    private void SetEnemyHUD(List<Enemy> enemyList) {
+
+    private void SetEnemyHUD(List<Enemy> enemyList)
+    {
         foreach (Enemy enemy in enemyList)
         {
             //getting the components
@@ -19,7 +17,7 @@ public class HUDHandler
 
             //setting the values
             EnemyHPText.text = enemy.currentHP.ToString() + " / " + enemy.maxHP.ToString();
-            EnemyHPBar.fillAmount = (float) (enemy.currentHP / enemy.maxHP);
+            EnemyHPBar.fillAmount = (float)(enemy.currentHP / enemy.maxHP);
             //EnemyDefText.text = enemy.def.ToString();
         }
     }
@@ -31,20 +29,52 @@ public class HUDHandler
         TMP_Text PlayerDefText = player.transform.Find("ShieldBar/ShieldAmount").GetComponent<TMP_Text>();
         TMP_Text PlayerEnergyText = player.transform.Find("Energy/EnergyAmt").GetComponent<TMP_Text>();
 
-        PlayerHPText.text = player.currentHP.ToString() + " / " + player.maxHP.ToString();
-        PlayerHPBar.fillAmount = (player.currentHP / player.maxHP);
+        PlayerHPText.text = player.CurrentHP.ToString() + " / " + player.MaxHP.ToString();
+        PlayerHPBar.fillAmount = (player.CurrentHP / player.MaxHP);
 
-        if (player.isShielded)
+        if (player.IsShielded)
         {
             player.transform.Find("ShieldBar").gameObject.SetActive(true);
-            PlayerDefText.text = player.currentDef.ToString();
+            PlayerDefText.text = player.CurrentDef.ToString();
         }
         else
         {
             player.transform.Find("ShieldBar").gameObject.SetActive(false);
         }
-        
-        PlayerEnergyText.text =player.currentEnergy.ToString() + "/" + player.maxEnergy.ToString();
+
+        PlayerEnergyText.text = player.CurrentEnergy.ToString() + "/" + player.MaxEnergy.ToString();
+    }
+
+    private void SetActionHUD(Player player)
+    {
+        GameObject ActionBar = GameObject.FindGameObjectWithTag("ActionBar");
+        GameObject Attack = ActionBar.transform.Find("Attack").gameObject;
+        GameObject Defend = ActionBar.transform.Find("Defend").gameObject;
+        GameObject Inventory = ActionBar.transform.Find("Inventory").gameObject;
+        GameObject Craft = ActionBar.transform.Find("Craft").gameObject;
+
+        SetAttack(Attack, player);
+        SetDefend(Defend, player);
+    }
+
+    private void SetAttack(GameObject attack, Player player)
+    {
+        TMP_Text dmgNum = attack.transform.Find("DamageText").GetComponent<TMP_Text>();
+        if(player.NumberOfHits > 1)
+        {
+            dmgNum.text = player.CurrentDmg.ToString() + " x " + player.NumberOfHits.ToString();
+        }
+        else
+        {
+            dmgNum.text = player.CurrentDmg.ToString();
+        }
+       
+    }
+
+    private void SetDefend(GameObject defend, Player player)
+    {
+        TMP_Text defNum = defend.transform.Find("ShieldText").GetComponent<TMP_Text>();
+        defNum.text = player.CurrentDefValue.ToString();
     }
 
 
@@ -52,5 +82,6 @@ public class HUDHandler
     {
         SetEnemyHUD(enemyList);
         SetPlayerHUD(player);
+        SetActionHUD(player);
     }
 }

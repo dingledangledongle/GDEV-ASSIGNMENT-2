@@ -1,11 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
-
 public class EndEnemyState : BattleState
 {
-    public override void EnterState(BattleStateManager battle)
+    public static event Action OnEnemyEnd;
+
+    public override void OnEnterState(BattleStateManager battle)
     {
         //PERFORM ACTION AT END OF ENEMY TURN
+        OnEnemyEnd?.Invoke();
+
+        Debug.Log("enemy end");
+        //Move to player's turn
+        battle.SwitchState(battle.StartPlayerState);
+
     }
 }

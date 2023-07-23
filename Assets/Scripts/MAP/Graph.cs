@@ -1,12 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class Graph
 {
     public Dictionary<int, List<Node>> AdjacencyList;
     public List<Node> NodeList = new List<Node>();
-    
+
     public int NodeCount = 0;
 
     //VISUAL
@@ -33,7 +31,7 @@ public class Graph
 
     public void AddEdge(int sourceId, Node target)
     {
-        if(AdjacencyList.ContainsKey(sourceId) && AdjacencyList.ContainsKey(target.Id)) //check if the adjacency list contains the source and the target
+        if (AdjacencyList.ContainsKey(sourceId) && AdjacencyList.ContainsKey(target.Id)) //check if the adjacency list contains the source and the target
         {
             AdjacencyList[sourceId].Add(target);
             EdgeList[EdgeCount] = new List<int>();
@@ -43,10 +41,10 @@ public class Graph
     }
 
     //VISUAL
-    public void AddToEdgeList(int edgeid,Node target)
+    public void AddToEdgeList(int edgeid, Node target)
     {
         EdgeList[edgeid].Add(target.Id);
-        
+
     }
     //...
 
@@ -95,9 +93,9 @@ public class Graph
     {
         List<Node> NodesInDepth = new List<Node>();
 
-        foreach(Node node in NodeList) //looping the list of nodes
+        foreach (Node node in NodeList) //looping the list of nodes
         {
-            if(node.Depth == depth)//checking depth
+            if (node.Depth == depth)//checking depth
             {
                 NodesInDepth.Add(node);
             }

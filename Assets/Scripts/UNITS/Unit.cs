@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Unit : MonoBehaviour
@@ -20,7 +18,7 @@ public class Unit : MonoBehaviour
             target.def = Math.Max(target.def - this.dmg, 0);
 
             //change to observer?
-            if(target.def == 0)
+            if (target.def == 0)
             {
                 target.isShielded = false;
             }
@@ -31,7 +29,7 @@ public class Unit : MonoBehaviour
         {
             target.currentHP -= hpDmg;
         }
-        
+
     }
 
     public void Defend(Unit target)

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -43,7 +42,7 @@ public class BezierArrow : MonoBehaviour
         Vector3 arrowPosition = Camera.main.ScreenToWorldPoint(mousePosition);
         this.controlPoints[0] = new Vector2(this.origin.position.x, this.origin.position.y);
         this.controlPoints[3] = new Vector2(arrowPosition.x, arrowPosition.y);
-        
+
         this.controlPoints[1] = this.controlPoints[0] + (this.controlPoints[3] - this.controlPoints[0] * this.controlPointAnchors[0]);
         this.controlPoints[2] = this.controlPoints[0] + (this.controlPoints[3] - this.controlPoints[0] * this.controlPointAnchors[1]);
         for (int i = 0; i < this.arrowNodes.Count; i++)

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,10 +12,10 @@ public class NodeObject : MonoBehaviour
     private void OnMouseDown()
     {
         //HEHEHAHA
-        if(Node != null)
+        if (Node != null)
         {
             Debug.Log("ID : " + Node.Id + " Encounter : " + Node.EncounterType + " DEPTH : " + Node.Depth);
-            
+
             circleUpdate = true;
         }
     }

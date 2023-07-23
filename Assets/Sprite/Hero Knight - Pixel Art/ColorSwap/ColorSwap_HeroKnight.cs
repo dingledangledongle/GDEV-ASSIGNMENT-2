@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
-using System;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class ColorSwap_HeroKnight : MonoBehaviour
 {
@@ -10,7 +9,7 @@ public class ColorSwap_HeroKnight : MonoBehaviour
 
     // Private member variables
     Texture2D m_colorSwapTex;
-    Color[] m_spriteColors; 
+    Color[] m_spriteColors;
     SpriteRenderer m_spriteRenderer;
     bool m_init = false;
 
@@ -19,7 +18,7 @@ public class ColorSwap_HeroKnight : MonoBehaviour
     {
         m_spriteRenderer = GetComponent<SpriteRenderer>();
         InitColorSwapTex();
-        
+
         SwapDemoColors();
     }
 
@@ -36,11 +35,11 @@ public class ColorSwap_HeroKnight : MonoBehaviour
     // Uses the value from the red channel in the source color (0-255) as an index for where to place the new color into the swap texture (256x1 px)
     public void SwapDemoColors()
     {
-        for(int i = 0; i < m_sourceColors.Length && i < m_newColors.Length; i++)
+        for (int i = 0; i < m_sourceColors.Length && i < m_newColors.Length; i++)
         {
             SwapColor((int)(m_sourceColors[i].r * 255.0f), m_newColors[i]);
         }
-        if(m_colorSwapTex)
+        if (m_colorSwapTex)
             m_colorSwapTex.Apply();
     }
 
@@ -80,7 +79,7 @@ public class ColorSwap_HeroKnight : MonoBehaviour
 
     public void SwapColor(int index, Color color)
     {
-        if(index >= 0 && index < 256)
+        if (index >= 0 && index < 256)
         {
             m_spriteColors[index] = color;
             m_colorSwapTex.SetPixel(index, 0, color);

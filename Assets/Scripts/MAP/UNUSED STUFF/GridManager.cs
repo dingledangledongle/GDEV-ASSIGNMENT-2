@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GridManager : MonoBehaviour
@@ -21,15 +19,15 @@ public class GridManager : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 int randNum = Random.Range(0, 6);
-                var spawnedTile = Instantiate(tilePrefab,new Vector3(-32 + x * 10,-72 + y * 10),Quaternion.identity);
+                var spawnedTile = Instantiate(tilePrefab, new Vector3(-32 + x * 10, -72 + y * 10), Quaternion.identity);
                 spawnedTile.transform.SetParent(GameObject.FindGameObjectWithTag("MapScroll").transform, false);
                 spawnedTile.name = $"Node-{x}-{y}";
                 spawnedTile.Init(randNum);
             }
         }
-       
+
     }
-    
+
     void DeleteGrid()
     {
         tilesArray = GameObject.FindGameObjectsWithTag("Tile");
@@ -37,7 +35,7 @@ public class GridManager : MonoBehaviour
         {
             Destroy(item);
         }
-        
+
     }
-    
+
 }

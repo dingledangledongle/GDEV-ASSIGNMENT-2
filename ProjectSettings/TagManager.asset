@@ -12,6 +12,10 @@ TagManager:
   - ActionBar
   - StatusBar
   - HealthBar
+  - Attack
+  - Defend
+  - Inventory
+  - Craft
   layers:
   - Default
   - TransparentFX

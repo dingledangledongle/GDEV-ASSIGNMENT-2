@@ -1,19 +1,17 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 public class ProbabilityManager
 {
-    public Node.Encounter SelectWeightedItem(Dictionary<Node.Encounter,float> weightedItems)
+    public Node.Encounter SelectWeightedItem(Dictionary<Node.Encounter, float> weightedItems)
     {
         float totalWeight = 0f;
 
-        foreach(var weight in weightedItems.Values)
+        foreach (var weight in weightedItems.Values)
         {
             totalWeight += weight;
         }
 
-        foreach(var item in weightedItems)
+        foreach (var item in weightedItems)
         {
             float randomValue = Random.Range(0f, totalWeight);
             float currentWeight = item.Value;

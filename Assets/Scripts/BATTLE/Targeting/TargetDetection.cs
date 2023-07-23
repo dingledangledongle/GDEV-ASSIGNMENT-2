@@ -1,19 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TargetDetection : MonoBehaviour
 {
     private Enemy target;
 
-    private void OnCollisionEnter2D(Collision2D collision) 
+    private void OnCollisionEnter2D(Collision2D collision)
     {
         // When the arrow hits the enemy's collider, it will enable the target box that was inactive before.
         // It also sets the target variable to the enemy object it collided with.
         if (collision.gameObject.CompareTag("Enemy"))
         {
             collision.gameObject.transform.Find("Target").GetComponent<SpriteRenderer>().enabled = true;
-            target = collision.gameObject.GetComponent<Enemy>();            
+            target = collision.gameObject.GetComponent<Enemy>();
         }
     }
 
@@ -45,7 +43,6 @@ public class TargetDetection : MonoBehaviour
         }
         return null;
     }
-    
+
 }
 
-    

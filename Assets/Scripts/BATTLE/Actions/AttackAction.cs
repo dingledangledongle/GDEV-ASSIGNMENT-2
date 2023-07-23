@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 public class AttackAction : MonoBehaviour
 {
@@ -10,9 +8,9 @@ public class AttackAction : MonoBehaviour
     private int energyCost = 1;
 
     //EVENTS
-    public static event Action<Enemy> OnTargetGet;
-    public static event Action OnAttack;
+    public static event Func<DamageType> OnTargetGet;
     public static event Action<int> OnAfterAttack;
+    public static event Action OnAttackSuccess;
 
 
     private void OnMouseDown()
@@ -23,7 +21,7 @@ public class AttackAction : MonoBehaviour
     {
         arrowObject.GetComponent<BezierArrow>().GetMousePosition();
     }
-
+   
     private void OnMouseUp()
     {
         if (arrowObject != null)
@@ -39,12 +37,10 @@ public class AttackAction : MonoBehaviour
 
     private void PerformAttackAction(Enemy target)
     {
-
-        OnTargetGet?.Invoke(target);
+        DamageType damage = OnTargetGet?.Invoke();
+        target.TakeDamage(damage);
         OnAfterAttack?.Invoke(energyCost);
-        OnAttack?.Invoke();
-        
-
+        OnAttackSuccess?.Invoke();
     }
 
     private void SpawnArrow(GameObject ArrowPrefab)

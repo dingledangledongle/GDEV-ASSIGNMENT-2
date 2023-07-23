@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +6,7 @@ public class BattleManager : MonoBehaviour
 {
     private HUDHandler hudHandler;
     private Player player;
-    private List<Enemy> enemyList;    
+    private List<Enemy> enemyList;
 
     private void Start()
     {
@@ -21,15 +20,15 @@ public class BattleManager : MonoBehaviour
 
         setupBattle();
         UpdateHud();
-        AttackAction.OnAttack += UpdateHud;
+        AttackAction.OnAttackSuccess += UpdateHud;
         DefendAction.OnDefend += UpdateHud;
+        MaterialAction.OnAfterEnhance += UpdateHud;
+
     }
 
-   
+
     private void setupBattle()
     {
-        player.currentEnergy = player.maxEnergy;
-        Debug.Log(player.currentEnergy);
         foreach (Enemy enemy in enemyList)
         {
             enemy.currentHP = enemy.maxHP;
@@ -39,10 +38,10 @@ public class BattleManager : MonoBehaviour
 
     private void UpdateHud()
     {
-        hudHandler.SetHUD(player,enemyList);
+        hudHandler.SetHUD(player, enemyList);
     }
 
 
 
-    
+
 }
