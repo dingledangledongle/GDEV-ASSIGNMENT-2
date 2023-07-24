@@ -6,12 +6,12 @@ public class DamageType
     private bool isAOE;
 
 
-    public DamageType(int numOfHit, float dmgPerHit)
+    public DamageType(float dmgPerHit,int numOfHit,bool status = false,bool aoe = false)
     {
         NumberOfHits = numOfHit;
         DamagePerHit = dmgPerHit;
-        isStatus = false;
-        isAOE = false;
+        isStatus = status;
+        isAOE = aoe;
     }
     public int NumberOfHits
     {

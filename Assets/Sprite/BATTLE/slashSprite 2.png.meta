@@ -1,0 +1,650 @@
+fileFormatVersion: 2
+guid: 2f95954998af33d47b7fc8774b9b8dd7
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: slashSprite 2_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 755.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 27580cc42cbf76f469c4cf202a36a66b
+      internalID: 1854668868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_1
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 755.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 03b05334c1d75284daa0932c830683fd
+      internalID: 1623908645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_2
+      rect:
+        serializedVersion: 2
+        x: 376
+        y: 755.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 68837dd21b7f28549898fe612d050566
+      internalID: 2065147616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_3
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 755.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a6d292165e5d20a47966804f34f25038
+      internalID: -1682993121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_4
+      rect:
+        serializedVersion: 2
+        x: 752
+        y: 755.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2392d5975d747404aa303a50e33e6f41
+      internalID: -478351845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 567.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 089e9237d8434c54c8252990e82c3767
+      internalID: 1453466223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_6
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 567.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 63f3b7da9f5edb94ea8c66bf8c414976
+      internalID: -1495521927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_7
+      rect:
+        serializedVersion: 2
+        x: 376
+        y: 567.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 77880235c756f63409f41c781c5bb812
+      internalID: -422918498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_8
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 567.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 565394f62b7a06442bba2329dc678d92
+      internalID: -1391819956
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_9
+      rect:
+        serializedVersion: 2
+        x: 752
+        y: 567.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 18f0629bd6411f14e8c2e3b0d7d9aedf
+      internalID: -1099717397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 379.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a9d41f29e37ddc4e9ef12bd94fccf6b
+      internalID: 957118182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_11
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 379.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dbd58118c352260449b934f0777c8a5d
+      internalID: -270940794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_12
+      rect:
+        serializedVersion: 2
+        x: 376
+        y: 379.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ce48727e4b0853e44a9b79fc2abd2079
+      internalID: -1575081922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_13
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 379.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1c9811d668203254caaecdebede99ed1
+      internalID: -1864433319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_14
+      rect:
+        serializedVersion: 2
+        x: 752
+        y: 379.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 05b713def1bb72c458f15442fa4a717a
+      internalID: -660357215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 191.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5393a2e34a12eaa45a19f24e9a65155f
+      internalID: -1293202035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_16
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 191.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 691956577baa284499868b718b60aca8
+      internalID: -86404572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_17
+      rect:
+        serializedVersion: 2
+        x: 376
+        y: 191.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 059989fcd928e2c42bd199d331c72a5c
+      internalID: -1219941940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_18
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 191.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9636cef3e8b24a445b74c3eefb49b091
+      internalID: 181596957
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_19
+      rect:
+        serializedVersion: 2
+        x: 752
+        y: 191.2
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5e8a0491117372243aedf0fe89c9522e
+      internalID: -44018769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3.199997
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 01a7104a5f324b84583b766148da85a9
+      internalID: 1516558096
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_21
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 3.199997
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e22df4b9263fe74aa0efd14308d9cbb
+      internalID: 955388820
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_22
+      rect:
+        serializedVersion: 2
+        x: 376
+        y: 3.199997
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f9b4c55a62a3498448534c651c2c1b34
+      internalID: 1397144304
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slashSprite 2_23
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 3.199997
+        width: 188.8
+        height: 188.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 742f6ad6d8ffb1d44842c763d15c2c84
+      internalID: -585931185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      slashSprite 2_19: -44018769
+      slashSprite 2_9: -1099717397
+      slashSprite 2_18: 181596957
+      slashSprite 2_14: -660357215
+      slashSprite 2_4: -478351845
+      slashSprite 2_5: 1453466223
+      slashSprite 2_8: -1391819956
+      slashSprite 2_17: -1219941940
+      slashSprite 2_13: -1864433319
+      slashSprite 2_0: 1854668868
+      slashSprite 2_2: 2065147616
+      slashSprite 2_12: -1575081922
+      slashSprite 2_23: -585931185
+      slashSprite 2_7: -422918498
+      slashSprite 2_11: -270940794
+      slashSprite 2_1: 1623908645
+      slashSprite 2_3: -1682993121
+      slashSprite 2_20: 1516558096
+      slashSprite 2_6: -1495521927
+      slashSprite 2_15: -1293202035
+      slashSprite 2_10: 957118182
+      slashSprite 2_16: -86404572
+      slashSprite 2_21: 955388820
+      slashSprite 2_22: 1397144304
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

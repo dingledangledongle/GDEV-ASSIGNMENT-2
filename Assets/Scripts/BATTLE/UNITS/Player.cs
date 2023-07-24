@@ -6,15 +6,15 @@ public class Player : MonoBehaviour
 {
     #region VARIABLES
     //HEALTH + SHIELD VARAIBLES
-    private float maxHP = 100;
+    private float maxHP = 100f;
     private float currentHP;
-    private float currentDef = 0;
-    private float baseDefValue = 5;
+    private float currentDef = 0f;
+    private float baseDefValue = 5f;
     private float currentDefValue;
     private bool isShielded = false;
      
     //DAMAGE VARIABLE
-    private float baseDmg = 5;
+    private float baseDmg = 5f;
     private int baseNumberOfHits = 1;
 
     //ENERGY VARIABLE
@@ -25,14 +25,14 @@ public class Player : MonoBehaviour
     private Dictionary<string, int> materialList;
     #endregion
 
+    public static event Action OnPlayerDamageTaken;
     private void Start()
     {
         currentHP = this.maxHP;
         currentDefValue = baseDefValue;
-        TurnStart();
 
         materialList = new();
-        damage = new(baseNumberOfHits, baseDmg);
+        damage = new(baseDmg,baseNumberOfHits);
 
         #region Event Subscribing
         // TURN EVENTS
@@ -51,6 +51,8 @@ public class Player : MonoBehaviour
         MaterialAction.OnDefEnhance += ModifyDefense;
         MaterialAction.OnSuccessEnhance += ReduceCurrentEnergy;
 
+        //ENEMY EVENTS
+        Enemy.OnEnemyAttack += TakeDamage;
         #endregion
     }
   
@@ -64,7 +66,6 @@ public class Player : MonoBehaviour
     {
         if (currentEnergy != 0)
         {
-            Debug.Log("MINUS" + currentEnergy);
             currentEnergy -= energyCost;
         }
     }
@@ -85,6 +86,7 @@ public class Player : MonoBehaviour
         {
             CalculateHealthDamage(damage);
         }
+        OnPlayerDamageTaken?.Invoke();
     }
 
     private float CalculateShieldDamage(DamageType damage)
@@ -147,7 +149,6 @@ public class Player : MonoBehaviour
         }
 
         //PLAY OUT TURN START EFFECTS
-        Debug.Log("player turn start");
     }
 
     private void TurnEnd()

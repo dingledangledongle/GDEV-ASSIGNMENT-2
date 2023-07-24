@@ -32,7 +32,6 @@ public class MaterialAction : MonoBehaviour
             MaterialObject = Instantiate(MaterialPrefab, this.GetComponent<RectTransform>().position, Quaternion.identity);
             MaterialObject.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform);
         }
-        Debug.Log(this.gameObject.name);
     }
 
     private void OnMouseUp()

@@ -27,5 +27,7 @@ public class BattleStateManager : MonoBehaviour
     private void Start()
     {
         SwitchState(StartBattleState);
+
     }
+
 }

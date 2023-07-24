@@ -16,6 +16,8 @@ TagManager:
   - Defend
   - Inventory
   - Craft
+  - Tile
+  - Intent
   layers:
   - Default
   - TransparentFX

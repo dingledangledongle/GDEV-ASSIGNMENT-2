@@ -2,25 +2,30 @@ using System.Collections.Generic;
 using UnityEngine;
 public class ProbabilityManager
 {
-    public Node.Encounter SelectWeightedItem(Dictionary<Node.Encounter, float> weightedItems)
+
+    public static T SelectWeightedItem<T>(Dictionary<T, float> weightedItems)
     {
         float totalWeight = 0f;
-
-        foreach (var weight in weightedItems.Values)
+        bool itemAcquired = false;
+        foreach (float weight in weightedItems.Values)
         {
             totalWeight += weight;
         }
-
-        foreach (var item in weightedItems)
+        while (!itemAcquired)
         {
-            float randomValue = Random.Range(0f, totalWeight);
-            float currentWeight = item.Value;
-            if (randomValue < currentWeight)
+            foreach (var item in weightedItems)
             {
-                return item.Key;
+                float randomValue = Random.Range(0f, totalWeight);
+                float currentWeight = item.Value;
+                if (randomValue < currentWeight)
+                {
+                    return item.Key;
+                }
+
             }
         }
-
+        
+        Debug.Log("returning default");
         return default;
     }
 

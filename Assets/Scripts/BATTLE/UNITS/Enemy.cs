@@ -4,45 +4,38 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public float maxHP;
-    public float currentHP;
-    public float currentDef;
-    public float defValue;
-    public float dmg;
-    public bool isShielded;
+    private float currentHP;
+    private float currentDef;
+    private bool isShielded = false;
+    private EnemyMoves moveSet;
+    private Move currentMove;
 
+    public static event Action OnGetIntent;
+    public static event Action<DamageType> OnEnemyAttack;
     private void Start()
     {
-    }
-    /*public void Attack(Player target)
-    {
-        float hpDmg = this.dmg;
-        if (target.isShielded)
-        {
-            hpDmg = this.dmg - target.currentDef;
-            target.currentDef = Mathf.Max(target.currentDef - this.dmg, 0);
-            //change to observer?
-            if (target.currentDef == 0)
-            {
-                target.isShielded = false;
-            }
-
-            target.currentHP = Math.Max(target.currentHP - hpDmg, 0);
-        }
-        else
-        {
-            target.currentHP -= hpDmg;
-        }
-
-    }*/
-
-    private void Defend(Enemy target)
-    {
-        target.isShielded = true;
-        target.currentDef += defValue;
+        currentHP = maxHP;
+        moveSet = this.gameObject.GetComponent<EnemyMoves>();
+        StartPlayerState.OnPlayerStart += GetIntent;
     }
 
+    private void GetIntent()
+    {
+        currentMove = moveSet.GetMove();
+        Debug.Log(currentMove + this.transform.name);
+        OnGetIntent?.Invoke();
+    }
+    public void PerformAction()
+    {
+        if (currentMove.MoveType.Equals(Move.Type.ATTACK))
+        {
+            OnEnemyAttack?.Invoke(currentMove.Damage);
+        }
+    }
 
-
+    private void Defend(float def) {
+        currentDef += def;
+    }
     #region Damage Calculation
     //DAMAGE CALCULATION PART
     public void TakeDamage(DamageType damage)
@@ -94,6 +87,46 @@ public class Enemy : MonoBehaviour
     private void ReduceHealth(float dmgTaken)
     {
         currentHP = Math.Max(currentHP - dmgTaken, 0);
+    }
+    #endregion
+
+    #region GETTER / SETTER
+    public float CurrentHP
+    {
+        get
+        {
+            return currentHP;
+        }
+    }
+    public float MaxHP
+    {
+        get
+        {
+            return maxHP;
+        }
+    }
+
+    public float CurrentDef
+    {
+        get
+        {
+            return currentDef;
+        }
+    }
+    public bool IsShielded
+    {
+        get
+        {
+            return isShielded;
+        }
+    }
+
+    public Move CurrentMove
+    {
+        get
+        {
+            return currentMove;
+        }
     }
     #endregion
 }

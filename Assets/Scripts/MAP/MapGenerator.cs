@@ -6,9 +6,15 @@ public class MapGenerator : MonoBehaviour
     private int depthCount = 15;
     private int minNodePerDepth = 3;
     private int maxNodePerDepth = 5;
-    private float spacing = 2f;
-    private int offSetRange = 4;
-    private float maxDistanceForConnection = 2f;
+    private float spacing = 150f;
+    private int offSetRangeX = 75;
+    private int offSetRangeY = 15;
+
+    private float maxDistanceForConnection = 220f;
+    private float screenOffSetY = -1150;
+    private float screenOffSetX = -200;
+    private bool hasDanglingNodes = false;
+
 
     //Dictionary of the weighted probability of each encounter, it is to be passed into the SelectWeightedItem() method to get a random encounter
     private Dictionary<Node.Encounter, float> encounterProbability = new Dictionary<Node.Encounter, float>() {
@@ -24,9 +30,6 @@ public class MapGenerator : MonoBehaviour
     public GameObject nodePrefab;
     public GameObject linePrefab;
     public RandSeedManager randSeed;
-
-    private bool hasDanglingNodes = false;
-
 
     //VISUAL
     private int edgeCount = 0;
@@ -67,13 +70,15 @@ public class MapGenerator : MonoBehaviour
             for (int i = 0; i < nodesPerDepth; i++)
             {
                 //determining the place where the node will be placed
-                float x = i * spacing + 1;
-                float y = depth * spacing;
+                float x = screenOffSetX + i * spacing + 1;
+                float y = screenOffSetY+ depth * spacing;
 
                 int nodeId = graph.NodeCount;
-                int offsetX = Random.Range(-offSetRange / 2, offSetRange);
+                int offsetX = Random.Range(-offSetRangeX/2, offSetRangeX);
+                int offsetY = Random.Range(-offSetRangeY, offSetRangeY);
 
-                Vector3 position = new(x + offsetX, y, 0);
+
+                Vector3 position = new(x + offsetX, y +offsetY, 0);
                 Node node = new();
                 node.Id = nodeId;
                 node.Depth = depth;
@@ -159,7 +164,7 @@ public class MapGenerator : MonoBehaviour
             bool isElite = true;
             while (isElite)
             {
-                node.EncounterType = probability.SelectWeightedItem(encounterProbability);
+                node.EncounterType = ProbabilityManager.SelectWeightedItem(encounterProbability);
                 if (node.EncounterType != Node.Encounter.ELITE)
                 {
                     isElite = false;
@@ -168,7 +173,7 @@ public class MapGenerator : MonoBehaviour
         }
         else
         {
-            node.EncounterType = probability.SelectWeightedItem(encounterProbability);
+            node.EncounterType = ProbabilityManager.SelectWeightedItem(encounterProbability);
         }
     }
     /*
@@ -176,8 +181,9 @@ public class MapGenerator : MonoBehaviour
      */
     private void AddMasterNode()
     {
-        float x = spacing;
-        float y = depthCount * spacing;
+        List<Node> precedingNodes = graph.GetNodesInDepth(depthCount - 1);
+        float x = 0;
+        float y = precedingNodes[0].Position.y + spacing;
 
         int nodeId = graph.NodeCount;
         Vector3 position = new(x, y, 0);
@@ -188,7 +194,6 @@ public class MapGenerator : MonoBehaviour
         node.EncounterType = Node.Encounter.BOSS;
 
         graph.AddNode(node);
-        List<Node> precedingNodes = graph.GetNodesInDepth(depthCount - 1);
         foreach (Node precedingNode in precedingNodes)
         {
             graph.AddEdge(precedingNode.Id, node);

@@ -19,29 +19,27 @@ public class BattleManager : MonoBehaviour
         }
 
         setupBattle();
-        UpdateHud();
         AttackAction.OnAttackSuccess += UpdateHud;
         DefendAction.OnDefend += UpdateHud;
         MaterialAction.OnAfterEnhance += UpdateHud;
+        StartPlayerState.OnDisplayReady += UpdateHud;
+        StartEnemyState.OnEnemyStart += GetEnemyList;
 
+        Player.OnPlayerDamageTaken += UpdateHud;
     }
 
-
+    private List<Enemy> GetEnemyList()
+    {
+        return enemyList;
+    }
     private void setupBattle()
     {
-        foreach (Enemy enemy in enemyList)
-        {
-            enemy.currentHP = enemy.maxHP;
-        }
         //START FIRST TURN STUFF
+        UpdateHud();
     }
 
     private void UpdateHud()
     {
         hudHandler.SetHUD(player, enemyList);
     }
-
-
-
-
 }

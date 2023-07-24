@@ -6,7 +6,6 @@ using System;
 
 public class HUDHandler
 {
-
     private void SetEnemyHUD(List<Enemy> enemyList)
     {
         foreach (Enemy enemy in enemyList)
@@ -14,11 +13,31 @@ public class HUDHandler
             //getting the components
             TMP_Text EnemyHPText = enemy.transform.Find("HealthBar/HealthNum").GetComponent<TMP_Text>();
             Image EnemyHPBar = enemy.transform.Find("HealthBar/Bar").GetComponent<Image>();
+            TMP_Text EnemyDefText = enemy.transform.Find("ShieldBar/ShieldAmount").GetComponent<TMP_Text>();
+            TMP_Text EnemyDamage = enemy.transform.Find("Intent/DamageNum").GetComponent<TMP_Text>();
+            Image EnemyIntent = enemy.transform.Find("Intent/IntentIcon").GetComponent<Image>();
 
-            //setting the values
-            EnemyHPText.text = enemy.currentHP.ToString() + " / " + enemy.maxHP.ToString();
-            EnemyHPBar.fillAmount = (float)(enemy.currentHP / enemy.maxHP);
-            //EnemyDefText.text = enemy.def.ToString();
+            //setting the HP
+            EnemyHPText.text = enemy.CurrentHP.ToString() + " / " + enemy.MaxHP.ToString();
+            EnemyHPBar.fillAmount = (float)(enemy.CurrentHP / enemy.MaxHP);
+
+            //setting shield
+            if (enemy.IsShielded)
+            {
+                enemy.transform.Find("ShieldBar").gameObject.SetActive(true);
+                EnemyDefText.text = enemy.CurrentDef.ToString();
+
+            }
+            else
+            {
+                enemy.transform.Find("ShieldBar").gameObject.SetActive(false);
+            }
+
+            //setting intent
+            Debug.Log(enemy.CurrentMove.DamageNum);
+            float dmgPerHit = enemy.CurrentMove.DamageNum;
+            int numOfHits = enemy.CurrentMove.NumHit;
+            EnemyDamage.text = dmgPerHit.ToString() + "x" + numOfHits.ToString();
         }
     }
 
@@ -29,9 +48,11 @@ public class HUDHandler
         TMP_Text PlayerDefText = player.transform.Find("ShieldBar/ShieldAmount").GetComponent<TMP_Text>();
         TMP_Text PlayerEnergyText = player.transform.Find("Energy/EnergyAmt").GetComponent<TMP_Text>();
 
+        //setting hp
         PlayerHPText.text = player.CurrentHP.ToString() + " / " + player.MaxHP.ToString();
         PlayerHPBar.fillAmount = (player.CurrentHP / player.MaxHP);
 
+        //setting shield
         if (player.IsShielded)
         {
             player.transform.Find("ShieldBar").gameObject.SetActive(true);
@@ -42,6 +63,7 @@ public class HUDHandler
             player.transform.Find("ShieldBar").gameObject.SetActive(false);
         }
 
+        //setting energy
         PlayerEnergyText.text = player.CurrentEnergy.ToString() + "/" + player.MaxEnergy.ToString();
     }
 
