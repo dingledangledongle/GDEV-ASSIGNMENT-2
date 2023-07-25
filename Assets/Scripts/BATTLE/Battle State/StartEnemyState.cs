@@ -4,6 +4,7 @@ using UnityEngine;
 public class StartEnemyState : BattleState
 {
     public static event Func<List<Enemy>> OnEnemyStart;
+    public static event Action OnEnemyAction;
     
     List<Enemy> enemyList;
     public override void OnEnterState(BattleStateManager battle)
@@ -16,7 +17,9 @@ public class StartEnemyState : BattleState
         foreach (Enemy enemy in enemyList)
         {
             enemy.PerformAction();
+           
         }
+        OnEnemyAction?.Invoke();
         //MOVE TO END TURN
         battle.SwitchState(battle.EndEnemyState);
     }

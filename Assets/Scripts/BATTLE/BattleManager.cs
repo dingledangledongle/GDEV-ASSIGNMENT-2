@@ -11,23 +11,28 @@ public class BattleManager : MonoBehaviour
     private void Start()
     {
         hudHandler = new();
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         enemyList = new();
+
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         foreach (GameObject enemyObject in GameObject.FindGameObjectsWithTag("Enemy"))
         {
             enemyList.Add(enemyObject.GetComponent<Enemy>());
         }
 
-        setupBattle();
         AttackAction.OnAttackSuccess += UpdateHud;
         DefendAction.OnDefend += UpdateHud;
         MaterialAction.OnAfterEnhance += UpdateHud;
+
+
         StartPlayerState.OnDisplayReady += UpdateHud;
         StartEnemyState.OnEnemyStart += GetEnemyList;
+        StartEnemyState.OnEnemyAction += UpdateHud;
 
         Player.OnPlayerDamageTaken += UpdateHud;
+        setupBattle();
     }
 
+ 
     private List<Enemy> GetEnemyList()
     {
         return enemyList;

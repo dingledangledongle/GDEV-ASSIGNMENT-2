@@ -8,8 +8,8 @@ public class Graph
     public int NodeCount = 0;
 
     //VISUAL
-    public int EdgeCount = 0;
     public Dictionary<int, List<int>> EdgeList;
+    public List<Edge> edgeList = new();
     //...
     public Graph()
     {
@@ -29,14 +29,13 @@ public class Graph
 
     }
 
-    public void AddEdge(int sourceId, Node target)
+    public void AddEdge(int sourceId, Node target,int edgeCount,Edge edge)
     {
         if (AdjacencyList.ContainsKey(sourceId) && AdjacencyList.ContainsKey(target.Id)) //check if the adjacency list contains the source and the target
         {
             AdjacencyList[sourceId].Add(target);
-            EdgeList[EdgeCount] = new List<int>();
-            EdgeCount++;
-
+            EdgeList[edgeCount] = new List<int>();
+            edgeList.Add(edge);
         }
     }
 
@@ -103,4 +102,6 @@ public class Graph
 
         return NodesInDepth;
     }
+
+    
 }

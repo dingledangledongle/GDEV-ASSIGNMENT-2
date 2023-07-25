@@ -7,6 +7,7 @@ public class Node
     public int Depth { get; set; }
     public Vector3 Position { get; set; }
     public Encounter EncounterType { get; set; }
+    public bool IsAccesible { get; set; }
 
     public enum Encounter
     {

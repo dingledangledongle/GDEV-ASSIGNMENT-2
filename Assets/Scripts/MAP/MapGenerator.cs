@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
+    #region VARIABLES
     private int depthCount = 15;
     private int minNodePerDepth = 3;
     private int maxNodePerDepth = 5;
@@ -13,8 +14,7 @@ public class MapGenerator : MonoBehaviour
     private float maxDistanceForConnection = 220f;
     private float screenOffSetY = -1150;
     private float screenOffSetX = -200;
-    private bool hasDanglingNodes = false;
-
+    private Color disabledColor = new Color(0, 0, 0, 0.6f);
 
     //Dictionary of the weighted probability of each encounter, it is to be passed into the SelectWeightedItem() method to get a random encounter
     private Dictionary<Node.Encounter, float> encounterProbability = new Dictionary<Node.Encounter, float>() {
@@ -25,15 +25,14 @@ public class MapGenerator : MonoBehaviour
     };
 
     private Graph graph;
-    private ProbabilityManager probability;
 
     public GameObject nodePrefab;
     public GameObject linePrefab;
     public RandSeedManager randSeed;
-
     //VISUAL
     private int edgeCount = 0;
     //...
+    #endregion
 
     /* This method is called at the moment when the player presses start game.
      * Firstly, it destroyed any map that is existing and it also generates a seed for the random number generator
@@ -55,95 +54,24 @@ public class MapGenerator : MonoBehaviour
      * 
      * After all the requirements are met, it will display the graph for the player to interact with.
      */
+
+    private void Awake()
+    {
+        NodeObject.OnClick += DisableNodesInDepth ;
+        NodeObject.OnClick += ConnectedNodeAccessible;
+
+    }
     public void GenerateGraph()
     {
         graph = new Graph();
-        probability = new();
         DestroyMap();   //destroying the current map if one exists
         randSeed.GenerateSeed();    //randomising the seed
 
-        //creating the randomized amount of nodes for each depth
-        for (int depth = 0; depth < depthCount; depth++)
-        {
-            int nodesPerDepth = Random.Range(minNodePerDepth, maxNodePerDepth);
-
-            for (int i = 0; i < nodesPerDepth; i++)
-            {
-                //determining the place where the node will be placed
-                float x = screenOffSetX + i * spacing + 1;
-                float y = screenOffSetY+ depth * spacing;
-
-                int nodeId = graph.NodeCount;
-                int offsetX = Random.Range(-offSetRangeX/2, offSetRangeX);
-                int offsetY = Random.Range(-offSetRangeY, offSetRangeY);
-
-
-                Vector3 position = new(x + offsetX, y +offsetY, 0);
-                Node node = new();
-                node.Id = nodeId;
-                node.Depth = depth;
-                node.Position = position;
-
-                /* This places fixed encounter at depth [0 ,14 , half of the map]
-                 * If the node is not located in any of those depth, it will get a random encounter instead
-                 */
-                if (node.Depth == 0)
-                {
-                    node.EncounterType = Node.Encounter.ENEMY;
-                }
-                else if (node.Depth == 14)
-                {
-                    node.EncounterType = Node.Encounter.REST;
-                }
-                else if (node.Depth == depthCount / 2)
-                {
-                    node.EncounterType = Node.Encounter.CHEST;
-                }
-                else
-                {
-                    GetRandomEncounter(node);
-                }
-
-                graph.AddNode(node);
-            }
-        }
-
-        //adding the edges of the nodes
-        for (int depth = 0; depth < depthCount; depth++) //run through each depth
-        {
-            List<Node> sourceNodes = graph.GetNodesInDepth(depth); //getting the nodes at the current depth
-            List<Node> targetNodes = graph.GetNodesInDepth(depth + 1); //getting nodes at the next depth
-
-
-            foreach (Node source in sourceNodes) // loop through the list of nodes at current depth
-            {
-                //check for nodes that are within distance to be connected
-                foreach (Node target in targetNodes)// loop through list of nodes at next depth
-                {
-                    float distance = Vector3.Distance(source.Position, target.Position); //getting the distance between the nodes
-
-                    if (distance < maxDistanceForConnection)
-                    {
-                        if (Random.Range(0, 4) != 0)
-                        {
-                            graph.AddEdge(source.Id, target); //adds an edge if within distance 
-
-                            //VISUAL
-                            graph.AddToEdgeList(edgeCount, source);
-                            graph.AddToEdgeList(edgeCount, target);
-                            edgeCount++;
-                            //...
-                        }
-                    }
-                }
-            }
-        }
+        GenerateNodes();
+        GenerateEdges();
 
         AddMasterNode();
-        DisplayGraph();
-
-        PruneGraph();
-        while (hasDanglingNodes)
+        while (CheckForDanglingNodes())
         {
             PruneGraph();
         }
@@ -151,11 +79,36 @@ public class MapGenerator : MonoBehaviour
         {
             //GenerateGraph();
         }
-    }
+        DisplayGraph();
 
+
+    }
     /*
      *  TYPE COMMENT HERE
      */
+    private void DisableNodesInDepth(Node node)
+    {
+        List<Node> nodesInDepth = graph.GetNodesInDepth(node.Depth);
+        foreach (Node nodeInDepth in nodesInDepth)
+        {
+            if(nodeInDepth.Id == node.Id)
+            {
+                continue;
+            }
+            string nodeObjName = "Node" + nodeInDepth.Id.ToString();
+            Debug.Log(nodeObjName);
+            GameObject.Find(nodeObjName).GetComponent<NodeObject>().MakeInAccessible();
+        }
+    }
+    private void ConnectedNodeAccessible(Node node) {
+
+        List<Node> nodesConnected = graph.GetConnected(node.Id);
+        foreach (Node nodeConnected in nodesConnected)
+        {
+            string nodeObjName = "Node" + nodeConnected.Id.ToString();
+            GameObject.Find(nodeObjName).GetComponent<NodeObject>().MakeAccessible();
+        }
+    }
     private void GetRandomEncounter(Node node)
     {
         //GET WEIGHTED PROBABILITY
@@ -194,9 +147,98 @@ public class MapGenerator : MonoBehaviour
         node.EncounterType = Node.Encounter.BOSS;
 
         graph.AddNode(node);
+
+        Edge edge = new();
+        edge.Id = edgeCount;
+        edge.Target = node;
         foreach (Node precedingNode in precedingNodes)
         {
-            graph.AddEdge(precedingNode.Id, node);
+            edge.Source = precedingNode;
+            graph.AddEdge(precedingNode.Id, node,edgeCount,edge);
+        }
+    }
+    private void GenerateNodes()
+    {
+        //creating the randomized amount of nodes for each depth
+        for (int depth = 0; depth < depthCount; depth++)
+        {
+            int nodesPerDepth = Random.Range(minNodePerDepth, maxNodePerDepth);
+
+            for (int i = 0; i < nodesPerDepth; i++)
+            {
+                //determining the place where the node will be placed
+                float x = screenOffSetX + i * spacing + 1;
+                float y = screenOffSetY + depth * spacing;
+
+                int nodeId = graph.NodeCount;
+                int offsetX = Random.Range(-offSetRangeX / 2, offSetRangeX);
+                int offsetY = Random.Range(-offSetRangeY, offSetRangeY);
+
+                Vector3 position = new(x + offsetX, y + offsetY, 0);
+                Node node = new();
+                node.Id = nodeId;
+                node.Depth = depth;
+                node.Position = position;
+
+                /* This places fixed encounter at depth [0 ,14 , half of the map]
+                 * If the node is not located in any of those depth, it will get a random encounter instead
+                 * It also makes the nodes at the starting depth accessible so the players can choose their starting path
+                 */
+                if (node.Depth == 0)
+                {
+                    node.EncounterType = Node.Encounter.ENEMY;
+
+                }
+                else if (node.Depth == 14)
+                {
+                    node.EncounterType = Node.Encounter.REST;
+                }
+                else if (node.Depth == depthCount / 2)
+                {
+                    node.EncounterType = Node.Encounter.CHEST;
+                }
+                else
+                {
+                    GetRandomEncounter(node);
+                }
+
+                graph.AddNode(node);
+            }
+        }
+    }
+
+    private void GenerateEdges()
+    {
+        for (int depth = 0; depth < depthCount; depth++) //run through each depth
+        {
+            List<Node> sourceNodes = graph.GetNodesInDepth(depth); //getting the nodes at the current depth
+            List<Node> targetNodes = graph.GetNodesInDepth(depth + 1); //getting nodes at the next depth
+            foreach (Node source in sourceNodes) // loop through the list of nodes at current depth
+            {
+                //check for nodes that are within distance to be connected
+                foreach (Node target in targetNodes)// loop through list of nodes at next depth
+                {
+                    float distance = Vector3.Distance(source.Position, target.Position); //getting the distance between the nodes
+
+                    if (distance < maxDistanceForConnection)
+                    {
+                        if (Random.Range(0, 4) != 0)
+                        {
+                            Edge edge = new();
+                            edge.Id = edgeCount;
+                            edge.Source = source;
+                            edge.Target = target;
+                            graph.AddEdge(source.Id, target,edgeCount,edge); //adds an edge if within distance 
+
+                            //VISUAL
+                            graph.AddToEdgeList(edgeCount, source);
+                            graph.AddToEdgeList(edgeCount, target);
+                            edgeCount++;
+                            //...
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -221,10 +263,14 @@ public class MapGenerator : MonoBehaviour
         GameObject nodeGameObject = Instantiate(nodePrefab, node.Position, Quaternion.identity);    //spawn an instance of a node
         nodeGameObject.transform.SetParent(GameObject.FindGameObjectWithTag("Graph").transform, false); //setting the parent as "Graph"
         nodeGameObject.name = "Node" + node.Id.ToString();
-
+        nodeGameObject.GetComponent<SpriteRenderer>().color = new Color(0,0,0,0.6f);
         NodeObject nodeObject = nodeGameObject.GetComponent<NodeObject>();
         nodeObject.Node = node;
-        //nodeObject.SetSprite();
+        nodeObject.SetSprite();  
+        if(node.Depth == 0)
+        {
+            nodeObject.MakeAccessible();
+        }
     }
 
     /*
@@ -233,7 +279,6 @@ public class MapGenerator : MonoBehaviour
     private void DisplayLines(Node source)
     {
         List<Node> connectedNodes = graph.GetConnected(source.Id);
-
         foreach (Node node in connectedNodes)
         {
             Vector3 linePosition = new Vector3(0, 0, 20);    //start point of the edge
@@ -241,6 +286,8 @@ public class MapGenerator : MonoBehaviour
             Vector3[] linePath = { source.Position, node.Position };    //start point and end point of the edge
             lineObject.GetComponent<LineRenderer>().SetPositions(linePath); //setting the start and end
             lineObject.transform.SetParent(GameObject.FindGameObjectWithTag("Graph").transform, false); //setting the parent as "Graph"
+            lineObject.GetComponent<LineRenderer>().startColor = disabledColor;
+            lineObject.GetComponent<LineRenderer>().endColor = disabledColor;
 
             //VISUAL
             lineObject.name = "Edge" + edgeCount;
@@ -292,38 +339,9 @@ public class MapGenerator : MonoBehaviour
         //removing the nodes and edges
         foreach (Node node in nodesToRemove)
         {
-            //VISUALS ON WHAT IS BEING REMOVED
-            foreach (var item in graph.EdgeList)
-            {
-                if (item.Value.Contains(node.Id))
-                {
-                    edgesRemove.Add(item.Key);
-                }
-            }
-
-            string nodeName = "Node" + node.Id.ToString();
-            foreach (GameObject obj in listObject)
-            {
-                if (nodeName == obj.name)
-                {
-                    obj.GetComponent<SpriteRenderer>().color = Color.red;
-                }
-
-                foreach (int id in edgesRemove)
-                {
-                    string edgeName = "Edge" + id.ToString();
-                    if (edgeName == obj.name)
-                    {
-                        obj.GetComponent<LineRenderer>().startColor = Color.red;
-                        obj.GetComponent<LineRenderer>().endColor = Color.red;
-                    }
-                }
-
-            }
-            //...
+            DisplayRemovedNodes(node, listObject, edgesRemove);
 
             graph.RemoveNode(node);
-            hasDanglingNodes = CheckRemainingNodes();
         }
     }
 
@@ -368,7 +386,7 @@ public class MapGenerator : MonoBehaviour
      *  Checks through the entire list of nodes if any of them is not connected, returning true if any
      *  of the node is not connected
      */
-    private bool CheckRemainingNodes()  //check if there are any remainingnodes
+    private bool CheckForDanglingNodes()  //check if there are any remainingnodes
     {
         foreach (Node node in graph.NodeList)
         {
@@ -379,5 +397,39 @@ public class MapGenerator : MonoBehaviour
             }
         }
         return false;
+    }
+    
+    //USED FOR DEBUGGING
+    private void DisplayRemovedNodes(Node node, GameObject[] listObject, List<int> edgesRemove)
+    {
+        //VISUALS ON WHAT IS BEING REMOVED
+        foreach (var item in graph.EdgeList)
+        {
+            if (item.Value.Contains(node.Id))
+            {
+                edgesRemove.Add(item.Key);
+            }
+        }
+
+        string nodeName = "Node" + node.Id.ToString();
+        foreach (GameObject obj in listObject)
+        {
+            if (nodeName == obj.name)
+            {
+                obj.GetComponent<SpriteRenderer>().color = Color.red;
+            }
+
+            foreach (int id in edgesRemove)
+            {
+                string edgeName = "Edge" + id.ToString();
+                if (edgeName == obj.name)
+                {
+                    obj.GetComponent<LineRenderer>().startColor = Color.red;
+                    obj.GetComponent<LineRenderer>().endColor = Color.red;
+                }
+            }
+
+        }
+        //...
     }
 }

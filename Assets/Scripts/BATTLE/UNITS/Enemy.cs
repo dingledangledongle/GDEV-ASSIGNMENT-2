@@ -12,29 +12,46 @@ public class Enemy : MonoBehaviour
 
     public static event Action OnGetIntent;
     public static event Action<DamageType> OnEnemyAttack;
-    private void Start()
+
+    private void Awake()
     {
         currentHP = maxHP;
         moveSet = this.gameObject.GetComponent<EnemyMoves>();
         StartPlayerState.OnPlayerStart += GetIntent;
+        Debug.Log(this.gameObject.name + " INITIALIZED");
+
     }
 
     private void GetIntent()
     {
         currentMove = moveSet.GetMove();
-        Debug.Log(currentMove + this.transform.name);
-        OnGetIntent?.Invoke();
+        //Debug.Log(currentMove + this.transform.name);
+        //OnGetIntent?.Invoke();
     }
     public void PerformAction()
     {
-        if (currentMove.MoveType.Equals(Move.Type.ATTACK))
+        switch (currentMove.MoveType)
         {
-            OnEnemyAttack?.Invoke(currentMove.Damage);
+            case Move.Type.ATTACK:
+                OnEnemyAttack?.Invoke(currentMove.Damage);
+                break;
+            case Move.Type.DEFEND:
+                Defend(currentMove.ShieldAmt);
+                break;
+            case Move.Type.DEBUFF:
+                Debug.Log("ENEMY : DEBUFF");
+                break;
+            case Move.Type.BUFF:
+                Debug.Log("ENEMY : BUFF");
+                break;
         }
+        
     }
 
     private void Defend(float def) {
         currentDef += def;
+        isShielded = true;
+        Debug.Log("DEFEND : " + def);
     }
     #region Damage Calculation
     //DAMAGE CALCULATION PART

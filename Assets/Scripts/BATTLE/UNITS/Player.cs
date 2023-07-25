@@ -5,6 +5,9 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     #region VARIABLES
+    // MAP VARIABLES
+    private int currentNode;
+
     //HEALTH + SHIELD VARAIBLES
     private float maxHP = 100f;
     private float currentHP;
@@ -167,7 +170,22 @@ public class Player : MonoBehaviour
 
     #endregion
 
-    #region GETTER / SETTER
+    private int GetCurrentNode()
+    {
+        return currentNode;
+    }
+
+    #region GETTER / SETTER\
+    public int CurrentNode
+    {
+        get
+        {
+            return currentNode;
+        }
+        set {
+            currentNode = value;
+        }
+    }
     public float CurrentHP
     {
         get 

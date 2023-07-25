@@ -26,7 +26,6 @@ public class HUDHandler
             {
                 enemy.transform.Find("ShieldBar").gameObject.SetActive(true);
                 EnemyDefText.text = enemy.CurrentDef.ToString();
-
             }
             else
             {
@@ -34,10 +33,18 @@ public class HUDHandler
             }
 
             //setting intent
-            Debug.Log(enemy.CurrentMove.DamageNum);
             float dmgPerHit = enemy.CurrentMove.DamageNum;
             int numOfHits = enemy.CurrentMove.NumHit;
-            EnemyDamage.text = dmgPerHit.ToString() + "x" + numOfHits.ToString();
+            if (enemy.CurrentMove.MoveType.Equals(Move.Type.ATTACK))
+            {
+                EnemyDamage.text = dmgPerHit.ToString() + "x" + numOfHits.ToString();
+            }
+            else{
+                EnemyDamage.text = "";
+            }
+
+            IntentSprite sprite = enemy.transform.Find("Intent").GetComponent<IntentSprite>();
+            sprite.SetSprite(enemy.CurrentMove.MoveType,EnemyIntent);
         }
     }
 

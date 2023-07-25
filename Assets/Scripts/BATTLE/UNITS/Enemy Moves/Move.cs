@@ -25,10 +25,6 @@ public class Move
         shieldAmt = shieldValue;
         damagePerHit = dmgPerHit;
         numOfHits = numHits;
-        test();
-    }
-    private void test()
-    {
         damage = new(damagePerHit, numOfHits);
 
     }

@@ -10,6 +10,7 @@ public class StartBattleState : BattleState
 
         Debug.Log("BATTLE START");
         //MOVE TO PLAYER'S TURN
+        
         battle.SwitchState(battle.StartPlayerState);
     }
 }

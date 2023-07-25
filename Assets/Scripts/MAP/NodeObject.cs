@@ -1,31 +1,68 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class NodeObject : MonoBehaviour
 {
     public Node Node { get; set; }
     public Sprite[] spriteArray;
     public SpriteRenderer spriteRender;
+    private Animator animator;
 
     private bool circleUpdate = false;
     private float circleSpeed = 0.015f;
-    private void OnMouseDown()
-    {
-        //HEHEHAHA
-        if (Node != null)
-        {
-            Debug.Log("ID : " + Node.Id + " Encounter : " + Node.EncounterType + " DEPTH : " + Node.Depth);
+    private Color disableColor = new Color(0, 0, 0, 0.6f);
+    private Color enableColor = new Color(0, 0, 0, 1f);
 
+    public static event Action<Node> OnClick;
+    private void OnMouseDown()
+    {   
+        if (Node != null && Node.IsAccesible)
+        {
+            //Debug.Log("ID : " + Node.Id + " Encounter : " + Node.EncounterType + " DEPTH : " + Node.Depth);
             circleUpdate = true;
+            animator.Play("NoAnim");
+            OnClick?.Invoke(Node); //DISABLES OTHER NODES IN THE SAME DEPTH
+
         }
     }
 
+    private void OnMouseEnter()
+    {
+        this.gameObject.GetComponent<SpriteRenderer>().color = enableColor;
+    }
+    private void OnMouseExit()
+    {
+        if (!Node.IsAccesible) {
+            this.gameObject.GetComponent<SpriteRenderer>().color = disableColor;
+
+        }
+    }
+    private void Awake()
+    {
+        animator = this.gameObject.GetComponent<Animator>();
+    }
     private void Update()
     {
         if (circleUpdate)
         {
             CircleNode();
         }
+    }
+    public void MakeAccessible()
+    {
+        Node.IsAccesible = true;
+        animator.Play("NodeAnimation");
+        this.gameObject.GetComponent<SpriteRenderer>().color = enableColor;
+    }
+    public void MakeInAccessible()
+    {
+        Debug.Log("not access" + Node.Id);
+
+        Node.IsAccesible = false;
+        animator.Play("NoAnim");
+        this.gameObject.GetComponent<SpriteRenderer>().color = disableColor;
+
     }
     public void SetSprite()
     {
