@@ -4,24 +4,24 @@ public class TargetDetection : MonoBehaviour
 {
     private Enemy target;
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         // When the arrow hits the enemy's collider, it will enable the target box that was inactive before.
         // It also sets the target variable to the enemy object it collided with.
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            collision.gameObject.transform.Find("Target").GetComponent<SpriteRenderer>().enabled = true;
+            collision.gameObject.transform.Find("Canvas/Target").GetComponent<SpriteRenderer>().enabled = true;
             target = collision.gameObject.GetComponent<Enemy>();
         }
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    private void OnTriggerExit2D(Collider2D collision)
     {
         // When the arrow leaves the enemy's collider, it will disable the target box
         // It also sets the target to null
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            collision.gameObject.transform.Find("Target").GetComponent<SpriteRenderer>().enabled = false;
+            collision.gameObject.transform.Find("Canvas/Target").GetComponent<SpriteRenderer>().enabled = false;
             target = null;
         }
     }

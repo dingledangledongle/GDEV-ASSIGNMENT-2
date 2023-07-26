@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public class StartEnemyState : BattleState
 {
+    public static event Action OnEnterEnemyStart;
     public static event Func<List<Enemy>> OnEnemyStart;
     public static event Action OnEnemyAction;
     

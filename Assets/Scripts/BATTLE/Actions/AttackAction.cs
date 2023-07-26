@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
-public class AttackAction : MonoBehaviour
+using UnityEngine.EventSystems;
+public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler,IDragHandler
 {
     public GameObject ArrowPrefab;
     private GameObject arrowObject;
@@ -12,18 +13,10 @@ public class AttackAction : MonoBehaviour
     public static event Action<int> OnAfterAttack;
     public static event Action OnAttackSuccess;
 
-
-    private void OnMouseDown()
-    {
+    public void OnPointerDown(PointerEventData data) {
         SpawnArrow(ArrowPrefab);
     }
-    private void OnMouseDrag()
-    {
-        arrowObject.GetComponent<BezierArrow>().GetMousePosition();
-    }
-   
-    private void OnMouseUp()
-    {
+    public void OnPointerUp(PointerEventData data) {
         if (arrowObject != null)
         {
             if (targetDetection.isTargetSelected())
@@ -35,6 +28,12 @@ public class AttackAction : MonoBehaviour
         }
     }
 
+    public void OnDrag(PointerEventData data)
+    {
+        arrowObject.GetComponent<BezierArrow>().GetMousePosition();
+    }
+
+
     private void PerformAttackAction(Enemy target)
     {
         DamageType damage = OnTargetGet?.Invoke();
@@ -45,13 +44,12 @@ public class AttackAction : MonoBehaviour
 
     private void SpawnArrow(GameObject ArrowPrefab)
     {
-        Vector3 spawnPosition = this.GetComponent<RectTransform>().position;
-
+        Vector3 mousePosition = Input.mousePosition;
+        mousePosition.z = 10f;
+        Vector3 spawnPosition = Camera.main.ScreenToWorldPoint(mousePosition);
         if (arrowObject == null)
         {
             arrowObject = Instantiate(ArrowPrefab, spawnPosition, Quaternion.identity);
-            arrowObject.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform);
-            arrowObject.transform.localScale = new Vector3(1, 1, 1);
             targetDetection = arrowObject.GetComponentInChildren<TargetDetection>();
         }
     }

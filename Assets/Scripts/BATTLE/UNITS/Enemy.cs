@@ -1,32 +1,40 @@
 using System;
 using UnityEngine;
+using TMPro;
 
 public class Enemy : MonoBehaviour
 {
+    public GameObject FloatText;
     public float maxHP;
     private float currentHP;
     private float currentDef;
     private bool isShielded = false;
     private EnemyMoves moveSet;
     private Move currentMove;
-
-    public static event Action OnGetIntent;
+    
     public static event Action<DamageType> OnEnemyAttack;
 
     private void Awake()
     {
         currentHP = maxHP;
         moveSet = this.gameObject.GetComponent<EnemyMoves>();
+
+        //EVENTS
         StartPlayerState.OnPlayerStart += GetIntent;
+        StartEnemyState.OnEnterEnemyStart += TurnStart;
         Debug.Log(this.gameObject.name + " INITIALIZED");
+    }
+
+    private void OnDestroy()
+    {
+        StartPlayerState.OnPlayerStart -= GetIntent;
+        StartEnemyState.OnEnterEnemyStart -= TurnStart;
 
     }
 
     private void GetIntent()
     {
         currentMove = moveSet.GetMove();
-        //Debug.Log(currentMove + this.transform.name);
-        //OnGetIntent?.Invoke();
     }
     public void PerformAction()
     {
@@ -53,6 +61,20 @@ public class Enemy : MonoBehaviour
         isShielded = true;
         Debug.Log("DEFEND : " + def);
     }
+
+    private void CheckDeath()
+    {
+        if (currentHP <= 0)
+        {
+            //play death animation
+        }
+    }
+
+    private void ShowFloatingText(string text)
+    {
+        GameObject floatText = Instantiate(FloatText, transform.position, Quaternion.identity, transform.Find("Canvas"));
+        floatText.GetComponent<TMP_Text>().text = text;
+    }
     #region Damage Calculation
     //DAMAGE CALCULATION PART
     public void TakeDamage(DamageType damage)
@@ -69,6 +91,8 @@ public class Enemy : MonoBehaviour
         {
             CalculateHealthDamage(damage);
         }
+
+        CheckDeath();
     }
 
     private float CalculateShieldDamage(DamageType damage)
@@ -91,6 +115,7 @@ public class Enemy : MonoBehaviour
         {
             isShielded = false;
         }
+        ShowFloatingText(dmgTaken.ToString());
         return outstandingDmg;
     }
 
@@ -104,8 +129,18 @@ public class Enemy : MonoBehaviour
     private void ReduceHealth(float dmgTaken)
     {
         currentHP = Math.Max(currentHP - dmgTaken, 0);
+        ShowFloatingText(dmgTaken.ToString());
     }
     #endregion
+
+    private void TurnStart()
+    {
+        if (isShielded)
+        {
+            currentDef = 0;
+            isShielded = false;
+        }
+    }
 
     #region GETTER / SETTER
     public float CurrentHP

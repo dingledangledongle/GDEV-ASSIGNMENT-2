@@ -11,11 +11,11 @@ public class HUDHandler
         foreach (Enemy enemy in enemyList)
         {
             //getting the components
-            TMP_Text EnemyHPText = enemy.transform.Find("HealthBar/HealthNum").GetComponent<TMP_Text>();
-            Image EnemyHPBar = enemy.transform.Find("HealthBar/Bar").GetComponent<Image>();
-            TMP_Text EnemyDefText = enemy.transform.Find("ShieldBar/ShieldAmount").GetComponent<TMP_Text>();
-            TMP_Text EnemyDamage = enemy.transform.Find("Intent/DamageNum").GetComponent<TMP_Text>();
-            Image EnemyIntent = enemy.transform.Find("Intent/IntentIcon").GetComponent<Image>();
+            TMP_Text EnemyHPText = enemy.transform.Find("Canvas/HealthBar/HealthNum").GetComponent<TMP_Text>();
+            Image EnemyHPBar = enemy.transform.Find("Canvas/HealthBar/Bar").GetComponent<Image>();
+            TMP_Text EnemyDefText = enemy.transform.Find("Canvas/ShieldBar/ShieldAmount").GetComponent<TMP_Text>();
+            TMP_Text EnemyDamage = enemy.transform.Find("Canvas/Intent/DamageNum").GetComponent<TMP_Text>();
+            Image EnemyIntent = enemy.transform.Find("Canvas/Intent/IntentIcon").GetComponent<Image>();
 
             //setting the HP
             EnemyHPText.text = enemy.CurrentHP.ToString() + " / " + enemy.MaxHP.ToString();
@@ -24,12 +24,12 @@ public class HUDHandler
             //setting shield
             if (enemy.IsShielded)
             {
-                enemy.transform.Find("ShieldBar").gameObject.SetActive(true);
+                enemy.transform.Find("Canvas/ShieldBar").gameObject.SetActive(true);
                 EnemyDefText.text = enemy.CurrentDef.ToString();
             }
             else
             {
-                enemy.transform.Find("ShieldBar").gameObject.SetActive(false);
+                enemy.transform.Find("Canvas/ShieldBar").gameObject.SetActive(false);
             }
 
             //setting intent
@@ -43,17 +43,17 @@ public class HUDHandler
                 EnemyDamage.text = "";
             }
 
-            IntentSprite sprite = enemy.transform.Find("Intent").GetComponent<IntentSprite>();
+            IntentSprite sprite = enemy.transform.Find("Canvas/Intent").GetComponent<IntentSprite>();
             sprite.SetSprite(enemy.CurrentMove.MoveType,EnemyIntent);
         }
     }
 
     private void SetPlayerHUD(Player player)
     {
-        TMP_Text PlayerHPText = player.transform.Find("HealthBar/HealthNum").GetComponent<TMP_Text>();
-        Image PlayerHPBar = player.transform.Find("HealthBar/Bar").GetComponent<Image>();
-        TMP_Text PlayerDefText = player.transform.Find("ShieldBar/ShieldAmount").GetComponent<TMP_Text>();
-        TMP_Text PlayerEnergyText = player.transform.Find("Energy/EnergyAmt").GetComponent<TMP_Text>();
+        TMP_Text PlayerHPText = player.transform.Find("Canvas/HealthBar/HealthNum").GetComponent<TMP_Text>();
+        Image PlayerHPBar = player.transform.Find("Canvas/HealthBar/Bar").GetComponent<Image>();
+        TMP_Text PlayerDefText = player.transform.Find("Canvas/ShieldBar/ShieldAmount").GetComponent<TMP_Text>();
+        TMP_Text PlayerEnergyText = GameObject.Find("Energy/EnergyAmt").GetComponent<TMP_Text>();
 
         //setting hp
         PlayerHPText.text = player.CurrentHP.ToString() + " / " + player.MaxHP.ToString();
@@ -62,12 +62,12 @@ public class HUDHandler
         //setting shield
         if (player.IsShielded)
         {
-            player.transform.Find("ShieldBar").gameObject.SetActive(true);
+            player.transform.Find("Canvas/ShieldBar").gameObject.SetActive(true);
             PlayerDefText.text = player.CurrentDef.ToString();
         }
         else
         {
-            player.transform.Find("ShieldBar").gameObject.SetActive(false);
+            player.transform.Find("Canvas/ShieldBar").gameObject.SetActive(false);
         }
 
         //setting energy

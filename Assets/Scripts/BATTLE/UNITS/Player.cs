@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
     private int maxEnergy = 3;
 
     private DamageType damage;
+    private Animator animator;
     private Dictionary<string, int> materialList;
     #endregion
 
@@ -33,7 +34,7 @@ public class Player : MonoBehaviour
     {
         currentHP = this.maxHP;
         currentDefValue = baseDefValue;
-
+        animator = this.gameObject.GetComponent<Animator>();
         materialList = new();
         damage = new(baseDmg,baseNumberOfHits);
 
@@ -46,7 +47,9 @@ public class Player : MonoBehaviour
         AttackAction.OnTargetGet += GetDamage;
         AttackAction.OnAfterAttack += ReduceCurrentEnergy;
         AttackAction.OnAttackSuccess += ResetValues;
+        AttackAction.OnAttackSuccess += PlayAttackAnim;
         DefendAction.OnDefend += Defend;
+        DefendAction.OnDefend += PlayDefendAnim;
         DefendAction.OnAfterDef += ReduceCurrentEnergy;
 
         // MATERIAL ACTION
@@ -73,7 +76,24 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void PlayAttackAnim()
+    {
+        animator.Play("HeroKnight_Attack1");
+    }
+    private void PlayDefendAnim()
+    {
+        animator.Play("HeroKnight_IdleBlock");
+    }
 
+    private bool CheckPlayerDeath()
+    {
+        if (currentHP <= 0)
+        {
+            animator.Play("HeroKnight_Death");
+            return true;
+        }
+        return false;
+    }
     #region Damage Calculation
     private void TakeDamage(DamageType damage)
     {
@@ -84,11 +104,15 @@ public class Player : MonoBehaviour
             {
                 ReduceHealth(outstandingDmg);
             }
+            animator.Play("HeroKnight_Block");
         }
         else
         {
             CalculateHealthDamage(damage);
+            animator.Play("HeroKnight_Hurt");
+
         }
+        CheckPlayerDeath();
         OnPlayerDamageTaken?.Invoke();
     }
 

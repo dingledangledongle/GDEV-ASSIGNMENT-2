@@ -8,7 +8,7 @@ public class StartPlayerState : BattleState
     {
         //PERFORM ACTIONS AT START OF PLAYER'S TURN
         OnPlayerStart?.Invoke();
-        //OnDisplayReady?.Invoke();
+        OnDisplayReady?.Invoke();
         Debug.Log("player turn start");
     }
 
