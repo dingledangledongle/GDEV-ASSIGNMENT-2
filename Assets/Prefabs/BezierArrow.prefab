@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1353523881466364210
 MonoBehaviour:
@@ -51,5 +51,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ArrowHead: {fileID: 7376061527684337747, guid: c9d12a8753ab06346a0a4971b94d5396, type: 3}
   ArrowBody: {fileID: 2344452664113441083, guid: 65ab947b7e8ddf141b322eeb4bae402c, type: 3}
-  arrowNodeNum: 12
-  scaleFactor: 0.75

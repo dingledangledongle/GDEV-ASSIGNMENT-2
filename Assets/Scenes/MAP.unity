@@ -474,6 +474,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FloatText: {fileID: 6465819663112868068, guid: 8d8084f43edc69e43a8c1de9a9177a6b, type: 3}
+  SlashEffect: {fileID: 4224051157167134322, guid: c06d923683620dc4bb2ea9169bc2871d, type: 3}
 --- !u!95 &80357811
 Animator:
   serializedVersion: 4
@@ -4489,7 +4490,7 @@ Canvas:
   m_GameObject: {fileID: 1003272080}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 519420031}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -6603,6 +6604,7 @@ GameObject:
   - component: {fileID: 1441855776}
   - component: {fileID: 1441855775}
   - component: {fileID: 1441855774}
+  - component: {fileID: 1441855777}
   m_Layer: 5
   m_Name: TopUI
   m_TagString: Untagged
@@ -6682,6 +6684,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1441855772}
   m_CullTransparentMesh: 1
+--- !u!210 &1441855777
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1441855772}
+  m_Enabled: 1
+  m_SortingLayerID: 811732813
+  m_SortingLayer: 3
+  m_SortingOrder: 3
 --- !u!1 &1451961313
 GameObject:
   m_ObjectHideFlags: 0

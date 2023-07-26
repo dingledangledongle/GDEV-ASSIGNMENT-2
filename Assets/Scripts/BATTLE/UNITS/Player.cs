@@ -30,6 +30,8 @@ public class Player : MonoBehaviour
     private Animator animator;
     private Dictionary<string, int> materialList;
     public GameObject FloatText;
+    public GameObject SlashEffect;
+
     #endregion
 
     public static event Action OnPlayerDamageTaken;
@@ -100,8 +102,14 @@ public class Player : MonoBehaviour
     private void ShowFloatingText(string text)
     {
         Vector3 spawnPos = new(transform.position.x, transform.position.y + 10);
-        GameObject floatText = Instantiate(FloatText, spawnPos, Quaternion.identity, transform.Find("Canvas"));
+        GameObject floatText = Instantiate(SlashEffect, spawnPos, Quaternion.identity);
         floatText.GetComponent<TMP_Text>().text = text;
+    }
+
+    private void ShowSlashEffect()
+    {
+        Vector3 spawnPos = new(transform.position.x, transform.position.y);
+        Instantiate(FloatText, spawnPos, Quaternion.identity, transform.Find("Canvas"));
     }
     #region Damage Calculation
     private void TakeDamage(DamageType damage)
@@ -160,6 +168,7 @@ public class Player : MonoBehaviour
     {
         currentHP = Math.Max(currentHP - dmgTaken, 0);
         ShowFloatingText(dmgTaken.ToString());
+        ShowSlashEffect();
     }
     #endregion
    

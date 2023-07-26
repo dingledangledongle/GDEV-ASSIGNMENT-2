@@ -1,46 +1,53 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using UnityEngine.EventSystems;
+using System.Collections;
 
-public class NodeObject : MonoBehaviour
+public class NodeObject : MonoBehaviour, IPointerDownHandler,IPointerEnterHandler,IPointerExitHandler
 {
     public Node Node { get; set; }
     public Sprite[] spriteArray;
-    public SpriteRenderer spriteRender;
+    private Image image;
     private Animator animator;
 
     private bool circleUpdate = false;
-    private float circleSpeed = 0.015f;
+    private float circleSpeed = 0.1f;
     private Color disableColor = new Color(0, 0, 0, 0.6f);
     private Color enableColor = new Color(0, 0, 0, 1f);
 
     public static event Action<Node> OnClick;
-    private void OnMouseDown()
-    {   
+    public void OnPointerDown(PointerEventData eventData)
+    {
         if (Node != null && Node.IsAccesible)
         {
-            //Debug.Log("ID : " + Node.Id + " Encounter : " + Node.EncounterType + " DEPTH : " + Node.Depth);
-            circleUpdate = true;
+            Debug.Log("ID : " + Node.Id + " Encounter : " + Node.EncounterType + " DEPTH : " + Node.Depth);
+            StartCoroutine(CircleNode());
             animator.Play("NoAnim");
             OnClick?.Invoke(Node); //DISABLES OTHER NODES IN THE SAME DEPTH
 
         }
     }
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        image.color = enableColor;
 
-    private void OnMouseEnter()
-    {
-        this.gameObject.GetComponent<SpriteRenderer>().color = enableColor;
     }
-    private void OnMouseExit()
+
+    public void OnPointerExit(PointerEventData eventData)
     {
-        if (!Node.IsAccesible) {
-            this.gameObject.GetComponent<SpriteRenderer>().color = disableColor;
+        if (!Node.IsAccesible)
+        {
+            image.color = disableColor;
 
         }
     }
+
+
     private void Awake()
     {
         animator = this.gameObject.GetComponent<Animator>();
+        image = this.gameObject.GetComponent<Image>();
     }
     private void Update()
     {
@@ -53,7 +60,7 @@ public class NodeObject : MonoBehaviour
     {
         Node.IsAccesible = true;
         animator.Play("NodeAnimation");
-        this.gameObject.GetComponent<SpriteRenderer>().color = enableColor;
+        image.color = enableColor;
     }
     public void MakeInAccessible()
     {
@@ -61,7 +68,7 @@ public class NodeObject : MonoBehaviour
 
         Node.IsAccesible = false;
         animator.Play("NoAnim");
-        this.gameObject.GetComponent<SpriteRenderer>().color = disableColor;
+        image.color = disableColor;
 
     }
     public void SetSprite()
@@ -69,35 +76,39 @@ public class NodeObject : MonoBehaviour
         switch (Node.EncounterType)
         {
             case Node.Encounter.ENEMY:
-                spriteRender.sprite = spriteArray[0];
+                image.sprite = spriteArray[0];
                 break;
             case Node.Encounter.ELITE:
-                spriteRender.sprite = spriteArray[1];
+                image.sprite = spriteArray[1];
                 break;
             case Node.Encounter.EVENT:
-                spriteRender.sprite = spriteArray[2];
+                image.sprite = spriteArray[2];
                 break;
             case Node.Encounter.REST:
-                spriteRender.sprite = spriteArray[3];
+                image.sprite = spriteArray[3];
                 break;
             case Node.Encounter.CHEST:
-                spriteRender.sprite = spriteArray[4];
+                image.sprite = spriteArray[4];
                 break;
             case Node.Encounter.BOSS:
-                spriteRender.sprite = spriteArray[5];
+                image.sprite = spriteArray[5];
                 break;
         }
     }
 
-    private void CircleNode()
+    private IEnumerator CircleNode()
     {
-        Image circle = this.GetComponentInChildren<Image>();
+        Debug.Log("Circling now...");
+        Image circle = this.transform.Find("ink-swirl").GetComponent<Image>();
 
-        if (circle.fillAmount == 1.0f)
+        for (float i = 0; i < 1; i+= circleSpeed)
         {
-            circleUpdate = false;
+            circle.fillAmount += circleSpeed;
+            yield return new WaitForSeconds(0.02f);
+
         }
-        circle.fillAmount += circleSpeed;
+        
     }
 
+    
 }

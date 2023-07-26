@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class BattleStateManager : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class BattleStateManager : MonoBehaviour
     public StartEnemyState StartEnemyState = new();
     public EndEnemyState EndEnemyState = new();
     public EndBattleState EndBattleState = new();
-
+    public int NumberOfTurns = 1;
     public void SwitchState(BattleState state)
     {
         CurrentState = state;
@@ -28,6 +29,14 @@ public class BattleStateManager : MonoBehaviour
     {
         SwitchState(StartBattleState);
 
+    }
+
+    public void UpdateTurnNumber()
+    {
+       
+        NumberOfTurns += 1;
+        Debug.Log(NumberOfTurns);
+        GameObject.Find("TurnText").GetComponent<TMP_Text>().text = "TURN "+ NumberOfTurns.ToString();
     }
 
 }

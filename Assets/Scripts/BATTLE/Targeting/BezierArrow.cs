@@ -23,7 +23,7 @@ public class BezierArrow : MonoBehaviour
 
         for (int i = 0; i < this.arrowNodeNum; i++)
         {
-            this.arrowNodes.Add(Instantiate(this.ArrowBody, this.transform).GetComponent<RectTransform>());
+            this.arrowNodes.Add(Instantiate(this.ArrowBody,this.transform).GetComponent<RectTransform>());
         }
 
         this.arrowNodes.Add(Instantiate(this.ArrowHead, this.transform).GetComponent<RectTransform>());

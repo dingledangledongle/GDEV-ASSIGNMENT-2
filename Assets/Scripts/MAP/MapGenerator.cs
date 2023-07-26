@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class MapGenerator : MonoBehaviour
 {
@@ -263,7 +265,7 @@ public class MapGenerator : MonoBehaviour
         GameObject nodeGameObject = Instantiate(nodePrefab, node.Position, Quaternion.identity);    //spawn an instance of a node
         nodeGameObject.transform.SetParent(GameObject.FindGameObjectWithTag("Graph").transform, false); //setting the parent as "Graph"
         nodeGameObject.name = "Node" + node.Id.ToString();
-        nodeGameObject.GetComponent<SpriteRenderer>().color = new Color(0,0,0,0.6f);
+        nodeGameObject.GetComponent<Image>().color = new Color(0,0,0,0.6f);
         NodeObject nodeObject = nodeGameObject.GetComponent<NodeObject>();
         nodeObject.Node = node;
         nodeObject.SetSprite();  
@@ -416,7 +418,7 @@ public class MapGenerator : MonoBehaviour
         {
             if (nodeName == obj.name)
             {
-                obj.GetComponent<SpriteRenderer>().color = Color.red;
+                obj.GetComponent<Image>().color = Color.red;
             }
 
             foreach (int id in edgesRemove)

@@ -38,10 +38,11 @@ public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler
     {
         DamageType damage = OnTargetGet?.Invoke();
         target.TakeDamage(damage);
+
         OnAfterAttack?.Invoke(energyCost);
         OnAttackSuccess?.Invoke();
     }
-
+    
     private void SpawnArrow(GameObject ArrowPrefab)
     {
         Vector3 mousePosition = Input.mousePosition;

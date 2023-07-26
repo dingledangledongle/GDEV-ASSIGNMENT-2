@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class MaterialAction : MonoBehaviour
+public class MaterialAction : MonoBehaviour,IPointerDownHandler,IPointerUpHandler,IDragHandler
 {
     public GameObject MaterialPrefab;
     private GameObject MaterialObject;
@@ -25,7 +26,8 @@ public class MaterialAction : MonoBehaviour
 
         material = this.GetComponent<PlayerMaterial>();
     }
-    private void OnMouseDown()
+
+    public void OnPointerDown(PointerEventData eventData)
     {
         if (MaterialObject == null)
         {
@@ -33,15 +35,15 @@ public class MaterialAction : MonoBehaviour
             MaterialObject.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform);
         }
     }
-
-    private void OnMouseUp()
+ 
+    public void OnPointerUp(PointerEventData eventData)
     {
         if (MaterialObject != null)
         {
             targetedAction = OnMouseRelease?.Invoke();
             if (targetedAction.CompareTag("Attack"))
             {
-                OnAttackEnhance?.Invoke(material.DamageModifier,material.NumOfHits);
+                OnAttackEnhance?.Invoke(material.DamageModifier, material.NumOfHits);
                 OnSuccessEnhance?.Invoke(energyCost);
             }
 
@@ -55,8 +57,7 @@ public class MaterialAction : MonoBehaviour
             Destroy(MaterialObject);
         }
     }
-
-    private void OnMouseDrag()
+    public void OnDrag(PointerEventData eventData)
     {
         if (MaterialObject != null)
         {
