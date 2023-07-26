@@ -473,6 +473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b40edffd837f9b4bb52a4ae2737a4f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FloatText: {fileID: 6465819663112868068, guid: 8d8084f43edc69e43a8c1de9a9177a6b, type: 3}
 --- !u!95 &80357811
 Animator:
   serializedVersion: 4
@@ -8472,10 +8473,10 @@ RectTransform:
   m_Father: {fileID: 1421275850}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 15, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1810708709
 MonoBehaviour:

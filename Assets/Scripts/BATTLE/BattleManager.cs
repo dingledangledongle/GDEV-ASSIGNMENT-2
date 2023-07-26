@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 
 
 public class BattleManager : MonoBehaviour
@@ -7,6 +8,7 @@ public class BattleManager : MonoBehaviour
     private HUDHandler hudHandler;
     private Player player;
     private List<Enemy> enemyList;
+    private bool enemyDone = false;
 
     private void Start()
     {
@@ -23,19 +25,33 @@ public class BattleManager : MonoBehaviour
         DefendAction.OnDefend += UpdateHud;
         MaterialAction.OnAfterEnhance += UpdateHud;
 
-
         StartPlayerState.OnDisplayReady += UpdateHud;
-        StartEnemyState.OnEnemyStart += GetEnemyList;
+        StartEnemyState.OnEnemyFinishAction += IsEnemyDone;
+        StartEnemyState.OnEnemyStart += OnEnemyStart;
         StartEnemyState.OnEnemyAction += UpdateHud;
 
         Player.OnPlayerDamageTaken += UpdateHud;
         setupBattle();
     }
 
- 
-    private List<Enemy> GetEnemyList()
+    private void OnEnemyStart()
     {
-        return enemyList;
+        enemyDone = false;
+        StartCoroutine(PerformEnemyActions());
+    }
+    private bool IsEnemyDone()
+    {
+        Debug.Log(enemyDone);
+        return enemyDone;
+    }
+    private IEnumerator PerformEnemyActions()
+    {
+        foreach (Enemy enemy in enemyList)
+        {
+            enemy.PerformAction();
+            yield return new WaitForSeconds(1);
+        }
+        enemyDone = true;
     }
     private void setupBattle()
     {

@@ -9,7 +9,7 @@ public class EndEnemyState : BattleState
         //PERFORM ACTION AT END OF ENEMY TURN
         OnEnemyEnd?.Invoke();
 
-        //Debug.Log("enemy end");
+        Debug.Log("enemy end");
         //Move to player's turn
         battle.SwitchState(battle.StartPlayerState);
 

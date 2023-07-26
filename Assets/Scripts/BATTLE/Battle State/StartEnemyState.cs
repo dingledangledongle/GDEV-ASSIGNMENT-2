@@ -1,27 +1,30 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 public class StartEnemyState : BattleState
 {
     public static event Action OnEnterEnemyStart;
-    public static event Func<List<Enemy>> OnEnemyStart;
+    public static event Action OnEnemyStart;
     public static event Action OnEnemyAction;
+    public static event Func<bool> OnEnemyFinishAction;
     
-    List<Enemy> enemyList;
     public override void OnEnterState(BattleStateManager battle)
     {
         Debug.Log("enemy start");
 
         //PERFORM ACTION AT START OF ENEMY TURN
-        enemyList = OnEnemyStart?.Invoke();
+        battle.StartCoroutine(ExecuteActions(battle));
+    }
 
-        foreach (Enemy enemy in enemyList)
-        {
-            enemy.PerformAction();
-           
-        }
+    private IEnumerator ExecuteActions(BattleStateManager battle)
+    {
+        OnEnterEnemyStart.Invoke();
+        OnEnemyStart?.Invoke();
         OnEnemyAction?.Invoke();
+        yield return new WaitUntil(OnEnemyFinishAction);
         //MOVE TO END TURN
         battle.SwitchState(battle.EndEnemyState);
     }
+
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using System.Collections;
 
 public class Player : MonoBehaviour
 {
@@ -27,6 +29,7 @@ public class Player : MonoBehaviour
     private DamageType damage;
     private Animator animator;
     private Dictionary<string, int> materialList;
+    public GameObject FloatText;
     #endregion
 
     public static event Action OnPlayerDamageTaken;
@@ -94,6 +97,12 @@ public class Player : MonoBehaviour
         }
         return false;
     }
+    private void ShowFloatingText(string text)
+    {
+        Vector3 spawnPos = new(transform.position.x, transform.position.y + 10);
+        GameObject floatText = Instantiate(FloatText, spawnPos, Quaternion.identity, transform.Find("Canvas"));
+        floatText.GetComponent<TMP_Text>().text = text;
+    }
     #region Damage Calculation
     private void TakeDamage(DamageType damage)
     {
@@ -108,7 +117,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            CalculateHealthDamage(damage);
+            StartCoroutine(CalculateHealthDamage(damage));
             animator.Play("HeroKnight_Hurt");
 
         }
@@ -139,16 +148,18 @@ public class Player : MonoBehaviour
         return outstandingDmg;
     }
 
-    private void CalculateHealthDamage(DamageType damage)
+    private IEnumerator CalculateHealthDamage(DamageType damage)
     {
         for (int i = 0; i < damage.NumberOfHits; i++)
         {
             ReduceHealth(damage.DamagePerHit);
+            yield return new WaitForSeconds(0.5f);
         }
     }
     private void ReduceHealth(float dmgTaken)
     {
         currentHP = Math.Max(currentHP - dmgTaken, 0);
+        ShowFloatingText(dmgTaken.ToString());
     }
     #endregion
    

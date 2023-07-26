@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 using TMPro;
+using System.Collections;
+
 
 public class Enemy : MonoBehaviour
 {
@@ -72,7 +74,8 @@ public class Enemy : MonoBehaviour
 
     private void ShowFloatingText(string text)
     {
-        GameObject floatText = Instantiate(FloatText, transform.position, Quaternion.identity, transform.Find("Canvas"));
+        Vector3 spawnPos = new(transform.position.x, transform.position.y + 10);
+        GameObject floatText = Instantiate(FloatText,spawnPos, Quaternion.identity, transform.Find("Canvas"));
         floatText.GetComponent<TMP_Text>().text = text;
     }
     #region Damage Calculation
@@ -89,7 +92,7 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            CalculateHealthDamage(damage);
+            StartCoroutine(CalculateHealthDamage(damage));
         }
 
         CheckDeath();
@@ -115,15 +118,15 @@ public class Enemy : MonoBehaviour
         {
             isShielded = false;
         }
-        ShowFloatingText(dmgTaken.ToString());
         return outstandingDmg;
     }
 
-    private void CalculateHealthDamage(DamageType damage)
+    private IEnumerator CalculateHealthDamage(DamageType damage)
     {
         for (int i = 0; i < damage.NumberOfHits; i++)
         {
             ReduceHealth(damage.DamagePerHit);
+            yield return new WaitForSeconds(0.5f);
         }
     }
     private void ReduceHealth(float dmgTaken)
