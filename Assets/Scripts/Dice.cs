@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class Dice : MonoBehaviour
 {
     public Texture[] textureList;
     public AudioSource diceReadySFX;
     public AudioSource diceRollSFX;
+    public AudioSource diceCollideDiceSFX;
     private Rigidbody rigidBody;
     private Vector3 gravity = new Vector3(0, 0, 20f);
     private bool hasLanded = false;
@@ -36,7 +36,12 @@ public class Dice : MonoBehaviour
     {
         if (collision.transform.CompareTag("Floor"))
         {
-            diceRollSFX.Play();
+            PlayDiceRollSFX();
+        }
+
+        if (collision.transform.CompareTag("Dice"))
+        {
+            PlayDiceCollideSFX();
         }
     }
 
@@ -117,5 +122,24 @@ public class Dice : MonoBehaviour
                 meshRenderer.materials[2].mainTexture = textureList[result];
                 break;
         }
+    }
+
+    private void PlayDiceRollSFX()
+    {
+        if (!diceRollSFX.isPlaying)
+        {
+            diceRollSFX.Play();
+        }
+    }
+    public void PlayDiceCollideSFX()
+    {
+        if (!diceCollideDiceSFX.isPlaying)
+        {
+            diceCollideDiceSFX.Play();
+        }
+    }
+
+    private void SimulatePhysics()
+    {
     }
 }
