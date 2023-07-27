@@ -283,7 +283,7 @@ public class MapGenerator : MonoBehaviour
         List<Node> connectedNodes = graph.GetConnected(source.Id);
         foreach (Node node in connectedNodes)
         {
-            Vector3 linePosition = new Vector3(0, 0, 20);    //start point of the edge
+            Vector3 linePosition = new Vector3(0, 0, 500);    //start point of the edge
             GameObject lineObject = Instantiate(linePrefab, linePosition, Quaternion.identity); //spawn an instance of the edge
             Vector3[] linePath = { source.Position, node.Position };    //start point and end point of the edge
             lineObject.GetComponent<LineRenderer>().SetPositions(linePath); //setting the start and end

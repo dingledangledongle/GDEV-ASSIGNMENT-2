@@ -18,6 +18,8 @@ TagManager:
   - Craft
   - Tile
   - Intent
+  - Dice
+  - Floor
   layers:
   - Default
   - TransparentFX

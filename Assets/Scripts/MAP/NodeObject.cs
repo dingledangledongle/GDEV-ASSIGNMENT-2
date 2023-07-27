@@ -11,10 +11,10 @@ public class NodeObject : MonoBehaviour, IPointerDownHandler,IPointerEnterHandle
     private Image image;
     private Animator animator;
 
-    private bool circleUpdate = false;
     private float circleSpeed = 0.1f;
     private Color disableColor = new Color(0, 0, 0, 0.6f);
     private Color enableColor = new Color(0, 0, 0, 1f);
+    private bool activated = false;
 
     public static event Action<Node> OnClick;
     public void OnPointerDown(PointerEventData eventData)
@@ -24,6 +24,8 @@ public class NodeObject : MonoBehaviour, IPointerDownHandler,IPointerEnterHandle
             Debug.Log("ID : " + Node.Id + " Encounter : " + Node.EncounterType + " DEPTH : " + Node.Depth);
             StartCoroutine(CircleNode());
             animator.Play("NoAnim");
+            activated = true;
+            Node.IsAccesible = false;
             OnClick?.Invoke(Node); //DISABLES OTHER NODES IN THE SAME DEPTH
 
         }
@@ -36,7 +38,7 @@ public class NodeObject : MonoBehaviour, IPointerDownHandler,IPointerEnterHandle
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (!Node.IsAccesible)
+        if (!Node.IsAccesible && !activated)
         {
             image.color = disableColor;
 
@@ -49,13 +51,7 @@ public class NodeObject : MonoBehaviour, IPointerDownHandler,IPointerEnterHandle
         animator = this.gameObject.GetComponent<Animator>();
         image = this.gameObject.GetComponent<Image>();
     }
-    private void Update()
-    {
-        if (circleUpdate)
-        {
-            CircleNode();
-        }
-    }
+
     public void MakeAccessible()
     {
         Node.IsAccesible = true;
@@ -98,7 +94,6 @@ public class NodeObject : MonoBehaviour, IPointerDownHandler,IPointerEnterHandle
 
     private IEnumerator CircleNode()
     {
-        Debug.Log("Circling now...");
         Image circle = this.transform.Find("ink-swirl").GetComponent<Image>();
 
         for (float i = 0; i < 1; i+= circleSpeed)
