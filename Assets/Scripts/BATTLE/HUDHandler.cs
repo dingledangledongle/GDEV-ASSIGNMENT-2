@@ -35,6 +35,12 @@ public class HUDHandler
             //setting intent
             float dmgPerHit = enemy.CurrentMove.DamageNum;
             int numOfHits = enemy.CurrentMove.NumHit;
+            if (enemy.IsDead)
+            {
+                EnemyIntent.enabled = false;
+                EnemyDamage.enabled = false;
+
+            }
             if (enemy.CurrentMove.MoveType.Equals(Move.Type.ATTACK))
             {
                 EnemyDamage.text = dmgPerHit.ToString() + "x" + numOfHits.ToString();

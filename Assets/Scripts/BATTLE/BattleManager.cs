@@ -82,8 +82,10 @@ public class BattleManager : MonoBehaviour
     {
         foreach (Enemy enemy in enemyList)
         {
-            enemy.PerformAction();
-            yield return new WaitForSeconds(1);
+            if (!enemy.IsDead) {
+                enemy.PerformAction();
+                yield return new WaitForSeconds(1);
+            }
         }
         enemyDone = true;
     }

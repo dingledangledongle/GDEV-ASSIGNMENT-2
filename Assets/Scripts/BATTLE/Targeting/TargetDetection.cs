@@ -8,7 +8,7 @@ public class TargetDetection : MonoBehaviour
     {
         // When the arrow hits the enemy's collider, it will enable the target box that was inactive before.
         // It also sets the target variable to the enemy object it collided with.
-        if (collision.gameObject.CompareTag("Enemy"))
+        if (collision.gameObject.CompareTag("Enemy") && collision.gameObject.GetComponent<Enemy>().IsTargetable)
         {
             collision.gameObject.transform.Find("Canvas/Target").GetComponent<SpriteRenderer>().enabled = true;
             target = collision.gameObject.GetComponent<Enemy>();

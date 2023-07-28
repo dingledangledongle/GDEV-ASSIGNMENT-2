@@ -6,20 +6,28 @@ using System.Collections;
 
 public class Enemy : MonoBehaviour
 {
-    public GameObject FloatText;
     public float maxHP;
     private float currentHP;
     private float currentDef;
     private bool isShielded = false;
+    private bool isTargetable = true;
+    private bool isDead = false;
+
+    
     private EnemyMoves moveSet;
     private Move currentMove;
-    
+    public AudioSource defendSFX;
+    public GameObject FloatText;
+    private Animator animator;
+
+    //events
     public static event Action<DamageType> OnEnemyAttack;
 
     private void Awake()
     {
         currentHP = maxHP;
         moveSet = this.gameObject.GetComponent<EnemyMoves>();
+        animator = this.gameObject.GetComponent<Animator>();
 
         //EVENTS
         StartPlayerState.OnPlayerStart += GetIntent;
@@ -33,7 +41,10 @@ public class Enemy : MonoBehaviour
         StartEnemyState.OnEnterEnemyStart -= TurnStart;
 
     }
-
+    private void PlayAttackAnimation()
+    {
+        animator.Play("Attack");
+    }
     private void GetIntent()
     {
         currentMove = moveSet.GetMove();
@@ -44,6 +55,7 @@ public class Enemy : MonoBehaviour
         {
             case Move.Type.ATTACK:
                 OnEnemyAttack?.Invoke(currentMove.Damage);
+                PlayAttackAnimation();
                 break;
             case Move.Type.DEFEND:
                 Defend(currentMove.ShieldAmt);
@@ -61,7 +73,8 @@ public class Enemy : MonoBehaviour
     private void Defend(float def) {
         currentDef += def;
         isShielded = true;
-        Debug.Log("DEFEND : " + def);
+        defendSFX.Play();
+        animator.Play("Defend");
     }
 
     private void CheckDeath()
@@ -69,6 +82,8 @@ public class Enemy : MonoBehaviour
         if (currentHP <= 0)
         {
             //play death animation
+            isTargetable = false;
+            isDead = true;
         }
     }
 
@@ -173,6 +188,21 @@ public class Enemy : MonoBehaviour
         get
         {
             return isShielded;
+        }
+    }
+
+    public bool IsTargetable
+    {
+        get
+        {
+            return isTargetable;
+        }
+    }
+    public bool IsDead
+    {
+        get
+        {
+            return isDead;
         }
     }
 
