@@ -14,7 +14,7 @@ public class Dice : MonoBehaviour
     private Vector3 gravity = new Vector3(0, 0, 80f);
     private bool hasLanded = false;
     private float currentRollTime = 0f;
-    private float maxRollingTime = 10f;
+    private float maxRollingTime = 6f;
     private Vector3 initialSpawn;
     private string material;
     #endregion

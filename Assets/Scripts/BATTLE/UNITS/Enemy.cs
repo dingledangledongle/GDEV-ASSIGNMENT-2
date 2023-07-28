@@ -82,6 +82,7 @@ public class Enemy : MonoBehaviour
         if (currentHP <= 0)
         {
             //play death animation
+            animator.Play("Death");
             isTargetable = false;
             isDead = true;
         }
