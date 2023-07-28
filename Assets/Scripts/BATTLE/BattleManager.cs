@@ -11,7 +11,7 @@ public class BattleManager : MonoBehaviour
     private List<Enemy> enemyList;
     private bool enemyDone = false;
 
-    private void Start()
+    private void Awake()
     {
         hudHandler = new();
         enemyList = new();
@@ -23,7 +23,7 @@ public class BattleManager : MonoBehaviour
         }
 
         AttackAction.OnAttackSuccess += UpdateHud;
-        DefendAction.OnDefend += UpdateHud;
+        DefendAction.OnUpdateHud += UpdateHud;
         MaterialAction.OnAfterEnhance += UpdateHud;
 
         //START PLAYER EVENTS
@@ -36,14 +36,36 @@ public class BattleManager : MonoBehaviour
 
         //PLAYER EVENTS
         Player.OnPlayerDamageTaken += UpdateHud;
+    }
+
+    private void OnDestroy()
+    {
+        AttackAction.OnAttackSuccess -= UpdateHud;
+        DefendAction.OnDefend -= UpdateHud;
+        MaterialAction.OnAfterEnhance -= UpdateHud;
+
+        //START PLAYER EVENTS
+        StartPlayerState.OnPlayerStart -= RollDice;
+        StartPlayerState.OnDisplayReady -= UpdateHud;
+        //START ENEMY EVENTS
+        StartEnemyState.OnEnemyStart -= OnEnemyStart;
+        StartEnemyState.OnEnemyFinishAction -= IsEnemyDone;
+        StartEnemyState.OnEnemyAction -= UpdateHud;
+
+        //PLAYER EVENTS
+        Player.OnPlayerDamageTaken -= UpdateHud;
+    }
+    private void Start()
+    {
         setupBattle();
+
     }
 
     private void RollDice()
     {
         Debug.Log("rolling dice");
         Vector3 spawnPos = new(transform.position.x, transform.position.y +18, transform.position.z - 100);
-        GameObject diceBox = Instantiate(diceBoxPrefab, spawnPos,Quaternion.identity);
+        GameObject diceBox = Instantiate(diceBoxPrefab, GameObject.Find("Canvas").transform,false);
     }
 
     #region ENEMY FUNCTIONS

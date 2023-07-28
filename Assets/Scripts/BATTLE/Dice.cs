@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 public class Dice : MonoBehaviour
 {
+    //GOT THIS CODE FROM https://www.youtube.com/watch?v=9CTJRSCkG_k
+    //ADJUSTED TO FIT MY GAME
     #region VARIABLES
     public Texture[] textureList;
     public AudioSource diceReadySFX;

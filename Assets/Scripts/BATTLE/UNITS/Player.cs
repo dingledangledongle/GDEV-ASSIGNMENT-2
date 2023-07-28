@@ -47,19 +47,24 @@ public class Player : MonoBehaviour
         StartPlayerState.OnPlayerStart += TurnStart;
         EndPlayerState.OnPlayerEnd += TurnEnd;
 
-        // ATTACK / DEF ACTION
+        // ATTACK
         AttackAction.OnTargetGet += GetDamage;
+        AttackAction.BeforeAttack += IsEnoughEnergy;
         AttackAction.OnAfterAttack += ReduceCurrentEnergy;
         AttackAction.OnAttackSuccess += ResetValues;
         AttackAction.OnAttackSuccess += PlayAttackAnim;
+
+        //DEF
         DefendAction.OnDefend += Defend;
         DefendAction.OnDefend += PlayDefendAnim;
         DefendAction.OnAfterDef += ReduceCurrentEnergy;
+        DefendAction.BeforeDefend += IsEnoughEnergy;
 
         // MATERIAL ACTION
         MaterialAction.OnAttackEnhance += ModifyDamage;
         MaterialAction.OnDefEnhance += ModifyDefense;
         MaterialAction.OnSuccessEnhance += ReduceCurrentEnergy;
+        MaterialAction.BeforeAction += IsEnoughEnergy;
 
         //ENEMY EVENTS
         Enemy.OnEnemyAttack += TakeDamage;
@@ -68,7 +73,41 @@ public class Player : MonoBehaviour
         DiceHandler.OnDiceBoxSpawn += GetNumberOfDice;
         #endregion
     }
-  
+
+    private void OnDestroy()
+    {
+        // TURN EVENTS
+        StartPlayerState.OnPlayerStart -= TurnStart;
+        EndPlayerState.OnPlayerEnd -= TurnEnd;
+
+        // ATTACK
+        AttackAction.OnTargetGet -= GetDamage;
+        AttackAction.OnAfterAttack -= ReduceCurrentEnergy;
+        AttackAction.OnAttackSuccess-= ResetValues;
+        AttackAction.OnAttackSuccess -= PlayAttackAnim;
+        AttackAction.BeforeAttack -= IsEnoughEnergy;
+
+        //DEF
+        DefendAction.OnDefend -= Defend;
+        DefendAction.OnDefend-= PlayDefendAnim;
+        DefendAction.OnAfterDef -= ReduceCurrentEnergy;
+        DefendAction.BeforeDefend -= IsEnoughEnergy;
+
+
+        // MATERIAL ACTION
+        MaterialAction.OnAttackEnhance -= ModifyDamage;
+        MaterialAction.OnDefEnhance -= ModifyDefense;
+        MaterialAction.OnSuccessEnhance -= ReduceCurrentEnergy;
+        MaterialAction.BeforeAction -= IsEnoughEnergy;
+
+
+        //ENEMY EVENTS
+        Enemy.OnEnemyAttack -= TakeDamage;
+
+        //DICE EVENTS
+        DiceHandler.OnDiceBoxSpawn -= GetNumberOfDice;
+    }
+
     private void Defend()
     {
         this.isShielded = true;
@@ -90,6 +129,15 @@ public class Player : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    private bool IsEnoughEnergy(int cost)
+    {
+        if(currentEnergy < cost)
+        {
+            return false;
+        }
+        return true;
     }
 
     private int GetNumberOfDice()
@@ -190,6 +238,7 @@ public class Player : MonoBehaviour
     {
         damage.NumberOfHits = numOfHits;
         damage.DamagePerHit += modifier;
+        Debug.Log(damage.NumberOfHits + "x" + damage.DamagePerHit);
     }
 
     private void ModifyDefense(float modifier)

@@ -9,32 +9,45 @@ public class DiceHandler : MonoBehaviour
     public GameObject dicePrefab;
 
     private int numOfDice;
-    private List<Dice> diceList = new();
+    private List<Dice> diceList;
     //EVENTS
     public static event Func<int> OnDiceBoxSpawn;//Player.GetNumberOfDice()
     public static event Func<Dictionary<string,int>> OnAllDiceLanded; //MaterialAction.UpdateMaterialList()
     public static event Action OnMaterialListUpdated;
-    private void Start()
+    private void Awake()
     {
+        diceList = new();
+
+        //EVENTS SUBSCRIBING
         StartPlayerState.OnDiceFinish += IsAllDiceStationary;
         StartPlayerState.OnMaterialListUpdate += UpdateMaterialList;
+        MaterialAction.OnUpdateMaterialUI += DestroyThis;
+
         numOfDice = OnDiceBoxSpawn.Invoke();
         SpawnDice();
     }
 
+    private void OnDestroy()
+    {
+        StartPlayerState.OnDiceFinish -= IsAllDiceStationary;
+        StartPlayerState.OnMaterialListUpdate -= UpdateMaterialList;
+        MaterialAction.OnUpdateMaterialUI -= DestroyThis;
+    }
+
     private void SpawnDice()
     {
-        Vector3 spawnPos = new(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z - 100);
+        
+        Vector3 spawnPos = new(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z -20);
         for (int i = 0; i < numOfDice; i++)
         {
-            GameObject dice = Instantiate(dicePrefab,spawnPos,Quaternion.identity) ;
+            GameObject dice = Instantiate(dicePrefab, this.transform.Find("Wall/SpawnPosition")) ;
+            //dice.transform.parent = this.transform.Find("Wall/SpawnPosition");
             diceList.Add(dice.GetComponent<Dice>());
         }
     }
 
     private bool IsAllDiceStationary()
     {
-        Debug.Log("checking dice stationary");
         int confirmed = 0;
         foreach (Dice dice in diceList)
         {
@@ -53,8 +66,6 @@ public class DiceHandler : MonoBehaviour
 
     private void UpdateMaterialList()
     {
-        Debug.Log("DICEHANDLER updateLIST");
-
         Dictionary<string, int> matList = OnAllDiceLanded.Invoke();
         foreach (Dice dice in diceList)
         {
@@ -64,4 +75,8 @@ public class DiceHandler : MonoBehaviour
     }
 
 
+    private void DestroyThis()
+    {
+        Destroy(gameObject);
+    }
 }

@@ -20,6 +20,7 @@ TagManager:
   - Intent
   - Dice
   - Floor
+  - DiceBox
   layers:
   - Default
   - TransparentFX

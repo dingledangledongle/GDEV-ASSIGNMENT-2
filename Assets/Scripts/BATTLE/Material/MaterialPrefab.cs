@@ -12,6 +12,12 @@ public class MaterialPrefab : MonoBehaviour
         MaterialAction.OnMouseRelease += GetAction;
         SetSprite();
     }
+
+    private void OnDestroy()
+    {
+        MaterialAction.OnMouseRelease -= GetAction;
+
+    }
     public void UpdatePosition()
     {
         Vector3 mousePosition = Input.mousePosition;

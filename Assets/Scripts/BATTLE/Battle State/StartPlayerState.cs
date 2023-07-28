@@ -13,16 +13,15 @@ public class StartPlayerState : BattleState
         //PERFORM ACTIONS AT START OF PLAYER'S TURN
         
         Debug.Log("player turn start");
+        
         battle.StartCoroutine(StartPlayerTurn());
     }
 
     private IEnumerator StartPlayerTurn()
     {
-        Debug.Log("startigggg");
         OnPlayerStart?.Invoke();
         OnDisplayReady?.Invoke();
         yield return new WaitUntil(OnDiceFinish);
-        Debug.Log("DICE FINSIHED");
         OnMaterialListUpdate.Invoke();
     }
 }

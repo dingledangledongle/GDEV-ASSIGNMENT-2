@@ -7,25 +7,38 @@ public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler
     private GameObject arrowObject;
     private TargetDetection targetDetection;
     private int energyCost = 1;
+    public AudioSource deniedSFX;
+    public AudioSource attackSFX;
 
     //EVENTS
-    public static event Func<DamageType> OnTargetGet;
-    public static event Action<int> OnAfterAttack;
-    public static event Action OnAttackSuccess;
+    public static event Func<DamageType> OnTargetGet; // Player.GetDamage();
+    public static event Func<int,bool> BeforeAttack; // Player.IsEnoughEnergy()
+    public static event Action<int> OnAfterAttack; // Player.ReduceCurrentEnergy();
+    public static event Action OnAttackSuccess; // Player.ResetValues() , Player.PlayAttackAnim(), BattleManager.UpdateHud()
 
     public void OnPointerDown(PointerEventData data) {
         SpawnArrow(ArrowPrefab);
     }
     public void OnPointerUp(PointerEventData data) {
-        if (arrowObject != null)
+        if (BeforeAttack.Invoke(energyCost))
         {
-            if (targetDetection.isTargetSelected())
+            if (arrowObject != null)
             {
-                Enemy target = targetDetection.GetTarget();
-                PerformAttackAction(target);
+                if (targetDetection.isTargetSelected())
+                {
+                    Enemy target = targetDetection.GetTarget();
+                    attackSFX.Play();
+                    PerformAttackAction(target);
+                }
+                Destroy(arrowObject);
             }
+        }
+        else
+        {
+            deniedSFX.Play();
             Destroy(arrowObject);
         }
+        
     }
 
     public void OnDrag(PointerEventData data)
