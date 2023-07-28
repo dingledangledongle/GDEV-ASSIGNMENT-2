@@ -7,8 +7,8 @@ using System.Collections;
 public class Player : MonoBehaviour
 {
     #region VARIABLES
-    // MAP VARIABLES
-    private int currentNode;
+    //DICE VARIABLES
+    private int numOfDice = 6;
 
     //HEALTH + SHIELD VARAIBLES
     private float maxHP = 100f;
@@ -28,10 +28,10 @@ public class Player : MonoBehaviour
 
     private DamageType damage;
     private Animator animator;
-    private Dictionary<string, int> materialList;
     public GameObject FloatText;
     public GameObject SlashEffect;
-
+    public AudioSource SlashSFX;
+    public AudioSource BlockSFX;
     #endregion
 
     public static event Action OnPlayerDamageTaken;
@@ -40,7 +40,6 @@ public class Player : MonoBehaviour
         currentHP = this.maxHP;
         currentDefValue = baseDefValue;
         animator = this.gameObject.GetComponent<Animator>();
-        materialList = new();
         damage = new(baseDmg,baseNumberOfHits);
 
         #region Event Subscribing
@@ -64,6 +63,9 @@ public class Player : MonoBehaviour
 
         //ENEMY EVENTS
         Enemy.OnEnemyAttack += TakeDamage;
+
+        //DICE EVENTS
+        DiceHandler.OnDiceBoxSpawn += GetNumberOfDice;
         #endregion
     }
   
@@ -80,16 +82,6 @@ public class Player : MonoBehaviour
             currentEnergy -= energyCost;
         }
     }
-
-    private void PlayAttackAnim()
-    {
-        animator.Play("HeroKnight_Attack1");
-    }
-    private void PlayDefendAnim()
-    {
-        animator.Play("HeroKnight_IdleBlock");
-    }
-
     private bool CheckPlayerDeath()
     {
         if (currentHP <= 0)
@@ -99,18 +91,36 @@ public class Player : MonoBehaviour
         }
         return false;
     }
+
+    private int GetNumberOfDice()
+    {
+        return numOfDice;
+    }
+
+    #region VISUAL + SOUND FX   
+    private void PlayAttackAnim()
+    {
+        animator.Play("HeroKnight_Attack1");
+    }
+    private void PlayDefendAnim()
+    {
+        animator.Play("HeroKnight_IdleBlock");
+    }
     private void ShowFloatingText(string text)
     {
         Vector3 spawnPos = new(transform.position.x, transform.position.y + 10);
-        GameObject floatText = Instantiate(SlashEffect, spawnPos, Quaternion.identity);
+        GameObject floatText = Instantiate(FloatText, spawnPos, Quaternion.identity, transform.Find("Canvas"));
         floatText.GetComponent<TMP_Text>().text = text;
     }
 
     private void ShowSlashEffect()
     {
-        Vector3 spawnPos = new(transform.position.x, transform.position.y);
-        Instantiate(FloatText, spawnPos, Quaternion.identity, transform.Find("Canvas"));
+        Vector3 spawnPos = new(transform.position.x, transform.position.y + 10);
+        SlashSFX.Play();
+        Instantiate(SlashEffect, spawnPos, Quaternion.identity);
     }
+    #endregion
+
     #region Damage Calculation
     private void TakeDamage(DamageType damage)
     {
@@ -142,6 +152,7 @@ public class Player : MonoBehaviour
             {
                 return outstandingDmg;
             }
+
         }
         return 0;
     }
@@ -149,10 +160,12 @@ public class Player : MonoBehaviour
     {
         float outstandingDmg = Math.Max(dmgTaken - currentDef, 0);
         currentDef = Math.Max(currentDef - dmgTaken, 0);
-        if (currentDef < 0)
+        if (currentDef <= 0)
         {
             isShielded = false;
         }
+        BlockSFX.Play();
+
         return outstandingDmg;
     }
 
@@ -185,6 +198,7 @@ public class Player : MonoBehaviour
     }
     #endregion
 
+
     #region Turn Actions
     private void TurnStart()
     {
@@ -214,20 +228,16 @@ public class Player : MonoBehaviour
 
     #endregion
 
-    private int GetCurrentNode()
-    {
-        return currentNode;
-    }
-
-    #region GETTER / SETTER\
-    public int CurrentNode
+    #region GETTER / SETTER
+    public int NumberOfDice
     {
         get
         {
-            return currentNode;
+            return numOfDice;
         }
-        set {
-            currentNode = value;
+        set
+        {
+            numOfDice = value;
         }
     }
     public float CurrentHP

@@ -5,6 +5,7 @@ using System.Collections;
 
 public class BattleManager : MonoBehaviour
 {
+    public GameObject diceBoxPrefab;
     private HUDHandler hudHandler;
     private Player player;
     private List<Enemy> enemyList;
@@ -25,15 +26,27 @@ public class BattleManager : MonoBehaviour
         DefendAction.OnDefend += UpdateHud;
         MaterialAction.OnAfterEnhance += UpdateHud;
 
+        //START PLAYER EVENTS
+        StartPlayerState.OnPlayerStart += RollDice;
         StartPlayerState.OnDisplayReady += UpdateHud;
-        StartEnemyState.OnEnemyFinishAction += IsEnemyDone;
+        //START ENEMY EVENTS
         StartEnemyState.OnEnemyStart += OnEnemyStart;
+        StartEnemyState.OnEnemyFinishAction += IsEnemyDone;
         StartEnemyState.OnEnemyAction += UpdateHud;
 
+        //PLAYER EVENTS
         Player.OnPlayerDamageTaken += UpdateHud;
         setupBattle();
     }
 
+    private void RollDice()
+    {
+        Debug.Log("rolling dice");
+        Vector3 spawnPos = new(transform.position.x, transform.position.y +18, transform.position.z - 100);
+        GameObject diceBox = Instantiate(diceBoxPrefab, spawnPos,Quaternion.identity);
+    }
+
+    #region ENEMY FUNCTIONS
     private void OnEnemyStart()
     {
         enemyDone = false;
@@ -41,7 +54,6 @@ public class BattleManager : MonoBehaviour
     }
     private bool IsEnemyDone()
     {
-        Debug.Log(enemyDone);
         return enemyDone;
     }
     private IEnumerator PerformEnemyActions()
@@ -53,6 +65,7 @@ public class BattleManager : MonoBehaviour
         }
         enemyDone = true;
     }
+    #endregion
     private void setupBattle()
     {
         //START FIRST TURN STUFF
