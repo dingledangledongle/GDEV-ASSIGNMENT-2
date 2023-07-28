@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WolfMoves : EnemyMoves
+public class WispMoves : EnemyMoves
 {
     private Dictionary<Move, float> MoveSet;
     private Move move1;
@@ -13,9 +13,10 @@ public class WolfMoves : EnemyMoves
     private void Awake()
     {
         // MOVES
-        move1 = new(Move.Type.ATTACK, 3f, 2);
-        move2 = new(Move.Type.ATTACK, 8f, 1);
-        move3 = new(Move.Type.DEFEND, 0f, 0, 6f);
+        move1 = new(Move.Type.ATTACK, 5f, 1);
+        move2 = new(Move.Type.ATTACK, 2f, 2);
+        move3 = new(Move.Type.DEFEND, 0f, 0, 10f);
+        move4 = new(Move.Type.ATTACK, 2f, 5);
         //move4 = new(Move.Type.DEBUFF);
 
         //WEIGHTED PROBABILITY
@@ -23,7 +24,8 @@ public class WolfMoves : EnemyMoves
         {
             { move1, 1f },
             { move2, 2f },
-            { move3, 1f }
+            { move3, 1f },
+            { move4,0.5f}
         };
     }
 
