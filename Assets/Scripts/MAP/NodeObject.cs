@@ -16,7 +16,7 @@ public class NodeObject : MonoBehaviour, IPointerDownHandler,IPointerEnterHandle
     private Color enableColor = new Color(0, 0, 0, 1f);
     private bool activated = false;
 
-    public static event Action<Node> OnClick;
+    public static event Action<Node> OnClick; // MapGenerator.DisableNodesInDepth(), MapGenerator.ConnectedNodeAccessible() //EncounterManager.
     public void OnPointerDown(PointerEventData eventData)
     {
         if (Node != null && Node.IsAccesible)
@@ -28,12 +28,12 @@ public class NodeObject : MonoBehaviour, IPointerDownHandler,IPointerEnterHandle
             Node.IsAccesible = false;
             OnClick?.Invoke(Node); //DISABLES OTHER NODES IN THE SAME DEPTH
 
+            //START THE ENCOUNTER
         }
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
         image.color = enableColor;
-
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -44,7 +44,6 @@ public class NodeObject : MonoBehaviour, IPointerDownHandler,IPointerEnterHandle
 
         }
     }
-
 
     private void Awake()
     {
@@ -60,8 +59,6 @@ public class NodeObject : MonoBehaviour, IPointerDownHandler,IPointerEnterHandle
     }
     public void MakeInAccessible()
     {
-        Debug.Log("not access" + Node.Id);
-
         Node.IsAccesible = false;
         animator.Play("NoAnim");
         image.color = disableColor;

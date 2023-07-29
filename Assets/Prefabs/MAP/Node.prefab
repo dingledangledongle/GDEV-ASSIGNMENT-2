@@ -143,7 +143,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.8, y: 0.8}
   m_EdgeRadius: 0
 --- !u!114 &1320146468871534593
 MonoBehaviour:
@@ -229,7 +229,7 @@ SortingGroup:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4380469970867035881}
-  m_Enabled: 0
+  m_Enabled: 1
   m_SortingLayerID: 811732813
   m_SortingLayer: 3
   m_SortingOrder: 2

@@ -4,11 +4,11 @@ using UnityEngine;
 using System.Collections;
 public class StartEnemyState : BattleState
 {
-    public static event Action OnEnterEnemyStart;
-    public static event Action OnEnemyStart;
-    public static event Action OnEnemyAction;
-    public static event Func<bool> OnEnemyFinishAction;
-    
+    public static event Action OnEnterEnemyStart; //Enemy.TurnStart()
+    public static event Action OnEnemyStart; //BattleManager.OnEnemyStart()
+    public static event Action OnEnemyAction; //BattleManager.UpdateHud()
+    public static event Func<bool> OnEnemyFinishAction; //BattleManager.IsEnemyDone()
+
     public override void OnEnterState(BattleStateManager battle)
     {
         Debug.Log("enemy start");
@@ -23,6 +23,7 @@ public class StartEnemyState : BattleState
         OnEnemyStart?.Invoke();
         OnEnemyAction?.Invoke();
         yield return new WaitUntil(OnEnemyFinishAction);
+        yield return new WaitForSeconds(0.5f);
         //MOVE TO END TURN
         battle.SwitchState(battle.EndEnemyState);
     }

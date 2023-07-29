@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour
     private bool isShielded = false;
     private bool isTargetable = true;
     private bool isDead = false;
+    private bool isFinished = false;
 
     
     private EnemyMoves moveSet;
@@ -105,12 +106,12 @@ public class Enemy : MonoBehaviour
             {
                 ReduceHealth(outstandingDmg);
             }
+            isFinished = true;
         }
         else
         {
             StartCoroutine(CalculateHealthDamage(damage));
         }
-
         CheckDeath();
     }
 
@@ -142,14 +143,33 @@ public class Enemy : MonoBehaviour
         for (int i = 0; i < damage.NumberOfHits; i++)
         {
             ReduceHealth(damage.DamagePerHit);
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.1f);
+            
         }
+        isFinished = true;
     }
     private void ReduceHealth(float dmgTaken)
     {
         currentHP = Math.Max(currentHP - dmgTaken, 0);
         ShowFloatingText(dmgTaken.ToString());
     }
+
+    public bool IsDamageCalculationDone()
+    {
+        return isFinished;
+    }
+    public bool IsFinished
+    {
+        get
+        {
+            return isFinished;
+        }
+        set
+        {
+            isFinished = value;
+        }
+    }
+
     #endregion
 
     private void TurnStart()

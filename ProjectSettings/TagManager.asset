@@ -5,7 +5,6 @@ TagManager:
   serializedVersion: 2
   tags:
   - Canvas
-  - MapScroll
   - Graph
   - Node
   - Enemy
@@ -21,6 +20,8 @@ TagManager:
   - Dice
   - Floor
   - DiceBox
+  - Battle
+  - Map
   layers:
   - Default
   - TransparentFX

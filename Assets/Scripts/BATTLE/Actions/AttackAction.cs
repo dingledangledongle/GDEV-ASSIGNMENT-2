@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Collections;
 public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler,IDragHandler
 {
     public GameObject ArrowPrefab;
@@ -14,7 +15,8 @@ public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler
     public static event Func<DamageType> OnTargetGet; // Player.GetDamage();
     public static event Func<int,bool> BeforeAttack; // Player.IsEnoughEnergy()
     public static event Action<int> OnAfterAttack; // Player.ReduceCurrentEnergy();
-    public static event Action OnAttackSuccess; // Player.ResetValues() , Player.PlayAttackAnim(), BattleManager.UpdateHud()
+    public static event Action OnAttackAnim; //Player.PlayAttackAnim()
+    public static event Action OnAttackSuccess; // Player.ResetValues(), BattleManager.UpdateHud()
 
     public void OnPointerDown(PointerEventData data) {
         SpawnArrow(ArrowPrefab);
@@ -28,7 +30,7 @@ public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler
                 {
                     Enemy target = targetDetection.GetTarget();
                     attackSFX.Play();
-                    PerformAttackAction(target);
+                    StartCoroutine(PerformAttackAction(target));
                 }
                 Destroy(arrowObject);
             }
@@ -47,12 +49,14 @@ public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler
     }
 
 
-    private void PerformAttackAction(Enemy target)
+    private IEnumerator PerformAttackAction(Enemy target)
     {
         DamageType damage = OnTargetGet?.Invoke();
         target.TakeDamage(damage);
-
         OnAfterAttack?.Invoke(energyCost);
+        OnAttackAnim?.Invoke();
+        yield return new WaitUntil(target.IsDamageCalculationDone);
+        target.IsFinished = false;
         OnAttackSuccess?.Invoke();
     }
     

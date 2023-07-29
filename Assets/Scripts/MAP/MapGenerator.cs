@@ -31,12 +31,30 @@ public class MapGenerator : MonoBehaviour
     public GameObject nodePrefab;
     public GameObject linePrefab;
     public RandSeedManager randSeed;
+    public GameObject[] EnemyList;
+    public GameObject[] EliteList;
     //VISUAL
     private int edgeCount = 0;
     //...
     #endregion
 
-    /* This method is called at the moment when the player presses start game.
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+        NodeObject.OnClick += DisableNodesInDepth ;
+        NodeObject.OnClick += ConnectedNodeAccessible;
+        GenerateGraph();
+    }
+
+    private void OnDestroy()
+    {
+        NodeObject.OnClick -= DisableNodesInDepth;
+        NodeObject.OnClick -= ConnectedNodeAccessible;
+    }
+
+    private void GenerateGraph()
+    {
+        /* This method is called at the moment when the player presses start game.
      * Firstly, it destroyed any map that is existing and it also generates a seed for the random number generator
      *
      * Then, it goes through a for-loop whereby each loop is a depth on the graph.
@@ -56,17 +74,7 @@ public class MapGenerator : MonoBehaviour
      * 
      * After all the requirements are met, it will display the graph for the player to interact with.
      */
-
-    private void Awake()
-    {
-        NodeObject.OnClick += DisableNodesInDepth ;
-        NodeObject.OnClick += ConnectedNodeAccessible;
-
-    }
-    public void GenerateGraph()
-    {
         graph = new Graph();
-        DestroyMap();   //destroying the current map if one exists
         randSeed.GenerateSeed();    //randomising the seed
 
         GenerateNodes();
@@ -79,11 +87,14 @@ public class MapGenerator : MonoBehaviour
         }
         if (graph.NodeList.Count < 35)
         {
-            //GenerateGraph();
+            
+            GenerateGraph();
         }
-        DisplayGraph();
-
-
+        else
+        {
+            DisplayGraph();
+        }
+        
     }
     /*
      *  TYPE COMMENT HERE
@@ -98,7 +109,6 @@ public class MapGenerator : MonoBehaviour
                 continue;
             }
             string nodeObjName = "Node" + nodeInDepth.Id.ToString();
-            Debug.Log(nodeObjName);
             GameObject.Find(nodeObjName).GetComponent<NodeObject>().MakeInAccessible();
         }
     }
@@ -131,11 +141,31 @@ public class MapGenerator : MonoBehaviour
             node.EncounterType = ProbabilityManager.SelectWeightedItem(encounterProbability);
         }
     }
-    /*
-     *  TYPE COMMENT HERE
-     */
-    private void AddMasterNode()
+
+    private void AssignEnemies(Node node)
     {
+        int numOfEnemies = Random.Range(0, 3);
+        if(node.EncounterType == Node.Encounter.ENEMY)
+        {
+            for (int i = 0; i < numOfEnemies; i++)
+            {
+                int randomIndex = Random.Range(0, EnemyList.Length);
+                
+                node.AddEnemy(EnemyList[randomIndex]);
+            }
+        }else if(node.EncounterType == Node.Encounter.ELITE)
+        {
+            int randomIndex = Random.Range(0, EliteList.Length);
+            node.AddEnemy(EliteList[randomIndex]);
+        }
+        
+    }
+
+    private void AddMasterNode()
+    {/* This method goes after GenerateNodes().
+      * It generates the boss node located at the the highest depth and aligns itself to the middle of the x-axis
+     *  It connects all the nodes from the preceding depth to it
+     */
         List<Node> precedingNodes = graph.GetNodesInDepth(depthCount - 1);
         float x = 0;
         float y = precedingNodes[0].Position.y + spacing;
@@ -203,12 +233,11 @@ public class MapGenerator : MonoBehaviour
                 {
                     GetRandomEncounter(node);
                 }
-
+                AssignEnemies(node);
                 graph.AddNode(node);
             }
         }
     }
-
     private void GenerateEdges()
     {
         for (int depth = 0; depth < depthCount; depth++) //run through each depth
@@ -243,12 +272,11 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
-
-    /*
-     *  TYPE COMMENT HERE
-     */
     private void DisplayGraph()
     {
+     /*
+     *  Goes through the list of node and display the nodes
+     */
         edgeCount = 0;
         foreach (Node node in graph.NodeList)
         {
@@ -256,12 +284,15 @@ public class MapGenerator : MonoBehaviour
             DisplayLines(node);
         }
     }
-
-    /*
-     *  TYPE COMMENT HERE
-     */
     private void DisplayNodes(Node node)
     {
+     /* Spawn a node game object using the node prefab assigned
+     *  The position of the node is already part of the Node attribute.
+     *  It then assigns that node object the id of the node and set its color to visually indicate
+     *  that its inaccessible
+     *  It then sets the sprites accordingly to the assigned encounter
+     *  Then, at depth 0 , it makes all the node there accessible for the players to have a starting point
+     */ 
         GameObject nodeGameObject = Instantiate(nodePrefab, node.Position, Quaternion.identity);    //spawn an instance of a node
         nodeGameObject.transform.SetParent(GameObject.FindGameObjectWithTag("Graph").transform, false); //setting the parent as "Graph"
         nodeGameObject.name = "Node" + node.Id.ToString();
@@ -302,14 +333,18 @@ public class MapGenerator : MonoBehaviour
     /*
      *  TYPE COMMENT HERE
      */
-    private void DestroyMap()
+    private void DestroyMap() // not exactly working as intended...
     {
-        GameObject[] tilesArray = GameObject.FindGameObjectsWithTag("Node");    //get list of objects in the map
+
+        GameObject[] tilesArray = GameObject.FindGameObjectsWithTag("Node"); //get list of objects in the map
+        Debug.Log("tilesArray length : " + tilesArray.Length);
         foreach (var item in tilesArray)
         {
             Destroy(item);
+            Debug.Log("destroyed " +item.name);
         }
-
+        graph = null;
+        Debug.Log("Map destroyed");
         //VISUAL
         edgeCount = 0;
         //...
@@ -347,14 +382,14 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    /*
+    private bool CheckIfNodeIsConnected(Node node)
+    {
+        /*
      *  This method check the specific node that was passed into it
      *  if it has any edges connecting it to the nodes in the next depth or previous depth
      *  
      *  If there are either no connection to the next or previous depth, it will return false
      */
-    private bool CheckIfNodeIsConnected(Node node)
-    {
         List<Node> connectedNodes = graph.GetConnected(node.Id);
 
         List<Node> nodesInPrevDepth = graph.GetNodesInDepth(node.Depth - 1);
@@ -384,12 +419,12 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    /*
+    private bool CheckForDanglingNodes()  //check if there are any remainingnodes
+    {
+        /*
      *  Checks through the entire list of nodes if any of them is not connected, returning true if any
      *  of the node is not connected
      */
-    private bool CheckForDanglingNodes()  //check if there are any remainingnodes
-    {
         foreach (Node node in graph.NodeList)
         {
             bool Connected = CheckIfNodeIsConnected(node);

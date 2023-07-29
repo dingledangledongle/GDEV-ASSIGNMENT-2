@@ -34,7 +34,7 @@ public class Player : MonoBehaviour
     public AudioSource BlockSFX;
     #endregion
 
-    public static event Action OnPlayerDamageTaken;
+    public static event Action OnPlayerDamageTaken; //BattleManager.UpdateHud()
     private void Start()
     {
         currentHP = this.maxHP;
@@ -52,7 +52,7 @@ public class Player : MonoBehaviour
         AttackAction.BeforeAttack += IsEnoughEnergy;
         AttackAction.OnAfterAttack += ReduceCurrentEnergy;
         AttackAction.OnAttackSuccess += ResetValues;
-        AttackAction.OnAttackSuccess += PlayAttackAnim;
+        AttackAction.OnAttackAnim += PlayAttackAnim;
 
         //DEF
         DefendAction.OnDefend += Defend;
@@ -222,7 +222,7 @@ public class Player : MonoBehaviour
         for (int i = 0; i < damage.NumberOfHits; i++)
         {
             ReduceHealth(damage.DamagePerHit);
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.1f);
         }
     }
     private void ReduceHealth(float dmgTaken)
@@ -238,7 +238,6 @@ public class Player : MonoBehaviour
     {
         damage.NumberOfHits = numOfHits;
         damage.DamagePerHit += modifier;
-        Debug.Log(damage.NumberOfHits + "x" + damage.DamagePerHit);
     }
 
     private void ModifyDefense(float modifier)
