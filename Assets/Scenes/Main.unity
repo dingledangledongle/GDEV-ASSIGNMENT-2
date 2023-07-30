@@ -4264,9 +4264,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2086707278}
         m_TargetAssemblyTypeName: MapHandler, Assembly-CSharp
-        m_MethodName: OpenMap
+        m_MethodName: ToggleMap
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9409,7 +9409,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2018106067
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9662,7 +9662,9 @@ MonoBehaviour:
   - {fileID: 5538589139130927406, guid: dbb3721198cc9234188c61b1f72f4d93, type: 3}
   - {fileID: 5538589139130927406, guid: f0b3e82be6bad7b45a9ba81e45b2a881, type: 3}
   EliteList:
-  - {fileID: 5538589139130927406, guid: f0b3e82be6bad7b45a9ba81e45b2a881, type: 3}
+  - {fileID: 5538589139130927406, guid: cb27508c60010e94b98f57155134abb8, type: 3}
+  - {fileID: 5538589139130927406, guid: ae1c53da67bd5374f883f5b2d5817fff, type: 3}
+  - {fileID: 5538589139130927406, guid: 99f9b9888e204b34fa844aa40a625f7e, type: 3}
 --- !u!114 &2086707276
 MonoBehaviour:
   m_ObjectHideFlags: 0

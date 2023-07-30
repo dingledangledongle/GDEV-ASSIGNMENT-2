@@ -6,6 +6,7 @@ public class StartBattleState : BattleState
     public override void OnEnterState(BattleStateManager battle)
     {
         //PERFORM ACTION AT START OF BATTLE
+        //LOAD RELICS EFFECT
         OnBattleStart?.Invoke();
 
         Debug.Log("BATTLE START");

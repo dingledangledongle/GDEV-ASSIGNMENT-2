@@ -74,7 +74,6 @@ public class MaterialAction : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
         if (MaterialObject != null)
         {
             targetedAction = OnMouseRelease?.Invoke();
-            Debug.Log(materialList[this.name]);
 
             if (targetedAction != null 
                 && BeforeAction.Invoke(energyCost) 

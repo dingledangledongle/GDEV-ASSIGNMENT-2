@@ -9,20 +9,31 @@ public class MapHandler : MonoBehaviour
     public GameObject map;
     private void Awake()
     {
-        NodeObject.OnClick += StartEncounter;
+        EncounterManager.OnMapToggle += ToggleMap;
     }
-    public void OpenMap()
+
+    private void OpenMap()
+    {
+        //play animation?
+
+        map.SetActive(true);
+    }
+
+    private void CloseMap()
+    {
+        //play animation?
+
+        map.SetActive(false);
+    }
+    public void ToggleMap()
     {
         if (map.active)
         {
-            map.SetActive(false);
+            CloseMap();
         }else if (!map.active)
         {
-            map.SetActive(true);
+            OpenMap();
         }
     }
-    private void StartEncounter(Node node)
-    {
-        
-    }
+
 }

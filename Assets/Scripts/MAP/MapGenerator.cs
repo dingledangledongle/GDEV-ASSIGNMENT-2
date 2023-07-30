@@ -33,6 +33,7 @@ public class MapGenerator : MonoBehaviour
     public RandSeedManager randSeed;
     public GameObject[] EnemyList;
     public GameObject[] EliteList;
+    public GameObject[] BossList;
     //VISUAL
     private int edgeCount = 0;
     //...
@@ -144,7 +145,7 @@ public class MapGenerator : MonoBehaviour
 
     private void AssignEnemies(Node node)
     {
-        int numOfEnemies = Random.Range(0, 3);
+        int numOfEnemies = Random.Range(1, 3);
         if(node.EncounterType == Node.Encounter.ENEMY)
         {
             for (int i = 0; i < numOfEnemies; i++)
@@ -157,6 +158,10 @@ public class MapGenerator : MonoBehaviour
         {
             int randomIndex = Random.Range(0, EliteList.Length);
             node.AddEnemy(EliteList[randomIndex]);
+        }else if(node.EncounterType == Node.Encounter.BOSS)
+        {
+            int randomIndex = Random.Range(0, BossList.Length);
+            node.AddEnemy(BossList[randomIndex]);
         }
         
     }

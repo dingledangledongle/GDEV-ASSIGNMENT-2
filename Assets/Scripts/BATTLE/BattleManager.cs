@@ -14,20 +14,19 @@ public class BattleManager : MonoBehaviour
     private void Awake()
     {
         hudHandler = new();
-        enemyList = new();
 
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        foreach (GameObject enemyObject in GameObject.FindGameObjectsWithTag("Enemy"))
-        {
-            enemyList.Add(enemyObject.GetComponent<Enemy>());
-        }
+
+        //ENCOUNTER EVENTS
+        EncounterManager.OnBattleStart += SetupBattle;
 
         AttackAction.OnAttackSuccess += UpdateHud;
         DefendAction.OnUpdateHud += UpdateHud;
         MaterialAction.OnAfterEnhance += UpdateHud;
-
+        //START BATTLE EVENTS
+        StartBattleState.OnBattleStart += SetupBattle;
         //START PLAYER EVENTS
-        StartPlayerState.OnPlayerStart += RollDice;
+        StartPlayerState.OnRollDice += RollDice;
         StartPlayerState.OnDisplayReady += UpdateHud;
         //START ENEMY EVENTS
         StartEnemyState.OnEnemyStart += OnEnemyStart;
@@ -36,16 +35,21 @@ public class BattleManager : MonoBehaviour
 
         //PLAYER EVENTS
         Player.OnPlayerDamageTaken += UpdateHud;
+
+        //ENEMY EVENTS
+        Enemy.OnEnemyDeath += CheckAllEnemyDeath;
+        Enemy.OnActionFinished += UpdateHud;
     }
 
     private void OnDestroy()
     {
+        EncounterManager.OnBattleStart -= SetupBattle;
         AttackAction.OnAttackSuccess -= UpdateHud;
         DefendAction.OnDefend -= UpdateHud;
         MaterialAction.OnAfterEnhance -= UpdateHud;
 
         //START PLAYER EVENTS
-        StartPlayerState.OnPlayerStart -= RollDice;
+        StartPlayerState.OnRollDice -= RollDice;
         StartPlayerState.OnDisplayReady -= UpdateHud;
         //START ENEMY EVENTS
         StartEnemyState.OnEnemyStart -= OnEnemyStart;
@@ -54,11 +58,10 @@ public class BattleManager : MonoBehaviour
 
         //PLAYER EVENTS
         Player.OnPlayerDamageTaken -= UpdateHud;
-    }
-    private void Start()
-    {
-        setupBattle();
 
+        //ENEMY EVENTS
+        Enemy.OnEnemyDeath -= CheckAllEnemyDeath;
+        Enemy.OnActionFinished -= UpdateHud;
     }
 
     private void RollDice()
@@ -89,11 +92,26 @@ public class BattleManager : MonoBehaviour
         }
         enemyDone = true;
     }
-    #endregion
-    private void setupBattle()
+
+    private bool CheckAllEnemyDeath()
     {
-        //START FIRST TURN STUFF
-        UpdateHud();
+        foreach (Enemy enemy in enemyList)
+        {
+            if (!enemy.IsDead)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    #endregion
+    private void SetupBattle()
+    {
+        enemyList = new();
+        foreach (GameObject enemyObject in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            enemyList.Add(enemyObject.GetComponent<Enemy>());
+        }
     }
 
     private void UpdateHud()

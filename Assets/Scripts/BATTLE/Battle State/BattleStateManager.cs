@@ -4,6 +4,7 @@ using TMPro;
 public class BattleStateManager : MonoBehaviour
 {
     public BattleState CurrentState;
+    public NoBattleState NoBattleState = new();
     public StartBattleState StartBattleState = new();
     public StartPlayerState StartPlayerState = new();
     public EndPlayerState EndPlayerState = new();
@@ -11,6 +12,20 @@ public class BattleStateManager : MonoBehaviour
     public EndEnemyState EndEnemyState = new();
     public EndBattleState EndBattleState = new();
     public int NumberOfTurns = 1;
+
+    private void Awake()
+    {
+        EncounterManager.OnBattleState += StartBattle;
+        Enemy.OnAllEnemyDeath += EndBattle;
+    }
+    private void StartBattle()
+    {
+        SwitchState(StartBattleState);
+    }
+    private void EndBattle()
+    {
+        SwitchState(EndBattleState);
+    }
     public void SwitchState(BattleState state)
     {
         CurrentState = state;
@@ -27,15 +42,13 @@ public class BattleStateManager : MonoBehaviour
 
     private void Start()
     {
-        SwitchState(StartBattleState);
-
+        SwitchState(NoBattleState);
     }
 
     public void UpdateTurnNumber()
     {
        
         NumberOfTurns += 1;
-        Debug.Log(NumberOfTurns);
         GameObject.Find("TurnText").GetComponent<TMP_Text>().text = "TURN "+ NumberOfTurns.ToString();
     }
 

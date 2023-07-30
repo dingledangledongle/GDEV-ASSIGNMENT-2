@@ -23,6 +23,9 @@ public class Enemy : MonoBehaviour
 
     //events
     public static event Action<DamageType> OnEnemyAttack;
+    public static event Func<bool> OnEnemyDeath; // BattleManager.CheckAllEnemyDeath()
+    public static event Action OnAllEnemyDeath; //BattleStateManager.EndBattle()
+    public static event Action OnActionFinished; //BattleStateManager.UpdateHud()
 
     private void Awake()
     {
@@ -33,6 +36,7 @@ public class Enemy : MonoBehaviour
         //EVENTS
         StartPlayerState.OnPlayerStart += GetIntent;
         StartEnemyState.OnEnterEnemyStart += TurnStart;
+        AttackAction.OnCheckAllEnemyDeath += CheckDeath;
         Debug.Log(this.gameObject.name + " INITIALIZED");
     }
 
@@ -68,7 +72,7 @@ public class Enemy : MonoBehaviour
                 Debug.Log("ENEMY : BUFF");
                 break;
         }
-        
+        OnActionFinished?.Invoke();
     }
 
     private void Defend(float def) {
@@ -80,12 +84,22 @@ public class Enemy : MonoBehaviour
 
     private void CheckDeath()
     {
+        Debug.Log("checking death...");
+        Debug.Log(currentHP);
         if (currentHP <= 0)
         {
+            Debug.Log("THIS ENEMY DEAD");
             //play death animation
             animator.Play("Death");
             isTargetable = false;
             isDead = true;
+        }
+
+        //check all other enemy is dead
+        if (OnEnemyDeath.Invoke())
+        {
+            Debug.Log("all dead");
+            OnAllEnemyDeath?.Invoke();
         }
     }
 
@@ -112,7 +126,6 @@ public class Enemy : MonoBehaviour
         {
             StartCoroutine(CalculateHealthDamage(damage));
         }
-        CheckDeath();
     }
 
     private float CalculateShieldDamage(DamageType damage)
@@ -158,18 +171,6 @@ public class Enemy : MonoBehaviour
     {
         return isFinished;
     }
-    public bool IsFinished
-    {
-        get
-        {
-            return isFinished;
-        }
-        set
-        {
-            isFinished = value;
-        }
-    }
-
     #endregion
 
     private void TurnStart()
@@ -182,6 +183,17 @@ public class Enemy : MonoBehaviour
     }
 
     #region GETTER / SETTER
+    public bool IsFinished
+    {
+        get
+        {
+            return isFinished;
+        }
+        set
+        {
+            isFinished = value;
+        }
+    }
     public float CurrentHP
     {
         get

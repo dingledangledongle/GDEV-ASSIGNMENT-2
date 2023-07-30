@@ -17,7 +17,8 @@ public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler
     public static event Action<int> OnAfterAttack; // Player.ReduceCurrentEnergy();
     public static event Action OnAttackAnim; //Player.PlayAttackAnim()
     public static event Action OnAttackSuccess; // Player.ResetValues(), BattleManager.UpdateHud()
-
+    public static event Action OnCheckAllEnemyDeath; //Enemy.CheckDeath()
+    
     public void OnPointerDown(PointerEventData data) {
         SpawnArrow(ArrowPrefab);
     }
@@ -58,6 +59,7 @@ public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler
         yield return new WaitUntil(target.IsDamageCalculationDone);
         target.IsFinished = false;
         OnAttackSuccess?.Invoke();
+        OnCheckAllEnemyDeath?.Invoke();
     }
     
     private void SpawnArrow(GameObject ArrowPrefab)
