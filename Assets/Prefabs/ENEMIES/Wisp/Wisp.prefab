@@ -739,6 +739,7 @@ MonoBehaviour:
   maxHP: 35
   defendSFX: {fileID: 6607165896006819177}
   FloatText: {fileID: 6465819663112868068, guid: 8d8084f43edc69e43a8c1de9a9177a6b, type: 3}
+  animator: {fileID: 4223599216483450837}
 --- !u!222 &5538589139130927404
 CanvasRenderer:
   m_ObjectHideFlags: 0

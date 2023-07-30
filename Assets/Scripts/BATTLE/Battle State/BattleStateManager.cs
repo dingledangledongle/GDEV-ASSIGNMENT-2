@@ -20,6 +20,7 @@ public class BattleStateManager : MonoBehaviour
     }
     private void StartBattle()
     {
+        NumberOfTurns = 1;
         SwitchState(StartBattleState);
     }
     private void EndBattle()

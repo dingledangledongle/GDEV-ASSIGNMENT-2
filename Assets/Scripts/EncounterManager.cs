@@ -29,12 +29,18 @@ public class EncounterManager : MonoBehaviour
                 OnBattleStart?.Invoke();
                 break;
             case Node.Encounter.ELITE:
+                StartBattle(node);
+                OnBattleStart?.Invoke();
                 break;
             case Node.Encounter.EVENT:
                 break;
             case Node.Encounter.REST:
                 break;
             case Node.Encounter.CHEST:
+                break;
+            case Node.Encounter.BOSS:
+                StartBattle(node);
+                OnBattleStart?.Invoke();
                 break;
         }
 

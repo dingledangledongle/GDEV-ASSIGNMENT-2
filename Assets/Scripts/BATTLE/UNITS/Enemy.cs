@@ -30,18 +30,20 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         currentHP = maxHP;
-        moveSet = this.gameObject.GetComponent<EnemyMoves>();
-        animator = this.gameObject.GetComponent<Animator>();
+        moveSet = gameObject.GetComponent<EnemyMoves>();
+        animator = gameObject.GetComponent<Animator>();
 
         //EVENTS
         StartPlayerState.OnPlayerStart += GetIntent;
         StartEnemyState.OnEnterEnemyStart += TurnStart;
         AttackAction.OnCheckAllEnemyDeath += CheckDeath;
-        Debug.Log(this.gameObject.name + " INITIALIZED");
+        Debug.Log(gameObject.name + " INITIALIZED");
     }
 
     private void OnDestroy()
     {
+        AttackAction.OnCheckAllEnemyDeath -= CheckDeath;
+
         StartPlayerState.OnPlayerStart -= GetIntent;
         StartEnemyState.OnEnterEnemyStart -= TurnStart;
 
@@ -85,14 +87,12 @@ public class Enemy : MonoBehaviour
     private void CheckDeath()
     {
         Debug.Log("checking death...");
-        Debug.Log(currentHP);
         if (currentHP <= 0)
         {
-            Debug.Log("THIS ENEMY DEAD");
             //play death animation
-            animator.Play("Death");
             isTargetable = false;
             isDead = true;
+            animator.Play("Death");
         }
 
         //check all other enemy is dead
