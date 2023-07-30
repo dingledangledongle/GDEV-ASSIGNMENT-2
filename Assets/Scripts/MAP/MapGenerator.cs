@@ -161,7 +161,7 @@ public class MapGenerator : MonoBehaviour
         }else if(node.EncounterType == Node.Encounter.BOSS)
         {
             int randomIndex = Random.Range(0, BossList.Length);
-            node.AddEnemy(BossList[randomIndex]);
+            node.AddEnemy(BossList[0]);
         }
         
     }
