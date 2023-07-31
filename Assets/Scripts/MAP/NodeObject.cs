@@ -1,8 +1,8 @@
-using UnityEngine;
-using UnityEngine.UI;
 using System;
-using UnityEngine.EventSystems;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class NodeObject : MonoBehaviour, IPointerDownHandler,IPointerEnterHandler,IPointerExitHandler
 {
@@ -16,7 +16,6 @@ public class NodeObject : MonoBehaviour, IPointerDownHandler,IPointerEnterHandle
     private Color enableColor = new Color(0, 0, 0, 1f);
     private bool activated = false;
 
-    public static event Action<Node> OnClick; // MapGenerator.DisableNodesInDepth(), MapGenerator.ConnectedNodeAccessible() //EncounterManager.
     public void OnPointerDown(PointerEventData eventData)
     {
         if (Node != null && Node.IsAccesible)
@@ -26,9 +25,7 @@ public class NodeObject : MonoBehaviour, IPointerDownHandler,IPointerEnterHandle
             animator.Play("NoAnim");
             activated = true;
             Node.IsAccesible = false;
-            OnClick?.Invoke(Node); //DISABLES OTHER NODES IN THE SAME DEPTH
-
-            //START THE ENCOUNTER
+            EventManager.Instance.TriggerEvent<Node>(Event.MAP_NODE_CLICKED, Node);//DISABLES OTHER NODES IN THE SAME DEPTH
         }
     }
     public void OnPointerEnter(PointerEventData eventData)
@@ -49,6 +46,7 @@ public class NodeObject : MonoBehaviour, IPointerDownHandler,IPointerEnterHandle
     {
         animator = this.gameObject.GetComponent<Animator>();
         image = this.gameObject.GetComponent<Image>();
+
     }
 
     public void MakeAccessible()

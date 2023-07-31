@@ -1,7 +1,7 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using System.Collections;
 public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler,IDragHandler
 {
     public GameObject ArrowPrefab;
@@ -10,20 +10,18 @@ public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler
     private int energyCost = 1;
     public AudioSource deniedSFX;
     public AudioSource attackSFX;
+    private EventManager eventManager = EventManager.Instance;
 
     //EVENTS
-    public static event Func<DamageType> OnTargetGet; // Player.GetDamage();
-    public static event Func<int,bool> BeforeAttack; // Player.IsEnoughEnergy()
-    public static event Action<int> OnAfterAttack; // Player.ReduceCurrentEnergy();
-    public static event Action OnAttackAnim; //Player.PlayAttackAnim()
-    public static event Action OnAttackSuccess; // Player.ResetValues(), BattleManager.UpdateHud()
     public static event Action OnCheckAllEnemyDeath; //Enemy.CheckDeath()
-    
+
     public void OnPointerDown(PointerEventData data) {
         SpawnArrow(ArrowPrefab);
     }
+
     public void OnPointerUp(PointerEventData data) {
-        if (BeforeAttack.Invoke(energyCost))
+        bool EnoughEnergy = eventManager.TriggerEventWithReturnAndArg<int, bool>(Event.PLAYER_CHECK_ENERGY, energyCost);
+        if (EnoughEnergy)
         {
             if (arrowObject != null)
             {
@@ -49,16 +47,15 @@ public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler
         arrowObject.GetComponent<BezierArrow>().GetMousePosition();
     }
 
-
     private IEnumerator PerformAttackAction(Enemy target)
     {
-        DamageType damage = OnTargetGet?.Invoke();
+        DamageType damage = eventManager.TriggerEventWithReturn<DamageType>(Event.PLAYER_GET_DAMAGE);
         target.TakeDamage(damage);
-        OnAfterAttack?.Invoke(energyCost);
-        OnAttackAnim?.Invoke();
+        eventManager.TriggerEvent<int>(Event.PLAYER_REDUCE_ENERGY, energyCost);
+        eventManager.TriggerEvent(Event.PLAYER_ATTACK);
         yield return new WaitUntil(target.IsDamageCalculationDone);
         target.IsFinished = false;
-        OnAttackSuccess?.Invoke();
+        eventManager.TriggerEvent(Event.PLAYER_ATTACK_FINISHED);
         OnCheckAllEnemyDeath?.Invoke();
     }
     

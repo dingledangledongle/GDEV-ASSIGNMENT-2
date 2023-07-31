@@ -1,6 +1,6 @@
 using System;
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 public class EndBattleState : BattleState
 {
     public static event Action OnBattleEnd; //EncounterManager.EndBattle()

@@ -1,11 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System;
+using UnityEngine;
 
 public class EncounterManager : MonoBehaviour
 {
     GameObject[] battleObject;
+    GameObject[] restObject;
+    GameObject[] eventObject;
 
     public static event Action OnBattleStart; //BattleManager.SetupBattle()
     public static event Action OnBattleState; //BattleStateManager.StartBattle()
@@ -15,8 +15,19 @@ public class EncounterManager : MonoBehaviour
         battleObject = GameObject.FindGameObjectsWithTag("Battle");
         SetInactive(battleObject);
 
+        restObject = GameObject.FindGameObjectsWithTag("Rest");
+
+
+        eventObject = GameObject.FindGameObjectsWithTag("Events");
+
         //EVENTS
-        NodeObject.OnClick += StartEncounter;
+        EventManager.Instance.AddListener<Node>(Event.MAP_NODE_CLICKED,StartEncounter);
+        EndBattleState.OnBattleEnd += EndBattle;
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.Instance.RemoveListener<Node>(Event.MAP_NODE_CLICKED, StartEncounter);
         EndBattleState.OnBattleEnd += EndBattle;
     }
     private void StartEncounter(Node node)
@@ -48,12 +59,21 @@ public class EncounterManager : MonoBehaviour
         //CLOSE MAP
     }
     
-
     private void SetInactive(GameObject[] list)
     {
         foreach (GameObject item in list)
         {
             item.SetActive(false);
+        }
+    }
+
+    private void StartRest()
+    {
+        Debug.Log("start rest");
+
+        foreach (GameObject item in restObject)
+        {
+            item.SetActive(true);
         }
     }
 

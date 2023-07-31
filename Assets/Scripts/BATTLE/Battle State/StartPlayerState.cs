@@ -1,6 +1,6 @@
 using System;
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 public class StartPlayerState : BattleState
 {
     public static event Action OnPlayerStart; //Subscribers : Enemy.GetIntent()

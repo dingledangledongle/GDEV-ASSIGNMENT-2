@@ -1,6 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
 
 
 public class BattleManager : MonoBehaviour
@@ -10,6 +10,7 @@ public class BattleManager : MonoBehaviour
     private Player player;
     private List<Enemy> enemyList;
     private bool enemyDone = false;
+    private EventManager eventManager = EventManager.Instance;
 
     private void Awake()
     {
@@ -18,9 +19,11 @@ public class BattleManager : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
 
         //ENCOUNTER EVENTS
-        EncounterManager.OnBattleStart += SetupBattle;
+        eventManager.AddListener(Event.BATTLE_START, SetupBattle);
 
-        AttackAction.OnAttackSuccess += UpdateHud;
+        eventManager.AddListener(Event.PLAYER_ATTACK_FINISHED, UpdateHud);
+
+
         DefendAction.OnUpdateHud += UpdateHud;
         MaterialAction.OnAfterEnhance += UpdateHud;
         //START BATTLE EVENTS
@@ -44,7 +47,6 @@ public class BattleManager : MonoBehaviour
     private void OnDestroy()
     {
         EncounterManager.OnBattleStart -= SetupBattle;
-        AttackAction.OnAttackSuccess -= UpdateHud;
         DefendAction.OnDefend -= UpdateHud;
         MaterialAction.OnAfterEnhance -= UpdateHud;
 

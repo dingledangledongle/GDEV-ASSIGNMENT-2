@@ -42,15 +42,18 @@ public class MapGenerator : MonoBehaviour
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
-        NodeObject.OnClick += DisableNodesInDepth ;
-        NodeObject.OnClick += ConnectedNodeAccessible;
+
+        EventManager.Instance.AddListener<Node>(Event.MAP_NODE_CLICKED, DisableNodesInDepth);
+        EventManager.Instance.AddListener<Node>(Event.MAP_NODE_CLICKED, ConnectedNodeAccessible);
+
         GenerateGraph();
     }
 
     private void OnDestroy()
     {
-        NodeObject.OnClick -= DisableNodesInDepth;
-        NodeObject.OnClick -= ConnectedNodeAccessible;
+        EventManager.Instance.RemoveListener<Node>(Event.MAP_NODE_CLICKED, DisableNodesInDepth);
+        EventManager.Instance.RemoveListener<Node>(Event.MAP_NODE_CLICKED, ConnectedNodeAccessible);
+
     }
 
     private void GenerateGraph()

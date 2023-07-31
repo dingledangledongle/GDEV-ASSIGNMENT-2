@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
 using System.Collections;
+using TMPro;
+using UnityEngine;
 
 public class Player : MonoBehaviour
 {
@@ -26,12 +25,14 @@ public class Player : MonoBehaviour
     private int currentEnergy;
     private int maxEnergy = 3;
 
+    //MISC
     private DamageType damage;
     private Animator animator;
     public GameObject FloatText;
     public GameObject SlashEffect;
     public AudioSource SlashSFX;
     public AudioSource BlockSFX;
+    private EventManager eventManager = EventManager.Instance;
     #endregion
 
     public static event Action OnPlayerDamageTaken; //BattleManager.UpdateHud()
@@ -48,11 +49,11 @@ public class Player : MonoBehaviour
         EndPlayerState.OnPlayerEnd += TurnEnd;
 
         // ATTACK
-        AttackAction.OnTargetGet += GetDamage;
-        AttackAction.BeforeAttack += IsEnoughEnergy;
-        AttackAction.OnAfterAttack += ReduceCurrentEnergy;
-        AttackAction.OnAttackSuccess += ResetValues;
-        AttackAction.OnAttackAnim += PlayAttackAnim;
+        eventManager.AddListenerWithReturn<DamageType>(Event.PLAYER_GET_DAMAGE, GetDamage);
+        eventManager.AddListenerWithReturnAndArg<int, bool>(Event.PLAYER_CHECK_ENERGY,IsEnoughEnergy);
+        eventManager.AddListener<int>(Event.PLAYER_REDUCE_ENERGY, ReduceCurrentEnergy);
+        eventManager.AddListener(Event.PLAYER_ATTACK, PlayAttackAnim);
+        eventManager.AddListener(Event.PLAYER_ATTACK_FINISHED, ResetDamageValues);
 
         //DEF
         DefendAction.OnDefend += Defend;
@@ -79,6 +80,7 @@ public class Player : MonoBehaviour
         Rest.OnUpgradeDefend += UpgradeDefense;
 
         #endregion
+
     }
 
     private void OnDestroy()
@@ -88,11 +90,11 @@ public class Player : MonoBehaviour
         EndPlayerState.OnPlayerEnd -= TurnEnd;
 
         // ATTACK
-        AttackAction.OnTargetGet -= GetDamage;
-        AttackAction.OnAfterAttack -= ReduceCurrentEnergy;
-        AttackAction.OnAttackSuccess-= ResetValues;
-        AttackAction.OnAttackSuccess -= PlayAttackAnim;
-        AttackAction.BeforeAttack -= IsEnoughEnergy;
+        eventManager.RemoveListenerWithReturn<DamageType>(Event.PLAYER_GET_DAMAGE, GetDamage);
+        eventManager.RemoveListenerWithReturnAndArg<int, bool>(Event.PLAYER_CHECK_ENERGY, IsEnoughEnergy);
+        eventManager.RemoveListener<int>(Event.PLAYER_REDUCE_ENERGY, ReduceCurrentEnergy);
+        eventManager.RemoveListener(Event.PLAYER_ATTACK, PlayAttackAnim);
+        eventManager.RemoveListener(Event.PLAYER_ATTACK_FINISHED, ResetDamageValues);
 
         //DEF
         DefendAction.OnDefend -= Defend;
@@ -321,7 +323,7 @@ public class Player : MonoBehaviour
         Debug.Log("player turn end");
     }
 
-    private void ResetValues()
+    private void ResetDamageValues()
     {
         damage.DamagePerHit = baseDmg;
         damage.NumberOfHits = baseNumberOfHits;
