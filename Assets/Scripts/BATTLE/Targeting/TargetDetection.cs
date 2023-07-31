@@ -12,6 +12,7 @@ public class TargetDetection : MonoBehaviour
         {
             collision.gameObject.transform.Find("Canvas/Target").GetComponent<SpriteRenderer>().enabled = true;
             target = collision.gameObject.GetComponent<Enemy>();
+
         }
     }
 
