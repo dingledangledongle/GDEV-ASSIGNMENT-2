@@ -48,10 +48,16 @@ public class Enemy : MonoBehaviour
         StartEnemyState.OnEnterEnemyStart -= TurnStart;
 
     }
+    private void Heal(float healAmt)
+    {
+        currentHP += healAmt;
+    }
+
     private void PlayAttackAnimation()
     {
         animator.Play("Attack");
     }
+
     private void GetIntent()
     {
         currentMove = moveSet.GetMove();

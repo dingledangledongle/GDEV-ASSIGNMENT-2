@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
+
 public class StartEnemyState : BattleState
 {
     public static event Action OnEnterEnemyStart; //Enemy.TurnStart()

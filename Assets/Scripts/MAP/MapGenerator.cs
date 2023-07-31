@@ -182,6 +182,7 @@ public class MapGenerator : MonoBehaviour
         node.Depth = depthCount;
         node.Position = position;
         node.EncounterType = Node.Encounter.BOSS;
+        AssignEnemies(node);
 
         graph.AddNode(node);
 

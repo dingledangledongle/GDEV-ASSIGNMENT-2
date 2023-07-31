@@ -77,10 +77,12 @@ public class BattleManager : MonoBehaviour
         enemyDone = false;
         StartCoroutine(PerformEnemyActions());
     }
+
     private bool IsEnemyDone()
     {
         return enemyDone;
     }
+
     private IEnumerator PerformEnemyActions()
     {
         foreach (Enemy enemy in enemyList)

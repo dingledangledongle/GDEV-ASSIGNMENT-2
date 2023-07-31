@@ -71,6 +71,13 @@ public class Player : MonoBehaviour
 
         //DICE EVENTS
         DiceHandler.OnDiceBoxSpawn += GetNumberOfDice;
+
+        //REST EVENTS
+        Rest.OnRestPressed += Heal;
+        Rest.OnMaxHPGet += GetMaxHP;
+        Rest.OnUpgradeAttack += UpgradeDamage;
+        Rest.OnUpgradeDefend += UpgradeDefense;
+
         #endregion
     }
 
@@ -106,6 +113,23 @@ public class Player : MonoBehaviour
 
         //DICE EVENTS
         DiceHandler.OnDiceBoxSpawn -= GetNumberOfDice;
+
+        //REST EVENTS
+        Rest.OnRestPressed -= Heal;
+        Rest.OnMaxHPGet -= GetMaxHP;
+        Rest.OnUpgradeAttack -= UpgradeDamage;
+        Rest.OnUpgradeDefend -= UpgradeDefense;
+    }
+
+
+    private float GetMaxHP()
+    {
+        return  maxHP;
+    }
+
+    private void Heal(float healAmt)
+    {
+        currentHP += healAmt;
     }
 
     private void Defend()
@@ -233,7 +257,7 @@ public class Player : MonoBehaviour
     }
     #endregion
    
-    #region Damage/Defense Modifying
+    #region MODIFYING VARIABLES
     private void ModifyDamage(float modifier,int numOfHits)
     {
         damage.NumberOfHits = numOfHits;
@@ -243,6 +267,35 @@ public class Player : MonoBehaviour
     private void ModifyDefense(float modifier)
     {
         currentDefValue += modifier;
+    }
+
+    private void UpgradeDefense(float defenseToAdd)
+    {
+        baseDefValue += defenseToAdd;
+    }
+
+    private void UpgradeDamage(float damageToAdd) {
+        baseDmg += damageToAdd;
+    }
+
+    private void UpgradeNumberOfHits(int hitsToAdd)
+    {
+        baseNumberOfHits += hitsToAdd;
+    }
+
+    private void IncreaseMaxHealth(float healthToAdd)
+    {
+        maxHP += healthToAdd;
+    }
+
+    private void IncreaseMaxEnergy(int energyToAdd)
+    {
+        maxEnergy += energyToAdd;
+    }
+
+    private void IncreaseNumOfDice(int diceAdded)
+    {
+        numOfDice += diceAdded;
     }
     #endregion
 
