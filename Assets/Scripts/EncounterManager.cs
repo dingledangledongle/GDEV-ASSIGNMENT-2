@@ -3,31 +3,35 @@ using UnityEngine;
 
 public class EncounterManager : MonoBehaviour
 {
-    GameObject[] battleObject;
-    GameObject[] restObject;
-    GameObject[] eventObject;
+    GameObject[] battleObjects;
+    GameObject[] restObjects;
+    GameObject[] eventObjects;
 
     public static event Action OnBattleStart; //BattleManager.SetupBattle()
     public static event Action OnBattleState; //BattleStateManager.StartBattle()
-    public static event Action OnMapToggle;
+
+    private EventManager eventManager = EventManager.Instance; 
+
     private void Start()
     {
-        battleObject = GameObject.FindGameObjectsWithTag("Battle");
-        SetInactive(battleObject);
+        battleObjects = GameObject.FindGameObjectsWithTag("Battle");
+        SetInactive(battleObjects);
 
-        restObject = GameObject.FindGameObjectsWithTag("Rest");
+        restObjects = GameObject.FindGameObjectsWithTag("Rest");
+        SetInactive(restObjects);
 
-
-        eventObject = GameObject.FindGameObjectsWithTag("Events");
+        eventObjects = GameObject.FindGameObjectsWithTag("Events");
+        SetInactive(eventObjects);
 
         //EVENTS
-        EventManager.Instance.AddListener<Node>(Event.MAP_NODE_CLICKED,StartEncounter);
+        eventManager.AddListener<Node>(Event.MAP_NODE_CLICKED,StartEncounter);
+        eventManager.AddListener(Event.REST_FINISHED, EndRest);
         EndBattleState.OnBattleEnd += EndBattle;
     }
 
     private void OnDestroy()
     {
-        EventManager.Instance.RemoveListener<Node>(Event.MAP_NODE_CLICKED, StartEncounter);
+        eventManager.RemoveListener<Node>(Event.MAP_NODE_CLICKED, StartEncounter);
         EndBattleState.OnBattleEnd += EndBattle;
     }
     private void StartEncounter(Node node)
@@ -39,16 +43,22 @@ public class EncounterManager : MonoBehaviour
                 StartBattle(node);
                 OnBattleStart?.Invoke();
                 break;
+
             case Node.Encounter.ELITE:
                 StartBattle(node);
                 OnBattleStart?.Invoke();
                 break;
+
             case Node.Encounter.EVENT:
                 break;
+
             case Node.Encounter.REST:
+                StartRest(node);
                 break;
+
             case Node.Encounter.CHEST:
                 break;
+
             case Node.Encounter.BOSS:
                 StartBattle(node);
                 OnBattleStart?.Invoke();
@@ -67,22 +77,39 @@ public class EncounterManager : MonoBehaviour
         }
     }
 
-    private void StartRest()
+    #region Rest
+    private void StartRest(Node node)
     {
         Debug.Log("start rest");
-
-        foreach (GameObject item in restObject)
+        //enabling all rest ui
+        foreach (GameObject item in restObjects)
         {
+            Debug.Log(item.name);
             item.SetActive(true);
         }
+
+        //initialize rest event
+        eventManager.TriggerEvent<Node>(Event.REST_INITIALIZE,node);
+        eventManager.TriggerEvent(Event.MAP_NODE_CLICKED);
+        //close map
     }
+
+    private void EndRest()
+    {
+        //DISABLING ALL REST UI
+        SetInactive(restObjects);
+
+        //open map
+        eventManager.TriggerEvent(Event.MAP_NODE_CLICKED);
+    }
+    #endregion
 
     #region BATTLE
     private void StartBattle(Node node)
     {
         Debug.Log("start battle");
         //SET ALL BATTLE-RELATED OBJECTS TO ACTIVE
-        foreach (GameObject item in battleObject)
+        foreach (GameObject item in battleObjects)
         {
             item.SetActive(true);
         }
@@ -97,7 +124,7 @@ public class EncounterManager : MonoBehaviour
         OnBattleState?.Invoke();
 
         //close the map
-        OnMapToggle?.Invoke();
+        eventManager.TriggerEvent(Event.MAP_NODE_CLICKED);
     }
 
     private void EndBattle()
@@ -109,13 +136,14 @@ public class EncounterManager : MonoBehaviour
             Destroy(enemy);
         }
         //hide battle ui
-        foreach (GameObject item in battleObject)
+        foreach (GameObject item in battleObjects)
         {
             item.SetActive(false);
         }
 
         //open map
-        OnMapToggle?.Invoke();
+        eventManager.TriggerEvent(Event.MAP_NODE_CLICKED);
     }
     #endregion
+
 }

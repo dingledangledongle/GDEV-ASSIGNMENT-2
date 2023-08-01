@@ -10,10 +10,12 @@ public class Node
     public Encounter EncounterType { get; set; }
     public bool IsAccesible { get; set; }
     private List<GameObject> enemyList = new();
+
     public void AddEnemy(GameObject enemy)
     {
         enemyList.Add(enemy);
     }
+
     public enum Encounter
     {
         ENEMY,

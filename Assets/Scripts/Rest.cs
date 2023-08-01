@@ -1,35 +1,52 @@
-using System;
 using UnityEngine;
 
 public class Rest : MonoBehaviour
 {
     private float healPercentage = 0.3f;
+    private float amtToUpgrade = 1f;
 
-    public static event Action<float> OnRestPressed;
-    public static event Func<float> OnMaxHPGet;
+    private EventManager eventManager = EventManager.Instance;
+    private Node currentNode;
 
-    public static event Action<float> OnUpgradeAttack;
-    public static event Action<float> OnUpgradeDefend;
+    private void Start()
+    {
+        eventManager.AddListener<Node>(Event.REST_INITIALIZE, InitializeRest);
+    }
 
+    private void OnDestroy()
+    {
+        eventManager.RemoveListener<Node>(Event.REST_INITIALIZE, InitializeRest);
+    }
+
+    private void InitializeRest(Node node)
+    {
+        currentNode = node;
+
+    }
 
     public void HealPlayer()
     {
-        float maxHP = OnMaxHPGet.Invoke();
+        float maxHP = eventManager.TriggerEventWithReturn<float>(Event.REST_HEAL);
         float healthToBeHealed = maxHP * healPercentage;
 
-        OnRestPressed?.Invoke(healthToBeHealed);
+        eventManager.TriggerEvent<float>(Event.REST_HEAL, healthToBeHealed);
+        eventManager.TriggerEvent(Event.REST_FINISHED);
+        
     }
 
     public void UpgradeAttack()
     {
-        OnUpgradeAttack?.Invoke(1f);
+        eventManager.TriggerEvent<float>(Event.REST_UPGRADEATTACK, amtToUpgrade);
+        //eventManager.TriggerEvent(Event.REST_FINISHED);
     }
 
     public void UpgradeDefense()
     {
-        OnUpgradeDefend?.Invoke(1f);
+
+        eventManager.TriggerEvent<float>(Event.REST_UPGRADEDEFEND, amtToUpgrade);
+        //eventManager.TriggerEvent(Event.REST_FINISHED);     
     }
 
-    
-    
+
+
 }

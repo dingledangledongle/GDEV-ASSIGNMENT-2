@@ -4,9 +4,12 @@ public class MapHandler : MonoBehaviour
 {
     public MapGenerator mapGenerator;
     public GameObject map;
+    private EventManager eventManager = EventManager.Instance;
+
     private void Awake()
     {
-        EncounterManager.OnMapToggle += ToggleMap;
+        eventManager.AddListener(Event.MAP_NODE_CLICKED, ToggleMap);
+        
     }
 
     private void OpenMap()
@@ -21,13 +24,14 @@ public class MapHandler : MonoBehaviour
         //play animation?
 
         map.SetActive(false);
+        
     }
     public void ToggleMap()
     {
-        if (map.active)
+        if (map.activeInHierarchy)
         {
             CloseMap();
-        }else if (!map.active)
+        }else if (!map.activeInHierarchy)
         {
             OpenMap();
         }

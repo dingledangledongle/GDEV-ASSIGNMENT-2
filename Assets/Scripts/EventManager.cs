@@ -90,7 +90,6 @@ public class EventManager
             {
                 if(listener is Action<TParam> action)
                 {
-                    Debug.Log("Triggering event<T>");
                     action.Invoke(param);
                 }
             }
@@ -178,14 +177,14 @@ public class EventManager
 }
 public enum Event
 {
-    UPDATE_HUD,
     MAP_NODE_CLICKED,
     BATTLE_START,
-    PLAYER_GET_DAMAGE,
-    PLAYER_CHECK_ENERGY,
-    PLAYER_REDUCE_ENERGY,
     PLAYER_ATTACK,
-    PLAYER_ATTACK_FINISHED
-
+    PLAYER_ATTACK_FINISHED,
+    REST_INITIALIZE,
+    REST_HEAL,
+    REST_UPGRADEATTACK,
+    REST_UPGRADEDEFEND,
+    REST_FINISHED,
 }
 

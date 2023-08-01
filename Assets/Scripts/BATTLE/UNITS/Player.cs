@@ -49,9 +49,9 @@ public class Player : MonoBehaviour
         EndPlayerState.OnPlayerEnd += TurnEnd;
 
         // ATTACK
-        eventManager.AddListenerWithReturn<DamageType>(Event.PLAYER_GET_DAMAGE, GetDamage);
-        eventManager.AddListenerWithReturnAndArg<int, bool>(Event.PLAYER_CHECK_ENERGY,IsEnoughEnergy);
-        eventManager.AddListener<int>(Event.PLAYER_REDUCE_ENERGY, ReduceCurrentEnergy);
+        eventManager.AddListenerWithReturn<DamageType>(Event.PLAYER_ATTACK, GetDamage);
+        eventManager.AddListenerWithReturnAndArg<int, bool>(Event.PLAYER_ATTACK,IsEnoughEnergy);
+        eventManager.AddListener<int>(Event.PLAYER_ATTACK, ReduceCurrentEnergy);
         eventManager.AddListener(Event.PLAYER_ATTACK, PlayAttackAnim);
         eventManager.AddListener(Event.PLAYER_ATTACK_FINISHED, ResetDamageValues);
 
@@ -74,10 +74,11 @@ public class Player : MonoBehaviour
         DiceHandler.OnDiceBoxSpawn += GetNumberOfDice;
 
         //REST EVENTS
-        Rest.OnRestPressed += Heal;
-        Rest.OnMaxHPGet += GetMaxHP;
-        Rest.OnUpgradeAttack += UpgradeDamage;
-        Rest.OnUpgradeDefend += UpgradeDefense;
+        eventManager.AddListener<float>(Event.REST_HEAL, Heal);
+        eventManager.AddListenerWithReturn<float>(Event.REST_HEAL, GetMaxHP);
+        eventManager.AddListener<float>(Event.REST_UPGRADEATTACK, UpgradeDamage);
+        eventManager.AddListener<float>(Event.REST_UPGRADEDEFEND, UpgradeDefense);
+
 
         #endregion
 
@@ -90,9 +91,9 @@ public class Player : MonoBehaviour
         EndPlayerState.OnPlayerEnd -= TurnEnd;
 
         // ATTACK
-        eventManager.RemoveListenerWithReturn<DamageType>(Event.PLAYER_GET_DAMAGE, GetDamage);
-        eventManager.RemoveListenerWithReturnAndArg<int, bool>(Event.PLAYER_CHECK_ENERGY, IsEnoughEnergy);
-        eventManager.RemoveListener<int>(Event.PLAYER_REDUCE_ENERGY, ReduceCurrentEnergy);
+        eventManager.RemoveListenerWithReturn<DamageType>(Event.PLAYER_ATTACK, GetDamage);
+        eventManager.RemoveListenerWithReturnAndArg<int, bool>(Event.PLAYER_ATTACK, IsEnoughEnergy);
+        eventManager.RemoveListener<int>(Event.PLAYER_ATTACK, ReduceCurrentEnergy);
         eventManager.RemoveListener(Event.PLAYER_ATTACK, PlayAttackAnim);
         eventManager.RemoveListener(Event.PLAYER_ATTACK_FINISHED, ResetDamageValues);
 
@@ -117,10 +118,10 @@ public class Player : MonoBehaviour
         DiceHandler.OnDiceBoxSpawn -= GetNumberOfDice;
 
         //REST EVENTS
-        Rest.OnRestPressed -= Heal;
-        Rest.OnMaxHPGet -= GetMaxHP;
-        Rest.OnUpgradeAttack -= UpgradeDamage;
-        Rest.OnUpgradeDefend -= UpgradeDefense;
+        eventManager.RemoveListener<float>(Event.REST_HEAL, Heal);
+        eventManager.RemoveListenerWithReturn<float>(Event.REST_HEAL, GetMaxHP);
+        eventManager.RemoveListener<float>(Event.REST_UPGRADEATTACK, UpgradeDamage);
+        eventManager.RemoveListener<float>(Event.REST_UPGRADEDEFEND, UpgradeDefense);
     }
 
 
@@ -140,6 +141,7 @@ public class Player : MonoBehaviour
         this.currentDef += currentDefValue;
         currentDefValue = baseDefValue;
     }
+
     private void ReduceCurrentEnergy(int energyCost)
     {
         if (currentEnergy != 0)
@@ -147,6 +149,7 @@ public class Player : MonoBehaviour
             currentEnergy -= energyCost;
         }
     }
+
     private bool CheckPlayerDeath()
     {
         if (currentHP <= 0)
@@ -273,10 +276,13 @@ public class Player : MonoBehaviour
 
     private void UpgradeDefense(float defenseToAdd)
     {
+        Debug.Log("defense upgraded : " + defenseToAdd);
         baseDefValue += defenseToAdd;
     }
 
     private void UpgradeDamage(float damageToAdd) {
+        Debug.Log("damage upgraded : " + damageToAdd);
+
         baseDmg += damageToAdd;
     }
 
@@ -300,7 +306,6 @@ public class Player : MonoBehaviour
         numOfDice += diceAdded;
     }
     #endregion
-
 
     #region Turn Actions
     private void TurnStart()
