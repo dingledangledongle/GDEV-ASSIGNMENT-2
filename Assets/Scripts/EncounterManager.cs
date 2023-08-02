@@ -77,6 +77,13 @@ public class EncounterManager : MonoBehaviour
         }
     }
 
+    #region Random Event
+    private void StartRandomEvent(Node node)
+    {
+
+    }
+    #endregion
+
     #region Rest
     private void StartRest(Node node)
     {

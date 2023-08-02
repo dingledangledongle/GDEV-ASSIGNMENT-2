@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 
 public class MapGenerator : MonoBehaviour
@@ -53,7 +54,6 @@ public class MapGenerator : MonoBehaviour
     {
         EventManager.Instance.RemoveListener<Node>(Event.MAP_NODE_CLICKED, DisableNodesInDepth);
         EventManager.Instance.RemoveListener<Node>(Event.MAP_NODE_CLICKED, ConnectedNodeAccessible);
-
     }
 
     private void GenerateGraph()
@@ -100,9 +100,7 @@ public class MapGenerator : MonoBehaviour
         }
         
     }
-    /*
-     *  TYPE COMMENT HERE
-     */
+
     private void DisableNodesInDepth(Node node)
     {
         List<Node> nodesInDepth = graph.GetNodesInDepth(node.Depth);
@@ -116,6 +114,7 @@ public class MapGenerator : MonoBehaviour
             GameObject.Find(nodeObjName).GetComponent<NodeObject>().MakeInAccessible();
         }
     }
+
     private void ConnectedNodeAccessible(Node node) {
 
         List<Node> nodesConnected = graph.GetConnected(node.Id);
@@ -125,6 +124,7 @@ public class MapGenerator : MonoBehaviour
             GameObject.Find(nodeObjName).GetComponent<NodeObject>().MakeAccessible();
         }
     }
+
     private void GetRandomEncounter(Node node)
     {
         //GET WEIGHTED PROBABILITY
@@ -148,25 +148,37 @@ public class MapGenerator : MonoBehaviour
 
     private void AssignEnemies(Node node)
     {
-        int numOfEnemies = Random.Range(1, 3);
+        int numOfEnemies = UnityEngine.Random.Range(1, 3);
         if(node.EncounterType == Node.Encounter.ENEMY)
         {
             for (int i = 0; i < numOfEnemies; i++)
             {
-                int randomIndex = Random.Range(0, EnemyList.Length);
+                int randomIndex = UnityEngine.Random.Range(0, EnemyList.Length);
                 
                 node.AddEnemy(EnemyList[randomIndex]);
             }
         }else if(node.EncounterType == Node.Encounter.ELITE)
         {
-            int randomIndex = Random.Range(0, EliteList.Length);
+            int randomIndex = UnityEngine.Random.Range(0, EliteList.Length);
             node.AddEnemy(EliteList[randomIndex]);
         }else if(node.EncounterType == Node.Encounter.BOSS)
         {
-            int randomIndex = Random.Range(0, BossList.Length);
+            int randomIndex = UnityEngine.Random.Range(0, BossList.Length);
             node.AddEnemy(BossList[0]);
         }
         
+    }
+
+    private void AssignRandomEvent(Node node)
+    {
+        if(node.EncounterType == Node.Encounter.EVENT)
+        {
+            int enumLength = Enum.GetValues(typeof(RandomEvents)).Length;
+            int randIndex = UnityEngine.Random.Range(0, enumLength);
+            RandomEvents randEvent = (RandomEvents)Enum.GetValues(typeof(RandomEvents)).GetValue(randIndex);
+
+            node.RandomEvent = randEvent;
+        }       
     }
 
     private void AddMasterNode()
@@ -198,12 +210,13 @@ public class MapGenerator : MonoBehaviour
             graph.AddEdge(precedingNode.Id, node,edgeCount,edge);
         }
     }
+
     private void GenerateNodes()
     {
         //creating the randomized amount of nodes for each depth
         for (int depth = 0; depth < depthCount; depth++)
         {
-            int nodesPerDepth = Random.Range(minNodePerDepth, maxNodePerDepth);
+            int nodesPerDepth = UnityEngine.Random.Range(minNodePerDepth, maxNodePerDepth);
 
             for (int i = 0; i < nodesPerDepth; i++)
             {
@@ -212,8 +225,8 @@ public class MapGenerator : MonoBehaviour
                 float y = screenOffSetY + depth * spacing;
 
                 int nodeId = graph.NodeCount;
-                int offsetX = Random.Range(-offSetRangeX / 2, offSetRangeX);
-                int offsetY = Random.Range(-offSetRangeY, offSetRangeY);
+                int offsetX = UnityEngine.Random.Range(-offSetRangeX / 2, offSetRangeX);
+                int offsetY = UnityEngine.Random.Range(-offSetRangeY, offSetRangeY);
 
                 Vector3 position = new(x + offsetX, y + offsetY, 0);
                 Node node = new();
@@ -243,10 +256,12 @@ public class MapGenerator : MonoBehaviour
                     GetRandomEncounter(node);
                 }
                 AssignEnemies(node);
+                AssignRandomEvent(node);
                 graph.AddNode(node);
             }
         }
     }
+
     private void GenerateEdges()
     {
         for (int depth = 0; depth < depthCount; depth++) //run through each depth
@@ -262,7 +277,7 @@ public class MapGenerator : MonoBehaviour
 
                     if (distance < maxDistanceForConnection)
                     {
-                        if (Random.Range(0, 4) != 0)
+                        if (UnityEngine.Random.Range(0, 4) != 0)
                         {
                             Edge edge = new();
                             edge.Id = edgeCount;
@@ -281,6 +296,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
+
     private void DisplayGraph()
     {
      /*
@@ -293,6 +309,7 @@ public class MapGenerator : MonoBehaviour
             DisplayLines(node);
         }
     }
+
     private void DisplayNodes(Node node)
     {
      /* Spawn a node game object using the node prefab assigned
@@ -315,9 +332,6 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    /*
-     *  TYPE COMMENT HERE
-     */
     private void DisplayLines(Node source)
     {
         List<Node> connectedNodes = graph.GetConnected(source.Id);
@@ -339,9 +353,6 @@ public class MapGenerator : MonoBehaviour
 
     }
 
-    /*
-     *  TYPE COMMENT HERE
-     */
     private void DestroyMap() // not exactly working as intended...
     {
 
@@ -359,9 +370,6 @@ public class MapGenerator : MonoBehaviour
         //...
     }
 
-    /*
-     *  TYPE COMMENT HERE
-     */
     private void PruneGraph()
     {
         List<Node> nodesToRemove = new List<Node>();
