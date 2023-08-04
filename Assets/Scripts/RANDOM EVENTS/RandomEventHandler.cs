@@ -31,10 +31,20 @@ public class RandomEventHandler : MonoBehaviour
 
     }
 
-    private void Initialize(Node node) {
+     private void Initialize(Node node) {
         //get current event
-        
+
+
         //update hud to event's text
+
+    }
+    public void test()
+    {
+        //get current event
+        currentEvent = RandomEvents.SpinTheWheel;
+        RandomEvent test = new SpinTheWheel();
+        //update hud to event's text
+        UpdateEventHUD(test);
     }
 
     private void UpdateEventHUD(RandomEvent randEvent)
