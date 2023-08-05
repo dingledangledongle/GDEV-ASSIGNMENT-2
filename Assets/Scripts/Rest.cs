@@ -26,7 +26,7 @@ public class Rest : MonoBehaviour
 
     public void HealPlayer()
     {
-        float maxHP = eventManager.TriggerEventWithReturn<float>(Event.REST_HEAL);
+        float maxHP = eventManager.TriggerEvent<float>(Event.REST_HEAL);
         float healthToBeHealed = maxHP * healPercentage;
 
         eventManager.TriggerEvent<float>(Event.REST_HEAL, healthToBeHealed);

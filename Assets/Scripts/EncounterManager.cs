@@ -50,6 +50,7 @@ public class EncounterManager : MonoBehaviour
                 break;
 
             case Node.Encounter.EVENT:
+                eventManager.TriggerEvent<Node>(Event.RAND_EVENT_INITIALIZE,node);
                 break;
 
             case Node.Encounter.REST:

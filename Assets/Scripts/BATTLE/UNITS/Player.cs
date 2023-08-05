@@ -49,8 +49,8 @@ public class Player : MonoBehaviour
         EndPlayerState.OnPlayerEnd += TurnEnd;
 
         // ATTACK
-        eventManager.AddListenerWithReturn<DamageType>(Event.PLAYER_ATTACK, GetDamage);
-        eventManager.AddListenerWithReturnAndArg<int, bool>(Event.PLAYER_ATTACK,IsEnoughEnergy);
+        eventManager.AddListener<DamageType>(Event.PLAYER_ATTACK, GetDamage);
+        eventManager.AddListener<int, bool>(Event.PLAYER_ATTACK,IsEnoughEnergy);
         eventManager.AddListener<int>(Event.PLAYER_ATTACK, ReduceCurrentEnergy);
         eventManager.AddListener(Event.PLAYER_ATTACK, PlayAttackAnim);
         eventManager.AddListener(Event.PLAYER_ATTACK_FINISHED, ResetDamageValues);
@@ -75,9 +75,19 @@ public class Player : MonoBehaviour
 
         //REST EVENTS
         eventManager.AddListener<float>(Event.REST_HEAL, Heal);
-        eventManager.AddListenerWithReturn<float>(Event.REST_HEAL, GetMaxHP);
+        eventManager.AddListener<float>(Event.REST_HEAL, GetMaxHP);
         eventManager.AddListener<float>(Event.REST_UPGRADEATTACK, UpgradeDamage);
         eventManager.AddListener<float>(Event.REST_UPGRADEDEFEND, UpgradeDefense);
+
+        #region spin the wheel events
+        eventManager.AddListener<float>(Event.RAND_EVENT_STW_UPGRADEATTACK, UpgradeDamage);
+        eventManager.AddListener<float>(Event.RAND_EVENT_STW_UPGRADEDEFEND, UpgradeDefense);
+        eventManager.AddListener<float>(Event.RAND_EVENT_STW_UPGRADEHEALTH, IncreaseMaxHealth);
+        eventManager.AddListener<float>(Event.RAND_EVENT_STW_HEAL, Heal);
+        eventManager.AddListener<DamageType>(Event.RAND_EVENT_STW_TAKEDAMAGE, TakeDamage);
+        eventManager.AddListener<float>(Event.RAND_EVENT_STW_REDUCEMAXHEALTH, IncreaseMaxHealth);
+        #endregion
+
 
 
         #endregion
@@ -91,11 +101,14 @@ public class Player : MonoBehaviour
         EndPlayerState.OnPlayerEnd -= TurnEnd;
 
         // ATTACK
-        eventManager.RemoveListenerWithReturn<DamageType>(Event.PLAYER_ATTACK, GetDamage);
-        eventManager.RemoveListenerWithReturnAndArg<int, bool>(Event.PLAYER_ATTACK, IsEnoughEnergy);
+        eventManager.RemoveListener<DamageType>(Event.PLAYER_ATTACK, GetDamage);
+        eventManager.RemoveListener<int, bool>(Event.PLAYER_ATTACK, IsEnoughEnergy);
         eventManager.RemoveListener<int>(Event.PLAYER_ATTACK, ReduceCurrentEnergy);
         eventManager.RemoveListener(Event.PLAYER_ATTACK, PlayAttackAnim);
         eventManager.RemoveListener(Event.PLAYER_ATTACK_FINISHED, ResetDamageValues);
+        eventManager.RemoveListener<float>(Event.RAND_EVENT_STW_UPGRADEATTACK, UpgradeDamage);
+        eventManager.RemoveListener<float>(Event.RAND_EVENT_STW_UPGRADEDEFEND, UpgradeDefense);
+        eventManager.RemoveListener<float>(Event.RAND_EVENT_STW_UPGRADEHEALTH, IncreaseMaxHealth);
 
         //DEF
         DefendAction.OnDefend -= Defend;
@@ -119,7 +132,7 @@ public class Player : MonoBehaviour
 
         //REST EVENTS
         eventManager.RemoveListener<float>(Event.REST_HEAL, Heal);
-        eventManager.RemoveListenerWithReturn<float>(Event.REST_HEAL, GetMaxHP);
+        eventManager.RemoveListener<float>(Event.REST_HEAL, GetMaxHP);
         eventManager.RemoveListener<float>(Event.REST_UPGRADEATTACK, UpgradeDamage);
         eventManager.RemoveListener<float>(Event.REST_UPGRADEDEFEND, UpgradeDefense);
     }
@@ -133,6 +146,7 @@ public class Player : MonoBehaviour
     private void Heal(float healAmt)
     {
         currentHP += healAmt;
+        Debug.Log("healed for " + healAmt);
     }
 
     private void Defend()
@@ -293,6 +307,8 @@ public class Player : MonoBehaviour
 
     private void IncreaseMaxHealth(float healthToAdd)
     {
+        Debug.Log("max health increased " + healthToAdd);
+
         maxHP += healthToAdd;
     }
 
@@ -316,6 +332,7 @@ public class Player : MonoBehaviour
             currentDef = 0;
             isShielded = false;
         }
+        ResetDamageValues();
 
         //PLAY OUT TURN START EFFECTS
     }

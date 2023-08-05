@@ -7,7 +7,8 @@ public class SpinWheel : MonoBehaviour
     private Rigidbody2D wheelBody;
     private EventManager eventManager = EventManager.Instance;
     private GameObject result;
-    private void Start()
+    private bool hasStopped = false;
+    private void Awake()
     {
         wheelBody = transform.Find("Circle").GetComponent<Rigidbody2D>();
 
@@ -18,7 +19,8 @@ public class SpinWheel : MonoBehaviour
         ReduceSpeed();
         if(wheelBody.angularVelocity <= 0)
         {
-            result = eventManager.TriggerEventWithReturn<GameObject>(Event.RAND_EVENT_STW_WHEELSTOP);
+            result = eventManager.TriggerEvent<GameObject>(Event.RAND_EVENT_STW_WHEELSTOP);
+            hasStopped = true;
         }
     }
     public void Spin()
@@ -33,10 +35,14 @@ public class SpinWheel : MonoBehaviour
             wheelBody.angularDrag += 0.001f;
         }
     }
-
-    private void EndEvent()
+    public bool HasStopped()
     {
+        return hasStopped;
+    }
 
+    public string ReturnResult()
+    {
+        return result.name;
     }
 
 }

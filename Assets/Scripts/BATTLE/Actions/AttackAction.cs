@@ -20,7 +20,7 @@ public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler
     }
 
     public void OnPointerUp(PointerEventData data) {
-        bool EnoughEnergy = eventManager.TriggerEventWithReturnAndArg<int, bool>(Event.PLAYER_ATTACK, energyCost);
+        bool EnoughEnergy = eventManager.TriggerEvent<int, bool>(Event.PLAYER_ATTACK, energyCost);
         if (EnoughEnergy)
         {
             if (arrowObject != null)
@@ -49,7 +49,7 @@ public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler
 
     private IEnumerator PerformAttackAction(Enemy target)
     {
-        DamageType damage = eventManager.TriggerEventWithReturn<DamageType>(Event.PLAYER_ATTACK);
+        DamageType damage = eventManager.TriggerEvent<DamageType>(Event.PLAYER_ATTACK);
         target.TakeDamage(damage);
         eventManager.TriggerEvent<int>(Event.PLAYER_ATTACK, energyCost);
         eventManager.TriggerEvent(Event.PLAYER_ATTACK);

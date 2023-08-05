@@ -2,13 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class RandomEvent
+public abstract class RandomEvent :MonoBehaviour
 {
     public abstract RandomEvents EventName {get;}
-    public abstract string Title { get;}
-    public abstract string Body { get;}
-    public abstract string Option1_Text { get; }
-    public abstract string Option2_Text { get; }
+
 
     public abstract void Option_1();
 

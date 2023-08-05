@@ -6,70 +6,46 @@ using UnityEngine.UI;
 
 public class RandomEventHandler : MonoBehaviour
 {
-    //event ui elements
-    private TMP_Text titleText;
-    private TMP_Text bodyText;
-    private Image image;
-    private TMP_Text optionText1;
-    private TMP_Text optionText2;
-    public Sprite[] spriteArray;
-
-    private RandomEvents currentEvent;
+    private RandomEvents currentEventName;
     private EventManager eventManager = EventManager.Instance;
-
+    public GameObject[] eventPrefabs;
+    private GameObject currentEventObject;
     private void Awake()
     {
-        //assigning the variables
-        titleText = transform.Find("Panel/EventTitle").GetComponent<TMP_Text>();
-        bodyText = transform.Find("Panel/EventBody").GetComponent<TMP_Text>();
-        image = transform.Find("Panel/EventArt").GetComponent<Image>();
-        optionText1 = transform.Find("Panel/OptionGroup/Option1/OptionText").GetComponent<TMP_Text>();
-        optionText2 = transform.Find("Panel/OptionGroup/Option2/OptionText").GetComponent<TMP_Text>();
-
         //events
-        eventManager.AddListener<Node>(Event.RAND_EVENT_INITIAZLIZE, Initialize);
-
+        eventManager.AddListener<Node>(Event.RAND_EVENT_INITIALIZE, Initialize);
     }
 
      private void Initialize(Node node) {
         //get current event
+        currentEventName = node.RandomEvent;
+        GetEvent(currentEventName);
 
 
         //update hud to event's text
-
     }
+   
     public void test()
     {
-        //get current event
-        currentEvent = RandomEvents.SpinTheWheel;
-        RandomEvent test = new SpinTheWheel();
-        //update hud to event's text
-        UpdateEventHUD(test);
+        Instantiate(eventPrefabs[0], this.transform);
+
     }
 
-    private void UpdateEventHUD(RandomEvent randEvent)
-    {
-        //updating text
-        titleText.text = randEvent.Title;
-        bodyText.text = randEvent.Body;
-        optionText1.text = randEvent.Option1_Text;
-        optionText2.text = randEvent.Option2_Text;
-
-        //updating image
-        image.sprite = GetEventImage(randEvent.EventName);
-        
-    }
-
-    private Sprite GetEventImage(RandomEvents eventName)
+    private void GetEvent(RandomEvents eventName)
     {
         switch (eventName)
         {
             case RandomEvents.SpinTheWheel:
-                return spriteArray[0];
+                currentEventObject = Instantiate(eventPrefabs[0],this.transform);
+                break;
             case RandomEvents.FreeUpgrade:
-                return spriteArray[1];
-
+                break;
         }
-        return default;
     }
+
+    private void EndEvent()
+    {
+        Destroy(currentEventObject);
+    }
+    
 }

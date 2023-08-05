@@ -98,7 +98,7 @@ public class EventManager
     #endregion
 
     #region ADD/REMOVE/TRIGGER (W/ RETURN)
-    public void AddListenerWithReturn<TResult>(Event eventName, Func<TResult> listener)
+    public void AddListener<TResult>(Event eventName, Func<TResult> listener)
     {
         if (!eventListeners.ContainsKey(eventName))
         {
@@ -108,7 +108,7 @@ public class EventManager
         eventListeners[eventName].Add(listener);
     }
 
-    public void RemoveListenerWithReturn<TResult>(Event eventName, Func<TResult> listener)
+    public void RemoveListener<TResult>(Event eventName, Func<TResult> listener)
     {
         if (eventListeners.ContainsKey(eventName))
         {
@@ -116,7 +116,7 @@ public class EventManager
         }
     }
 
-    public TResult TriggerEventWithReturn<TResult>(Event eventName)
+    public TResult TriggerEvent<TResult>(Event eventName)
     {
         if (eventListeners.ContainsKey(eventName))
         {
@@ -137,7 +137,7 @@ public class EventManager
     #endregion
 
     #region ADD/REMOVE/TRIGGER (W/ RETURN + PARAM)
-    public void AddListenerWithReturnAndArg<TParam,TResult>(Event eventName, Func<TParam,TResult> listener)
+    public void AddListener<TParam,TResult>(Event eventName, Func<TParam,TResult> listener)
     {
         if (!eventListeners.ContainsKey(eventName))
         {
@@ -147,7 +147,7 @@ public class EventManager
         eventListeners[eventName].Add(listener);
     }
 
-    public void RemoveListenerWithReturnAndArg<TParam, TResult>(Event eventName, Func<TParam, TResult> listener)
+    public void RemoveListener<TParam, TResult>(Event eventName, Func<TParam, TResult> listener)
     {
         if (eventListeners.ContainsKey(eventName))
         {
@@ -155,7 +155,7 @@ public class EventManager
         }
     }
 
-    public TResult TriggerEventWithReturnAndArg<TParam, TResult>(Event eventName,TParam param)
+    public TResult TriggerEvent<TParam, TResult>(Event eventName,TParam param)
     {
         if (eventListeners.ContainsKey(eventName))
         {
@@ -186,8 +186,15 @@ public enum Event
     REST_UPGRADEATTACK,
     REST_UPGRADEDEFEND,
     REST_FINISHED,
-    RAND_EVENT_INITIAZLIZE,
+    RAND_EVENT_INITIALIZE,
     RAND_EVENT_STW_WHEELSTOP,
+    RAND_EVENT_STW_UPGRADEATTACK,
+    RAND_EVENT_STW_UPGRADEDEFEND,
+    RAND_EVENT_STW_UPGRADEHEALTH,
+    RAND_EVENT_STW_HEAL,
+    RAND_EVENT_STW_TAKEDAMAGE,
+    RAND_EVENT_STW_REDUCEMAXHEALTH,
+
 
 }
 

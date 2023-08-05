@@ -5,33 +5,60 @@ using UnityEngine;
 public class SpinTheWheel : RandomEvent
 {
     private RandomEvents eventName = RandomEvents.SpinTheWheel;
-    private string title = "Spin The Wheel!";
-    private string body = "In the depths of the forest, a malevolent devil materializes, offering a sinister proposition.\n" +
-        "A mystic wheel, with rewards and punishments entwined, awaits your decision.\n" +
-        "Will you dare to spin, risking the unpredictable whims of fate?\n" +
-        "Choose wisely, Hephaestus, for the forest holds its breath, anticipating the outcome.";
-    private string option1_text = "[Spin] You spin the wheel...";
-    private string option2_text = "[Leave] You ignore the devil...";
+    private float amtToUpgrade = 1f;
+    private DamageType damage = new(15f,1);
 
+    private EventManager eventManager = EventManager.Instance;
+    public GameObject wheelPrefab;
+    private SpinWheel spinWheelScript;
+    private string result;
+    
     public override RandomEvents EventName {
         get => eventName; 
     }
 
-    #region GETTER/SETTER
-    public override string Title { get => title;  }
-
-    public override string Body { get => body; }
-
-    public override string Option1_Text { get => option1_text;  }
-
-    public override string Option2_Text { get => option2_text;  }
-    #endregion
-
     public override void Option_1() {
-        //activate    
+        //activate
+        Transform parentTransform = transform.parent.parent;
+        spinWheelScript = Instantiate(wheelPrefab, parentTransform).GetComponent<SpinWheel>();
+        spinWheelScript.Spin();
+        StartCoroutine(WaitForSpin());
     }
 
     public override void Option_2() { 
         //end event
+    }
+
+    private IEnumerator WaitForSpin()
+    {
+        yield return new WaitUntil(spinWheelScript.HasStopped);
+        result = spinWheelScript.ReturnResult();
+        ApplyEffect(result);
+    }
+
+    private void ApplyEffect(string resultName)
+    {
+        switch (resultName)
+        {
+            case "UpgradeDefense":
+                eventManager.TriggerEvent<float>(Event.RAND_EVENT_STW_UPGRADEDEFEND,amtToUpgrade);
+                break;
+            case "Heal":
+                eventManager.TriggerEvent<float>(Event.RAND_EVENT_STW_HEAL, 15f);
+                break;
+            case "Shanked":
+                eventManager.TriggerEvent<DamageType>(Event.RAND_EVENT_STW_TAKEDAMAGE, damage);
+                
+                break;
+            case "UpgradeAttack":
+                eventManager.TriggerEvent<float>(Event.RAND_EVENT_STW_UPGRADEATTACK, amtToUpgrade);
+                break;
+            case "UpgradeHealth":
+                eventManager.TriggerEvent<float>(Event.RAND_EVENT_STW_UPGRADEHEALTH, 15f);
+                break;
+            case "DecreaseHealth":
+                eventManager.TriggerEvent<float>(Event.RAND_EVENT_STW_REDUCEMAXHEALTH, -15f);
+                break;
+        }
     }
 }
