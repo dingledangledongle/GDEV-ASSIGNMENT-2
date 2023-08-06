@@ -25,8 +25,8 @@ public class SpinTheWheel : RandomEvent
         StartCoroutine(WaitForSpin());
     }
 
-    public override void Option_2() { 
-        //end event
+    public override void Option_2() {
+        eventManager.TriggerEvent(Event.RAND_EVENT_END);
     }
 
     private IEnumerator WaitForSpin()
@@ -34,6 +34,8 @@ public class SpinTheWheel : RandomEvent
         yield return new WaitUntil(spinWheelScript.HasStopped);
         result = spinWheelScript.ReturnResult();
         ApplyEffect(result);
+        yield return new WaitForSeconds(1);
+        eventManager.TriggerEvent(Event.RAND_EVENT_END);
     }
 
     private void ApplyEffect(string resultName)
@@ -41,23 +43,23 @@ public class SpinTheWheel : RandomEvent
         switch (resultName)
         {
             case "UpgradeDefense":
-                eventManager.TriggerEvent<float>(Event.RAND_EVENT_STW_UPGRADEDEFEND,amtToUpgrade);
+                eventManager.TriggerEvent<float>(Event.RAND_EVENT_UPGRADEDEFEND,amtToUpgrade);
                 break;
             case "Heal":
-                eventManager.TriggerEvent<float>(Event.RAND_EVENT_STW_HEAL, 15f);
+                eventManager.TriggerEvent<float>(Event.RAND_EVENT_HEAL, 15f);
                 break;
             case "Shanked":
-                eventManager.TriggerEvent<DamageType>(Event.RAND_EVENT_STW_TAKEDAMAGE, damage);
+                eventManager.TriggerEvent<DamageType>(Event.RAND_EVENT_TAKEDAMAGE, damage);
                 
                 break;
             case "UpgradeAttack":
-                eventManager.TriggerEvent<float>(Event.RAND_EVENT_STW_UPGRADEATTACK, amtToUpgrade);
+                eventManager.TriggerEvent<float>(Event.RAND_EVENT_UPGRADEATTACK, amtToUpgrade);
                 break;
             case "UpgradeHealth":
-                eventManager.TriggerEvent<float>(Event.RAND_EVENT_STW_UPGRADEHEALTH, 15f);
+                eventManager.TriggerEvent<float>(Event.RAND_EVENT_UPGRADEHEALTH, 15f);
                 break;
             case "DecreaseHealth":
-                eventManager.TriggerEvent<float>(Event.RAND_EVENT_STW_REDUCEMAXHEALTH, -15f);
+                eventManager.TriggerEvent<float>(Event.RAND_EVENT_REDUCEMAXHEALTH, -15f);
                 break;
         }
     }

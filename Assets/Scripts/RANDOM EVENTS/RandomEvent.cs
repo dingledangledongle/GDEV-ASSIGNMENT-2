@@ -16,5 +16,5 @@ public enum RandomEvents
 {
     SpinTheWheel,
     FreeUpgrade,
-    event3
+    ReachInDepth
 }

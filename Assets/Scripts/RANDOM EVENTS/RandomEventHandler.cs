@@ -14,6 +14,7 @@ public class RandomEventHandler : MonoBehaviour
     {
         //events
         eventManager.AddListener<Node>(Event.RAND_EVENT_INITIALIZE, Initialize);
+        eventManager.AddListener(Event.RAND_EVENT_END, EndEvent);
     }
 
      private void Initialize(Node node) {
@@ -27,8 +28,7 @@ public class RandomEventHandler : MonoBehaviour
    
     public void test()
     {
-        Instantiate(eventPrefabs[0], this.transform);
-
+        currentEventObject = Instantiate(eventPrefabs[1], this.transform);
     }
 
     private void GetEvent(RandomEvents eventName)
@@ -39,6 +39,10 @@ public class RandomEventHandler : MonoBehaviour
                 currentEventObject = Instantiate(eventPrefabs[0],this.transform);
                 break;
             case RandomEvents.FreeUpgrade:
+                currentEventObject = Instantiate(eventPrefabs[1], this.transform);
+                break;
+            case RandomEvents.ReachInDepth:
+                currentEventObject = Instantiate(eventPrefabs[2], this.transform);
                 break;
         }
     }

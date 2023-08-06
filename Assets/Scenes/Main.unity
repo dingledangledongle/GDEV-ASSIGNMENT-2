@@ -5774,6 +5774,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eventPrefabs:
   - {fileID: 2542457036898793512, guid: 1baef1efbb95e59429ef5ed3f7bbbb93, type: 3}
+  - {fileID: 2542457036898793512, guid: d7a791d5abee7af4d8ac0224a3bebf2c, type: 3}
 --- !u!1 &1318972945
 GameObject:
   m_ObjectHideFlags: 0
