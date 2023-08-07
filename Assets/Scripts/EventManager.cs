@@ -95,6 +95,38 @@ public class EventManager
             }
         }
     }
+
+    public void AddListener<TParam1,TParam2>(Event eventName, Action<TParam1,TParam2> listener)
+    {
+        if (!eventListeners.ContainsKey(eventName))
+        {
+            eventListeners[eventName] = new List<Delegate>();
+        }
+
+        eventListeners[eventName].Add(listener);
+    }
+
+    public void RemoveListener<TParam1, TParam2>(Event eventName, Action<TParam1, TParam2> listener)
+    {
+        if (eventListeners.ContainsKey(eventName))
+        {
+            eventListeners[eventName].Remove(listener);
+        }
+    }
+
+    public void TriggerEvent<TParam1, TParam2>(Event eventName, TParam1 param1,TParam2 param2)
+    {
+        if (eventListeners.ContainsKey(eventName))
+        {
+            foreach (var listener in eventListeners[eventName])
+            {
+                if (listener is Action<TParam1, TParam2> action)
+                {
+                    action.Invoke(param1,param2);
+                }
+            }
+        }
+    }
     #endregion
 
     #region ADD/REMOVE/TRIGGER (W/ RETURN)
@@ -182,6 +214,12 @@ public enum Event
     BATTLE_START,
     PLAYER_ATTACK,
     PLAYER_ATTACK_FINISHED,
+    PLAYER_DEFEND,
+    PLAYER_DEFEND_FINISHED,
+    PLAYER_ENHANCE,
+    PLAYER_ENHANCE_ATTACK,
+    PLAYER_ENHANCE_DEFEND,
+    PLAYER_ENHANCE_SUCCESS,
     REST_INITIALIZE,
     REST_HEAL,
     REST_UPGRADEATTACK,

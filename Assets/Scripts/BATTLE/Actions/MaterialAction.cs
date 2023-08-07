@@ -27,20 +27,12 @@ public class MaterialAction : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
         { "Glass", 0 },
         { "EleCrystal", 0 }
     };
+
+    private EventManager eventManager = EventManager.Instance;
     #endregion
 
     #region EVENTS
     public static event Func<GameObject> OnMouseRelease;//MaterialPrefab.GetAction()
-    public static event Func<int, bool> BeforeAction; //Player.IsEnoughEnergy()
-
-    //enhance attack events
-    public static event Action<float,int> OnAttackEnhance;//Player.ModifyDamage()
-
-    //enhance defense events
-    public static event Action<float> OnDefEnhance;//Player.ModifyDefense()
-
-    public static event Action<int> OnSuccessEnhance; //Player.ReduceEnergy()
-    public static event Action OnAfterEnhance; // BattleManager.UpdateHud()
 
     public static event Action OnUpdateMaterialUI; //DiceHandler.DestroyThis();
     #endregion
@@ -50,6 +42,7 @@ public class MaterialAction : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
         material = this.GetComponent<PlayerMaterial>();
         DiceHandler.OnAllDiceLanded += GetMaterialList;
         DiceHandler.OnMaterialListUpdated += FinishDiceRoll;
+
     }
 
     private void OnDestroy()
@@ -70,25 +63,25 @@ public class MaterialAction : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
  
     public void OnPointerUp(PointerEventData eventData)
     {
-     
+        bool isEnoughEnergy = eventManager.TriggerEvent<int,bool>(Event.PLAYER_ENHANCE, energyCost);
         if (MaterialObject != null)
         {
             targetedAction = OnMouseRelease?.Invoke();
 
             if (targetedAction != null 
-                && BeforeAction.Invoke(energyCost) 
+                && isEnoughEnergy 
                 && materialList[this.name] > 0)
             {
                 if (targetedAction.CompareTag("Attack"))
                 {
-                    OnAttackEnhance?.Invoke(material.DamageModifier, material.NumOfHits);
-                    OnSuccessEnhance?.Invoke(energyCost);
+                    eventManager.TriggerEvent<float,int>(Event.PLAYER_ENHANCE_ATTACK, material.DamageModifier, material.NumOfHits);
+                    eventManager.TriggerEvent<int>(Event.PLAYER_ENHANCE_SUCCESS, energyCost);
                 }
 
                 if (targetedAction.CompareTag("Defend"))
                 {
-                    OnDefEnhance?.Invoke(material.DefenseModifier);
-                    OnSuccessEnhance?.Invoke(energyCost);
+                    eventManager.TriggerEvent<float>(Event.PLAYER_ENHANCE_DEFEND,material.DefenseModifier);
+                    eventManager.TriggerEvent<int>(Event.PLAYER_ENHANCE_SUCCESS, energyCost);
                 }
                 successSFX.Play();
                 ReduceMaterialCount();
@@ -97,8 +90,7 @@ public class MaterialAction : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
             {
                 deniedSFX.Play();
             }
-
-            OnAfterEnhance?.Invoke();
+            eventManager.TriggerEvent(Event.PLAYER_ENHANCE_SUCCESS);
             Destroy(MaterialObject);
         }
     }

@@ -22,11 +22,10 @@ public class BattleManager : MonoBehaviour
         eventManager.AddListener(Event.BATTLE_START, SetupBattle);
 
         eventManager.AddListener(Event.PLAYER_ATTACK_FINISHED, UpdateHud);
+        eventManager.AddListener(Event.PLAYER_DEFEND_FINISHED, UpdateHud);
+        eventManager.AddListener(Event.PLAYER_ENHANCE_SUCCESS, UpdateHud);
+        eventManager.AddListener(Event.UPDATE_HUD,UpdateHud);
 
-        //eventManager.AddListener(Event.UPDATE_HUD);
-
-        DefendAction.OnUpdateHud += UpdateHud;
-        MaterialAction.OnAfterEnhance += UpdateHud;
         //START BATTLE EVENTS
         StartBattleState.OnBattleStart += SetupBattle;
         //START PLAYER EVENTS
@@ -48,8 +47,6 @@ public class BattleManager : MonoBehaviour
     private void OnDestroy()
     {
         EncounterManager.OnBattleStart -= SetupBattle;
-        DefendAction.OnDefend -= UpdateHud;
-        MaterialAction.OnAfterEnhance -= UpdateHud;
 
         //START PLAYER EVENTS
         StartPlayerState.OnRollDice -= RollDice;

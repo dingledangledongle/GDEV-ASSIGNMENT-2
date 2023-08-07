@@ -56,16 +56,16 @@ public class Player : MonoBehaviour
         eventManager.AddListener(Event.PLAYER_ATTACK_FINISHED, ResetDamageValues);
 
         //DEF
-        DefendAction.OnDefend += Defend;
-        DefendAction.OnDefend += PlayDefendAnim;
-        DefendAction.OnAfterDef += ReduceCurrentEnergy;
-        DefendAction.BeforeDefend += IsEnoughEnergy;
+        eventManager.AddListener(Event.PLAYER_DEFEND, Defend);
+        eventManager.AddListener(Event.PLAYER_DEFEND, PlayDefendAnim);
+        eventManager.AddListener<int>(Event.PLAYER_DEFEND, ReduceCurrentEnergy);
+        eventManager.AddListener<int, bool>(Event.PLAYER_DEFEND, IsEnoughEnergy);
 
         // MATERIAL ACTION
-        MaterialAction.OnAttackEnhance += ModifyDamage;
-        MaterialAction.OnDefEnhance += ModifyDefense;
-        MaterialAction.OnSuccessEnhance += ReduceCurrentEnergy;
-        MaterialAction.BeforeAction += IsEnoughEnergy;
+        eventManager.AddListener<float,int>(Event.PLAYER_ENHANCE_ATTACK, ModifyDamage);
+        eventManager.AddListener<float>(Event.PLAYER_ENHANCE_DEFEND, ModifyDefense);
+        eventManager.AddListener<int>(Event.PLAYER_ENHANCE_SUCCESS, ReduceCurrentEnergy);
+        eventManager.AddListener<int, bool>(Event.PLAYER_ENHANCE, IsEnoughEnergy);
 
         //ENEMY EVENTS
         Enemy.OnEnemyAttack += TakeDamage;
@@ -111,20 +111,6 @@ public class Player : MonoBehaviour
         eventManager.RemoveListener<float>(Event.RAND_EVENT_UPGRADEATTACK, UpgradeDamage);
         eventManager.RemoveListener<float>(Event.RAND_EVENT_UPGRADEDEFEND, UpgradeDefense);
         eventManager.RemoveListener<float>(Event.RAND_EVENT_UPGRADEHEALTH, IncreaseMaxHealth);
-
-        //DEF
-        DefendAction.OnDefend -= Defend;
-        DefendAction.OnDefend-= PlayDefendAnim;
-        DefendAction.OnAfterDef -= ReduceCurrentEnergy;
-        DefendAction.BeforeDefend -= IsEnoughEnergy;
-
-
-        // MATERIAL ACTION
-        MaterialAction.OnAttackEnhance -= ModifyDamage;
-        MaterialAction.OnDefEnhance -= ModifyDefense;
-        MaterialAction.OnSuccessEnhance -= ReduceCurrentEnergy;
-        MaterialAction.BeforeAction -= IsEnoughEnergy;
-
 
         //ENEMY EVENTS
         Enemy.OnEnemyAttack -= TakeDamage;

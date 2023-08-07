@@ -56,6 +56,7 @@ public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler
         yield return new WaitUntil(target.IsDamageCalculationDone);
         target.IsFinished = false;
         eventManager.TriggerEvent(Event.PLAYER_ATTACK_FINISHED);
+
         OnCheckAllEnemyDeath?.Invoke();
     }
     
