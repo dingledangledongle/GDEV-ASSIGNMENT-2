@@ -1,18 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
 public class ReachInDepth : RandomEvent
 {
     private RandomEvents eventName = RandomEvents.ReachInDepth;
     private bool buttonPressed = false;
     private EventManager eventManager = EventManager.Instance;
+    private bool firstPress = true;
+    private bool rewardReceived = false;
 
     private Dictionary<string, float> rewardsProbability = new Dictionary<string, float>()
     {
         {"reward",0.25f },
         {"damage",0.75f }
     };
+
     public override RandomEvents EventName
     {
         get => eventName;
@@ -21,36 +24,55 @@ public class ReachInDepth : RandomEvent
     public override void Option_1()
     {
         buttonPressed = true;
-        
+        if (firstPress)
+        {
+            StartCoroutine(ReachIn());
+        }
     }
 
     public override void Option_2()
     {
-        throw new System.NotImplementedException();
+        eventManager.TriggerEvent(Event.RAND_EVENT_END);
     }
 
     private bool Pressed()
     {
         return buttonPressed;
     }
+
     private IEnumerator ReachIn()
     {
-        for (int i = 0; i < 6; i++)
+        firstPress = false;
+        while (!rewardReceived)
         {
             // do the effect
-            yield return new WaitUntil(Pressed);
+            string outcome = GetResult();
+            if (outcome == "reward")
+            {
+                eventManager.TriggerEvent(Event.RAND_EVENT_UPGRADEATTACK, 2);
+                
+                break;
+            }
+            eventManager.TriggerEvent<float>(Event.RAND_EVENT_TAKEDAMAGE,3f);
+            rewardsProbability["reward"] += 0.25f;
+            rewardsProbability["damage"] -= 0.25f;
+            transform.Find("OptionGroup/Option1/OptionText")
+                .GetComponent<TMP_Text>().text = $"[Reach In] Lose 3 HP.  {rewardsProbability["reward"] * 100}% Chance to get reward";
             buttonPressed = false;
+
+            yield return new WaitUntil(Pressed);
         }
+        transform.Find("EventBody").GetComponent<TMP_Text>().text = "You finally pulled out a ring! \n" +
+                    "You feel a surge of power throughout your body.";
+        Destroy(transform.Find("OptionGroup/Option1").gameObject);
+
+
     }
 
-    private void GetChance()
+    private string GetResult()
     {
         string outcome = ProbabilityManager.SelectWeightedItem(rewardsProbability);
 
-        if(outcome == "reward")
-        {
-            eventManager.TriggerEvent<float>(Event.RAND_EVENT_UPGRADEATTACK, 1f);
-            return;
-        }
+        return outcome;
     }
 }

@@ -9,6 +9,7 @@ public class MapHandler : MonoBehaviour
     private void Awake()
     {
         eventManager.AddListener(Event.MAP_NODE_CLICKED, ToggleMap);
+        eventManager.AddListener(Event.RAND_EVENT_END, ToggleMap);
         
     }
 

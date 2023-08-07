@@ -177,6 +177,7 @@ public class EventManager
 }
 public enum Event
 {
+    UPDATE_HUD,
     MAP_NODE_CLICKED,
     BATTLE_START,
     PLAYER_ATTACK,

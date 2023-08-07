@@ -25,7 +25,6 @@ public class Node
         ELITE,
         REST,
         EVENT,
-        CHEST,
         BOSS
     }
 

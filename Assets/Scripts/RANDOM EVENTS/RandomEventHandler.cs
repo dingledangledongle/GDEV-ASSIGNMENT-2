@@ -16,19 +16,24 @@ public class RandomEventHandler : MonoBehaviour
         eventManager.AddListener<Node>(Event.RAND_EVENT_INITIALIZE, Initialize);
         eventManager.AddListener(Event.RAND_EVENT_END, EndEvent);
     }
+    private void OnDestroy()
+    {
+        eventManager.RemoveListener<Node>(Event.RAND_EVENT_INITIALIZE, Initialize);
+        eventManager.RemoveListener(Event.RAND_EVENT_END, EndEvent);
+    }
 
-     private void Initialize(Node node) {
+    private void Initialize(Node node) {
         //get current event
+        eventManager.TriggerEvent(Event.MAP_NODE_CLICKED);
         currentEventName = node.RandomEvent;
         GetEvent(currentEventName);
 
 
-        //update hud to event's text
     }
    
     public void test()
     {
-        currentEventObject = Instantiate(eventPrefabs[1], this.transform);
+        currentEventObject = Instantiate(eventPrefabs[2], this.transform);
     }
 
     private void GetEvent(RandomEvents eventName)
@@ -50,6 +55,7 @@ public class RandomEventHandler : MonoBehaviour
     private void EndEvent()
     {
         Destroy(currentEventObject);
+
     }
     
 }

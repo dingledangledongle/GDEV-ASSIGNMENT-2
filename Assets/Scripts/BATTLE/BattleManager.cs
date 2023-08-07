@@ -23,6 +23,7 @@ public class BattleManager : MonoBehaviour
 
         eventManager.AddListener(Event.PLAYER_ATTACK_FINISHED, UpdateHud);
 
+        //eventManager.AddListener(Event.UPDATE_HUD);
 
         DefendAction.OnUpdateHud += UpdateHud;
         MaterialAction.OnAfterEnhance += UpdateHud;

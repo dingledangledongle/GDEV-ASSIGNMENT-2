@@ -11,6 +11,7 @@ public class SpinTheWheel : RandomEvent
     private EventManager eventManager = EventManager.Instance;
     public GameObject wheelPrefab;
     private SpinWheel spinWheelScript;
+    private GameObject spinWheelObject;
     private string result;
     
     public override RandomEvents EventName {
@@ -20,7 +21,8 @@ public class SpinTheWheel : RandomEvent
     public override void Option_1() {
         //activate
         Transform parentTransform = transform.parent.parent;
-        spinWheelScript = Instantiate(wheelPrefab, parentTransform).GetComponent<SpinWheel>();
+        spinWheelObject = Instantiate(wheelPrefab, parentTransform);
+        spinWheelScript = spinWheelObject.GetComponent<SpinWheel>();
         spinWheelScript.Spin();
         StartCoroutine(WaitForSpin());
     }
@@ -35,6 +37,7 @@ public class SpinTheWheel : RandomEvent
         result = spinWheelScript.ReturnResult();
         ApplyEffect(result);
         yield return new WaitForSeconds(1);
+        Destroy(spinWheelObject);
         eventManager.TriggerEvent(Event.RAND_EVENT_END);
     }
 

@@ -26,6 +26,11 @@ public class MapGenerator : MonoBehaviour
         {Node.Encounter.EVENT,2f},
         {Node.Encounter.REST,2f}
     };
+    private Dictionary<RandomEvents, float> eventProbability = new Dictionary<RandomEvents, float>() {
+        {RandomEvents.SpinTheWheel,1f},
+        {RandomEvents.FreeUpgrade,1f},
+        {RandomEvents.ReachInDepth,1f}
+    };
 
     private Graph graph;
 
@@ -246,10 +251,6 @@ public class MapGenerator : MonoBehaviour
                 else if (node.Depth == 14)
                 {
                     node.EncounterType = Node.Encounter.REST;
-                }
-                else if (node.Depth == depthCount / 2)
-                {
-                    node.EncounterType = Node.Encounter.CHEST;
                 }
                 else
                 {

@@ -37,20 +37,20 @@ public class FreeUpgrade : RandomEvent
             
             case 0:
                 eventManager.TriggerEvent(Event.RAND_EVENT_UPGRADEATTACK, 1);
-                bodyText.text = "You open the chest to find a surge of light surrounding you. /n" +
+                bodyText.text = "You open the chest to find a surge of light surrounding you\n" +
                     "You feel a surge of strength.";
                 Destroy(option1);
                 break;
             case 1:
                 eventManager.TriggerEvent(Event.RAND_EVENT_UPGRADEDEFEND, 1);
-                bodyText.text = "You open the chest to find a surge of light surrounding you. /n" +
+                bodyText.text = "You open the chest to find a surge of light surrounding you. \n" +
                     "You feel more sturdy.";
                 Destroy(option1);
 
                 break;
             case 2:
                 eventManager.TriggerEvent(Event.RAND_EVENT_UPGRADEHEALTH, 15);
-                bodyText.text = "You open the chest to find a surge of light surrounding you. /n" +
+                bodyText.text = "You open the chest to find a surge of light surrounding you. \n" +
                     "You feel a surge of vitality.";
                 Destroy(option1);
 

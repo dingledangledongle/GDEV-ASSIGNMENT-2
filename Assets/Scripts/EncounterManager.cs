@@ -50,14 +50,11 @@ public class EncounterManager : MonoBehaviour
                 break;
 
             case Node.Encounter.EVENT:
-                eventManager.TriggerEvent<Node>(Event.RAND_EVENT_INITIALIZE,node);
+                StartRandomEvent(node);
                 break;
 
             case Node.Encounter.REST:
                 StartRest(node);
-                break;
-
-            case Node.Encounter.CHEST:
                 break;
 
             case Node.Encounter.BOSS:
@@ -65,7 +62,6 @@ public class EncounterManager : MonoBehaviour
                 OnBattleStart?.Invoke();
                 break;
         }
-
         //DISABLE MAP CLICKY
         //CLOSE MAP
     }
@@ -81,6 +77,11 @@ public class EncounterManager : MonoBehaviour
     #region Random Event
     private void StartRandomEvent(Node node)
     {
+        foreach (GameObject item in eventObjects)
+        {
+            item.SetActive(true);
+        }
+        eventManager.TriggerEvent<Node>(Event.RAND_EVENT_INITIALIZE, node);
 
     }
     #endregion

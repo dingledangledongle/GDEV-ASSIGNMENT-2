@@ -76,10 +76,7 @@ public class NodeObject : MonoBehaviour, IPointerDownHandler,IPointerEnterHandle
                 break;
             case Node.Encounter.REST:
                 image.sprite = spriteArray[3];
-                break;
-            case Node.Encounter.CHEST:
-                image.sprite = spriteArray[4];
-                break;
+                break;;
             case Node.Encounter.BOSS:
                 image.sprite = spriteArray[5];
                 break;
