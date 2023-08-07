@@ -71,7 +71,7 @@ public class Player : MonoBehaviour
         Enemy.OnEnemyAttack += TakeDamage;
 
         //DICE EVENTS
-        DiceHandler.OnDiceBoxSpawn += GetNumberOfDice;
+        eventManager.AddListener<int>(Event.PLAYER_DICE, GetNumberOfDice);
 
         //REST EVENTS
         eventManager.AddListener<float>(Event.REST_HEAL, Heal);
@@ -79,16 +79,13 @@ public class Player : MonoBehaviour
         eventManager.AddListener<float>(Event.REST_UPGRADEATTACK, UpgradeDamage);
         eventManager.AddListener<float>(Event.REST_UPGRADEDEFEND, UpgradeDefense);
 
-        #region spin the wheel events
+        #region random events
         eventManager.AddListener<float>(Event.RAND_EVENT_UPGRADEATTACK, UpgradeDamage);
         eventManager.AddListener<float>(Event.RAND_EVENT_UPGRADEDEFEND, UpgradeDefense);
         eventManager.AddListener<float>(Event.RAND_EVENT_UPGRADEHEALTH, IncreaseMaxHealth);
         eventManager.AddListener<float>(Event.RAND_EVENT_HEAL, Heal);
         eventManager.AddListener<DamageType>(Event.RAND_EVENT_TAKEDAMAGE, TakeDamage);
         eventManager.AddListener<float>(Event.RAND_EVENT_REDUCEMAXHEALTH, IncreaseMaxHealth);
-        #endregion
-        #region  free upgrade event
-
         #endregion
 
 
@@ -114,9 +111,6 @@ public class Player : MonoBehaviour
 
         //ENEMY EVENTS
         Enemy.OnEnemyAttack -= TakeDamage;
-
-        //DICE EVENTS
-        DiceHandler.OnDiceBoxSpawn -= GetNumberOfDice;
 
         //REST EVENTS
         eventManager.RemoveListener<float>(Event.REST_HEAL, Heal);

@@ -6,18 +6,22 @@ public class MaterialPrefab : MonoBehaviour
     public Sprite[] spriteArray;
     private GameObject collidedObject;
     private Image image;
+
+
+
     private void Start()
     {
         image = this.GetComponent<Image>();
-        MaterialAction.OnMouseRelease += GetAction;
+        EventManager.Instance.AddListener<GameObject>(Event.PLAYER_ENHANCE_MOUSE_RELEASE,GetAction);
         SetSprite();
     }
 
     private void OnDestroy()
     {
-        MaterialAction.OnMouseRelease -= GetAction;
+        EventManager.Instance.RemoveListener<GameObject>(Event.PLAYER_ENHANCE_MOUSE_RELEASE, GetAction);
 
     }
+
     public void UpdatePosition()
     {
         Vector3 mousePosition = Input.mousePosition;
@@ -33,6 +37,7 @@ public class MaterialPrefab : MonoBehaviour
             collidedObject = collision.gameObject;
         }
     }
+
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collidedObject != null)

@@ -32,7 +32,6 @@ public class MaterialAction : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
     #endregion
 
     #region EVENTS
-    public static event Func<GameObject> OnMouseRelease;//MaterialPrefab.GetAction()
 
     public static event Action OnUpdateMaterialUI; //DiceHandler.DestroyThis();
     #endregion
@@ -40,15 +39,15 @@ public class MaterialAction : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
     private void Start()
     {
         material = this.GetComponent<PlayerMaterial>();
-        DiceHandler.OnAllDiceLanded += GetMaterialList;
-        DiceHandler.OnMaterialListUpdated += FinishDiceRoll;
+        eventManager.AddListener(Event.PLAYER_DICE, GetMaterialList);
+        eventManager.AddListener(Event.PLAYER_DICE, FinishDiceRoll);
 
     }
 
     private void OnDestroy()
     {
-        DiceHandler.OnAllDiceLanded -= GetMaterialList;
-        DiceHandler.OnMaterialListUpdated -= FinishDiceRoll;
+        eventManager.RemoveListener(Event.PLAYER_DICE, GetMaterialList);
+        eventManager.RemoveListener(Event.PLAYER_DICE, FinishDiceRoll);
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -66,7 +65,7 @@ public class MaterialAction : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
         bool isEnoughEnergy = eventManager.TriggerEvent<int,bool>(Event.PLAYER_ENHANCE, energyCost);
         if (MaterialObject != null)
         {
-            targetedAction = OnMouseRelease?.Invoke();
+            targetedAction = eventManager.TriggerEvent<GameObject>(Event.PLAYER_ENHANCE_MOUSE_RELEASE);
 
             if (targetedAction != null 
                 && isEnoughEnergy 
