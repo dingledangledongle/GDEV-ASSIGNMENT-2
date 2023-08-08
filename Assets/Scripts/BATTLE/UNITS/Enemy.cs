@@ -22,11 +22,6 @@ public class Enemy : MonoBehaviour
     private Animator animator;
     private EventManager eventManager = EventManager.Instance;
 
-    //events
-    public static event Func<bool> OnEnemyDeath; // BattleManager.CheckAllEnemyDeath()
-    public static event Action OnAllEnemyDeath; //BattleStateManager.EndBattle()
-    public static event Action OnActionFinished; //BattleStateManager.UpdateHud()
-
     private void Awake()
     {
         currentHP = maxHP;
@@ -35,14 +30,14 @@ public class Enemy : MonoBehaviour
 
         //EVENTS
         eventManager.AddListener(Event.PLAYER_TURN,GetIntent);
-
-        AttackAction.OnCheckAllEnemyDeath += CheckDeath;
+        eventManager.AddListener(Event.PLAYER_ATTACK_FINISHED, CheckDeath);
         Debug.Log(gameObject.name + " INITIALIZED");
     }
 
     private void OnDestroy()
     {
-        AttackAction.OnCheckAllEnemyDeath -= CheckDeath;
+        eventManager.RemoveListener(Event.PLAYER_TURN, GetIntent);
+        eventManager.RemoveListener(Event.PLAYER_ATTACK_FINISHED, CheckDeath);
     }
     private void Heal(float healAmt)
     {
@@ -76,7 +71,7 @@ public class Enemy : MonoBehaviour
                 Debug.Log("ENEMY : BUFF");
                 break;
         }
-        OnActionFinished?.Invoke();
+        eventManager.TriggerEvent(Event.UPDATE_HUD);
     }
 
     private void Defend(float def) {
@@ -98,10 +93,11 @@ public class Enemy : MonoBehaviour
         }
 
         //check all other enemy is dead
-        if (OnEnemyDeath.Invoke())
+        bool isAllEnemyDead = eventManager.TriggerEvent<bool>(Event.ENEMY_DEATH);
+        if (isAllEnemyDead)
         {
             Debug.Log("all dead");
-            OnAllEnemyDeath?.Invoke();
+            eventManager.TriggerEvent(Event.ENEMY_DEATH);
         }
     }
 

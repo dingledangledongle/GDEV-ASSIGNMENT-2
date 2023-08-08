@@ -27,8 +27,6 @@ public class RandomEventHandler : MonoBehaviour
         eventManager.TriggerEvent(Event.MAP_NODE_CLICKED);
         currentEventName = node.RandomEvent;
         GetEvent(currentEventName);
-
-
     }
    
     public void test()

@@ -7,9 +7,6 @@ public class EncounterManager : MonoBehaviour
     GameObject[] restObjects;
     GameObject[] eventObjects;
 
-    public static event Action OnBattleStart; //BattleManager.SetupBattle()
-    public static event Action OnBattleState; //BattleStateManager.StartBattle()
-
     private EventManager eventManager = EventManager.Instance; 
 
     private void Start()
@@ -26,13 +23,14 @@ public class EncounterManager : MonoBehaviour
         //EVENTS
         eventManager.AddListener<Node>(Event.MAP_NODE_CLICKED,StartEncounter);
         eventManager.AddListener(Event.REST_FINISHED, EndRest);
-        EndBattleState.OnBattleEnd += EndBattle;
+        eventManager.AddListener(Event.BATTLE_END, EndBattle);
     }
 
     private void OnDestroy()
     {
         eventManager.RemoveListener<Node>(Event.MAP_NODE_CLICKED, StartEncounter);
-        EndBattleState.OnBattleEnd += EndBattle;
+        eventManager.RemoveListener(Event.REST_FINISHED, EndRest);
+        eventManager.RemoveListener(Event.BATTLE_END, EndBattle);
     }
     private void StartEncounter(Node node)
     {
@@ -41,12 +39,12 @@ public class EncounterManager : MonoBehaviour
         {
             case Node.Encounter.ENEMY:
                 StartBattle(node);
-                OnBattleStart?.Invoke();
+                eventManager.TriggerEvent(Event.BATTLE_START);
                 break;
 
             case Node.Encounter.ELITE:
                 StartBattle(node);
-                OnBattleStart?.Invoke();
+                eventManager.TriggerEvent(Event.BATTLE_START);
                 break;
 
             case Node.Encounter.EVENT:
@@ -59,7 +57,7 @@ public class EncounterManager : MonoBehaviour
 
             case Node.Encounter.BOSS:
                 StartBattle(node);
-                OnBattleStart?.Invoke();
+                eventManager.TriggerEvent(Event.BATTLE_START);
                 break;
         }
         //DISABLE MAP CLICKY
@@ -130,8 +128,6 @@ public class EncounterManager : MonoBehaviour
         {
             Instantiate(enemy, enemyContainer.transform);
         }
-        OnBattleState?.Invoke();
-
         //close the map
         eventManager.TriggerEvent(Event.MAP_NODE_CLICKED);
     }

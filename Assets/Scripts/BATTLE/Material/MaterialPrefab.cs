@@ -7,8 +7,6 @@ public class MaterialPrefab : MonoBehaviour
     private GameObject collidedObject;
     private Image image;
 
-
-
     private void Start()
     {
         image = this.GetComponent<Image>();

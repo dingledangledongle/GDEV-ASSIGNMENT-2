@@ -20,43 +20,43 @@ public class BattleManager : MonoBehaviour
 
         //ENCOUNTER EVENTS
         eventManager.AddListener(Event.BATTLE_START, SetupBattle);
+        eventManager.AddListener(Event.UPDATE_HUD, UpdateHud);
 
+        // player events
         eventManager.AddListener(Event.PLAYER_ATTACK_FINISHED, UpdateHud);
         eventManager.AddListener(Event.PLAYER_DEFEND_FINISHED, UpdateHud);
         eventManager.AddListener(Event.PLAYER_ENHANCE_SUCCESS, UpdateHud);
-        eventManager.AddListener(Event.UPDATE_HUD,UpdateHud);
-
-        //START BATTLE EVENTS
-        StartBattleState.OnBattleStart += SetupBattle;
-
-        //START PLAYER EVENTS
         eventManager.AddListener(Event.PLAYER_ROLLDICE, RollDice);
+        eventManager.AddListener(Event.PLAYER_TAKEDAMAGE, UpdateHud);
 
-        //START ENEMY EVENTS
+
+        // enemy events
         eventManager.AddListener(Event.ENEMY_TURN, OnEnemyStart);
         eventManager.AddListener(Event.ENEMY_TURN, UpdateHud);
         eventManager.AddListener<bool>(Event.ENEMY_TURN, IsEnemyDone);
-
-        //PLAYER EVENTS
-        Player.OnPlayerDamageTaken += UpdateHud;
-
-        //ENEMY EVENTS
-        Enemy.OnEnemyDeath += CheckAllEnemyDeath;
-        Enemy.OnActionFinished += UpdateHud;
+        eventManager.AddListener<bool>(Event.ENEMY_DEATH, CheckAllEnemyDeath);
     }
 
     private void OnDestroy()
     {
-        EncounterManager.OnBattleStart -= SetupBattle;
-
-        //START ENEMY EVENTS
+        //ENCOUNTER EVENTS
+        eventManager.RemoveListener(Event.BATTLE_START, SetupBattle);
+        eventManager.RemoveListener(Event.UPDATE_HUD, UpdateHud);
 
         //PLAYER EVENTS
-        Player.OnPlayerDamageTaken -= UpdateHud;
+        eventManager.RemoveListener(Event.PLAYER_ATTACK_FINISHED, UpdateHud);
+        eventManager.RemoveListener(Event.PLAYER_DEFEND_FINISHED, UpdateHud);
+        eventManager.RemoveListener(Event.PLAYER_ENHANCE_SUCCESS, UpdateHud);
+        eventManager.RemoveListener(Event.PLAYER_ROLLDICE, RollDice);
+        eventManager.RemoveListener(Event.PLAYER_TAKEDAMAGE, UpdateHud);
 
         //ENEMY EVENTS
-        Enemy.OnEnemyDeath -= CheckAllEnemyDeath;
-        Enemy.OnActionFinished -= UpdateHud;
+        eventManager.RemoveListener(Event.ENEMY_TURN, OnEnemyStart);
+        eventManager.RemoveListener(Event.ENEMY_TURN, UpdateHud);
+        eventManager.RemoveListener<bool>(Event.ENEMY_TURN, IsEnemyDone);
+        eventManager.RemoveListener<bool>(Event.ENEMY_DEATH, CheckAllEnemyDeath);
+
+
     }
 
     private void RollDice()

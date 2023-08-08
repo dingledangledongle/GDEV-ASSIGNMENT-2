@@ -12,15 +12,17 @@ public class BattleStateManager : MonoBehaviour
     public EndEnemyState EndEnemyState = new();
     public EndBattleState EndBattleState = new();
     public int NumberOfTurns = 1;
+    private EventManager eventManager = EventManager.Instance;
 
     private void Awake()
     {
-        EncounterManager.OnBattleState += StartBattle;
-        Enemy.OnAllEnemyDeath += EndBattle;
+        eventManager.AddListener(Event.BATTLE_START, StartBattle);
+        eventManager.AddListener(Event.ENEMY_DEATH, EndBattle);
     }
     private void StartBattle()
     {
         NumberOfTurns = 1;
+        GameObject.Find("TurnText").GetComponent<TMP_Text>().text = "TURN " + NumberOfTurns.ToString();
         SwitchState(StartBattleState);
     }
     private void EndBattle()
@@ -47,8 +49,7 @@ public class BattleStateManager : MonoBehaviour
     }
 
     public void UpdateTurnNumber()
-    {
-       
+    { 
         NumberOfTurns += 1;
         GameObject.Find("TurnText").GetComponent<TMP_Text>().text = "TURN "+ NumberOfTurns.ToString();
     }

@@ -13,7 +13,6 @@ public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler
     private EventManager eventManager = EventManager.Instance;
 
     //EVENTS
-    public static event Action OnCheckAllEnemyDeath; //Enemy.CheckDeath()
 
     public void OnPointerDown(PointerEventData data) {
         SpawnArrow(ArrowPrefab);
@@ -56,8 +55,6 @@ public class AttackAction : MonoBehaviour, IPointerDownHandler,IPointerUpHandler
         yield return new WaitUntil(target.IsDamageCalculationDone);
         target.IsFinished = false;
         eventManager.TriggerEvent(Event.PLAYER_ATTACK_FINISHED);
-
-        OnCheckAllEnemyDeath?.Invoke();
     }
     
     private void SpawnArrow(GameObject ArrowPrefab)

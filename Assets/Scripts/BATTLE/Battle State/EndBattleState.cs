@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine;
 public class EndBattleState : BattleState
 {
-    public static event Action OnBattleEnd; //EncounterManager.EndBattle()
 
     public override void OnEnterState(BattleStateManager battle)
     {
@@ -18,6 +17,6 @@ public class EndBattleState : BattleState
     private IEnumerator WaitForAllUpdates()
     {
         yield return new WaitForSeconds(1f);
-        OnBattleEnd?.Invoke();
+        EventManager.Instance.TriggerEvent(Event.BATTLE_END);
     }
 }

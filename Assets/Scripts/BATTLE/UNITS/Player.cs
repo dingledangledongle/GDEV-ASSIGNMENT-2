@@ -35,7 +35,6 @@ public class Player : MonoBehaviour
     private EventManager eventManager = EventManager.Instance;
     #endregion
 
-    public static event Action OnPlayerDamageTaken; //BattleManager.UpdateHud()
     private void Start()
     {
         currentHP = this.maxHP;
@@ -94,6 +93,8 @@ public class Player : MonoBehaviour
 
     private void OnDestroy()
     {
+        // TURN EVENTS
+        eventManager.RemoveListener(Event.PLAYER_TURN, TurnStart);
 
         // ATTACK
         eventManager.RemoveListener<DamageType>(Event.PLAYER_ATTACK, GetDamage);
@@ -101,18 +102,39 @@ public class Player : MonoBehaviour
         eventManager.RemoveListener<int>(Event.PLAYER_ATTACK, ReduceCurrentEnergy);
         eventManager.RemoveListener(Event.PLAYER_ATTACK, PlayAttackAnim);
         eventManager.RemoveListener(Event.PLAYER_ATTACK_FINISHED, ResetDamageValues);
-        eventManager.RemoveListener<float>(Event.RAND_EVENT_UPGRADEATTACK, UpgradeDamage);
-        eventManager.RemoveListener<float>(Event.RAND_EVENT_UPGRADEDEFEND, UpgradeDefense);
-        eventManager.RemoveListener<float>(Event.RAND_EVENT_UPGRADEHEALTH, IncreaseMaxHealth);
+
+        //DEF
+        eventManager.RemoveListener(Event.PLAYER_DEFEND, Defend);
+        eventManager.RemoveListener(Event.PLAYER_DEFEND, PlayDefendAnim);
+        eventManager.RemoveListener<int>(Event.PLAYER_DEFEND, ReduceCurrentEnergy);
+        eventManager.RemoveListener<int, bool>(Event.PLAYER_DEFEND, IsEnoughEnergy);
+
+        // MATERIAL ACTION
+        eventManager.RemoveListener<float, int>(Event.PLAYER_ENHANCE_ATTACK, ModifyDamage);
+        eventManager.RemoveListener<float>(Event.PLAYER_ENHANCE_DEFEND, ModifyDefense);
+        eventManager.RemoveListener<int>(Event.PLAYER_ENHANCE_SUCCESS, ReduceCurrentEnergy);
+        eventManager.RemoveListener<int, bool>(Event.PLAYER_ENHANCE, IsEnoughEnergy);
 
         //ENEMY EVENTS
-        
+        eventManager.RemoveListener<DamageType>(Event.ENEMY_ATTACK, TakeDamage);
+
+        //DICE EVENTS
+        eventManager.RemoveListener(Event.PLAYER_DICE, GetNumberOfDice);
 
         //REST EVENTS
         eventManager.RemoveListener<float>(Event.REST_HEAL, Heal);
-        eventManager.RemoveListener<float>(Event.REST_HEAL, GetMaxHP);
+        eventManager.RemoveListener(Event.REST_HEAL, GetMaxHP);
         eventManager.RemoveListener<float>(Event.REST_UPGRADEATTACK, UpgradeDamage);
         eventManager.RemoveListener<float>(Event.REST_UPGRADEDEFEND, UpgradeDefense);
+
+        #region random events
+        eventManager.RemoveListener<float>(Event.RAND_EVENT_UPGRADEATTACK, UpgradeDamage);
+        eventManager.RemoveListener<float>(Event.RAND_EVENT_UPGRADEDEFEND, UpgradeDefense);
+        eventManager.RemoveListener<float>(Event.RAND_EVENT_UPGRADEHEALTH, IncreaseMaxHealth);
+        eventManager.RemoveListener<float>(Event.RAND_EVENT_HEAL, Heal);
+        eventManager.RemoveListener<DamageType>(Event.RAND_EVENT_TAKEDAMAGE, TakeDamage);
+        eventManager.RemoveListener<float>(Event.RAND_EVENT_REDUCEMAXHEALTH, IncreaseMaxHealth);
+        #endregion
     }
 
 
@@ -209,7 +231,7 @@ public class Player : MonoBehaviour
 
         }
         CheckPlayerDeath();
-        OnPlayerDamageTaken?.Invoke();
+        eventManager.TriggerEvent(Event.PLAYER_TAKEDAMAGE);
     }
 
     private float CalculateShieldDamage(DamageType damage)

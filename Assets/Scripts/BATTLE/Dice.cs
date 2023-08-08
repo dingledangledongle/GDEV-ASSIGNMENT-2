@@ -12,7 +12,7 @@ public class Dice : MonoBehaviour
     private Vector3 gravity = new Vector3(0, 0, 80f);
     private bool hasLanded = false;
     private float currentRollTime = 0f;
-    private float maxRollingTime = 6f;
+    private float maxRollingTime = 5f;
     private Vector3 initialSpawn;
     private string material;
     #endregion
@@ -123,7 +123,7 @@ public class Dice : MonoBehaviour
          * The velocity at this point would not be enough to actually affect the outcome of
          * the dice roll.
          */
-        if(rigidBody.velocity.magnitude <0.05f && rigidBody.angularVelocity.magnitude <0.03f)
+        if(rigidBody.velocity.magnitude <0.1f && rigidBody.angularVelocity.magnitude <0.1f)
         {
             return true;
         }

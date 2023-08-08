@@ -117,7 +117,7 @@ public class MaterialAction : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
     }
     private IEnumerator DelayDestroyDiceBox()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1.5f);
         eventManager.TriggerEvent(Event.PLAYER_MATERIALUPDATED);
     }
 
