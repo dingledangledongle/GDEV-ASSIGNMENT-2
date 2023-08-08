@@ -45,8 +45,7 @@ public class Player : MonoBehaviour
 
         #region Event Subscribing
         // TURN EVENTS
-        StartPlayerState.OnPlayerStart += TurnStart;
-        EndPlayerState.OnPlayerEnd += TurnEnd;
+        eventManager.AddListener(Event.PLAYER_TURN, TurnStart);
 
         // ATTACK
         eventManager.AddListener<DamageType>(Event.PLAYER_ATTACK, GetDamage);
@@ -68,14 +67,14 @@ public class Player : MonoBehaviour
         eventManager.AddListener<int, bool>(Event.PLAYER_ENHANCE, IsEnoughEnergy);
 
         //ENEMY EVENTS
-        Enemy.OnEnemyAttack += TakeDamage;
+        eventManager.AddListener<DamageType>(Event.ENEMY_ATTACK,TakeDamage);
 
         //DICE EVENTS
-        eventManager.AddListener<int>(Event.PLAYER_DICE, GetNumberOfDice);
+        eventManager.AddListener(Event.PLAYER_DICE, GetNumberOfDice);
 
         //REST EVENTS
         eventManager.AddListener<float>(Event.REST_HEAL, Heal);
-        eventManager.AddListener<float>(Event.REST_HEAL, GetMaxHP);
+        eventManager.AddListener(Event.REST_HEAL, GetMaxHP);
         eventManager.AddListener<float>(Event.REST_UPGRADEATTACK, UpgradeDamage);
         eventManager.AddListener<float>(Event.REST_UPGRADEDEFEND, UpgradeDefense);
 
@@ -95,9 +94,6 @@ public class Player : MonoBehaviour
 
     private void OnDestroy()
     {
-        // TURN EVENTS
-        StartPlayerState.OnPlayerStart -= TurnStart;
-        EndPlayerState.OnPlayerEnd -= TurnEnd;
 
         // ATTACK
         eventManager.RemoveListener<DamageType>(Event.PLAYER_ATTACK, GetDamage);
@@ -110,7 +106,7 @@ public class Player : MonoBehaviour
         eventManager.RemoveListener<float>(Event.RAND_EVENT_UPGRADEHEALTH, IncreaseMaxHealth);
 
         //ENEMY EVENTS
-        Enemy.OnEnemyAttack -= TakeDamage;
+        
 
         //REST EVENTS
         eventManager.RemoveListener<float>(Event.REST_HEAL, Heal);
@@ -292,6 +288,10 @@ public class Player : MonoBehaviour
         Debug.Log("max health increased " + healthToAdd);
 
         maxHP += healthToAdd;
+        if (currentHP > maxHP)
+        {
+            currentHP = maxHP;
+        }
     }
 
     private void IncreaseMaxEnergy(int energyToAdd)
@@ -306,6 +306,12 @@ public class Player : MonoBehaviour
     #endregion
 
     #region Turn Actions
+    private void BattleStart()
+    {
+        //set materials to 0
+        ResetDamageValues();
+
+    }
     private void TurnStart()
     {
         currentEnergy = maxEnergy;
@@ -314,8 +320,6 @@ public class Player : MonoBehaviour
             currentDef = 0;
             isShielded = false;
         }
-        ResetDamageValues();
-
         //PLAY OUT TURN START EFFECTS
     }
 

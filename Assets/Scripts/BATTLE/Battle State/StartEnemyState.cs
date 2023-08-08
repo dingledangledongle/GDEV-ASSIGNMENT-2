@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class StartEnemyState : BattleState
 {
-    public static event Action OnEnterEnemyStart; //Enemy.TurnStart()
-    public static event Action OnEnemyStart; //BattleManager.OnEnemyStart()
-    public static event Action OnEnemyAction; //BattleManager.UpdateHud()
-    public static event Func<bool> OnEnemyFinishAction; //BattleManager.IsEnemyDone()
+    private EventManager eventManager = EventManager.Instance;
 
     public override void OnEnterState(BattleStateManager battle)
     {
@@ -19,13 +16,16 @@ public class StartEnemyState : BattleState
 
     private IEnumerator ExecuteActions(BattleStateManager battle)
     {
-        OnEnterEnemyStart.Invoke();
-        OnEnemyStart?.Invoke();
-        OnEnemyAction?.Invoke();
-        yield return new WaitUntil(OnEnemyFinishAction);
+        eventManager.TriggerEvent(Event.ENEMY_TURN);
+
+        yield return new WaitUntil(IsDone);
         yield return new WaitForSeconds(0.5f);
         //MOVE TO END TURN
         battle.SwitchState(battle.EndEnemyState);
     }
 
+    private bool IsDone()
+    {
+        return eventManager.TriggerEvent<bool>(Event.ENEMY_TURN);
+    }
 }

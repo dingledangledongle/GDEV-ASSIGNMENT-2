@@ -31,17 +31,11 @@ public class MaterialAction : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
     private EventManager eventManager = EventManager.Instance;
     #endregion
 
-    #region EVENTS
-
-    public static event Action OnUpdateMaterialUI; //DiceHandler.DestroyThis();
-    #endregion
-
     private void Start()
     {
         material = this.GetComponent<PlayerMaterial>();
         eventManager.AddListener(Event.PLAYER_DICE, GetMaterialList);
         eventManager.AddListener(Event.PLAYER_DICE, FinishDiceRoll);
-
     }
 
     private void OnDestroy()
@@ -124,7 +118,7 @@ public class MaterialAction : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
     private IEnumerator DelayDestroyDiceBox()
     {
         yield return new WaitForSeconds(3f);
-        OnUpdateMaterialUI.Invoke();
+        eventManager.TriggerEvent(Event.PLAYER_MATERIALUPDATED);
     }
 
     private Dictionary<string,int> GetMaterialList()

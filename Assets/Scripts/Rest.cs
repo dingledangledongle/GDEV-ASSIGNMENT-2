@@ -37,14 +37,14 @@ public class Rest : MonoBehaviour
     public void UpgradeAttack()
     {
         eventManager.TriggerEvent<float>(Event.REST_UPGRADEATTACK, amtToUpgrade);
-        //eventManager.TriggerEvent(Event.REST_FINISHED);
+        eventManager.TriggerEvent(Event.REST_FINISHED);
     }
 
     public void UpgradeDefense()
     {
 
         eventManager.TriggerEvent<float>(Event.REST_UPGRADEDEFEND, amtToUpgrade);
-        //eventManager.TriggerEvent(Event.REST_FINISHED);     
+        eventManager.TriggerEvent(Event.REST_FINISHED);     
     }
 
 

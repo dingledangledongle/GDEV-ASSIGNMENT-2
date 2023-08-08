@@ -20,9 +20,9 @@ public class Enemy : MonoBehaviour
     public AudioSource defendSFX;
     public GameObject FloatText;
     private Animator animator;
+    private EventManager eventManager = EventManager.Instance;
 
     //events
-    public static event Action<DamageType> OnEnemyAttack;
     public static event Func<bool> OnEnemyDeath; // BattleManager.CheckAllEnemyDeath()
     public static event Action OnAllEnemyDeath; //BattleStateManager.EndBattle()
     public static event Action OnActionFinished; //BattleStateManager.UpdateHud()
@@ -34,8 +34,8 @@ public class Enemy : MonoBehaviour
         animator = gameObject.GetComponent<Animator>();
 
         //EVENTS
-        StartPlayerState.OnPlayerStart += GetIntent;
-        StartEnemyState.OnEnterEnemyStart += TurnStart;
+        eventManager.AddListener(Event.PLAYER_TURN,GetIntent);
+
         AttackAction.OnCheckAllEnemyDeath += CheckDeath;
         Debug.Log(gameObject.name + " INITIALIZED");
     }
@@ -43,10 +43,6 @@ public class Enemy : MonoBehaviour
     private void OnDestroy()
     {
         AttackAction.OnCheckAllEnemyDeath -= CheckDeath;
-
-        StartPlayerState.OnPlayerStart -= GetIntent;
-        StartEnemyState.OnEnterEnemyStart -= TurnStart;
-
     }
     private void Heal(float healAmt)
     {
@@ -67,7 +63,7 @@ public class Enemy : MonoBehaviour
         switch (currentMove.MoveType)
         {
             case Move.Type.ATTACK:
-                OnEnemyAttack?.Invoke(currentMove.Damage);
+                eventManager.TriggerEvent(Event.ENEMY_ATTACK, currentMove.Damage);
                 PlayAttackAnimation();
                 break;
             case Move.Type.DEFEND:
@@ -179,7 +175,7 @@ public class Enemy : MonoBehaviour
     }
     #endregion
 
-    private void TurnStart()
+    public void TurnStart()
     {
         if (isShielded)
         {

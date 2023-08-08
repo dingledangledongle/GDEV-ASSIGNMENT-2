@@ -16,11 +16,9 @@ public class DiceHandler : MonoBehaviour
         diceList = new();
 
         //EVENTS SUBSCRIBING
-        StartPlayerState.OnDiceFinish += IsAllDiceStationary;
-        StartPlayerState.OnMaterialListUpdate += UpdateMaterialList;
-        MaterialAction.OnUpdateMaterialUI += DestroyThis;
-
-        
+        eventManager.AddListener<bool>(Event.PLAYER_ROLLDICE,IsAllDiceStationary);
+        eventManager.AddListener(Event.PLAYER_DICE_FINISHED, UpdateMaterialList);
+        eventManager.AddListener(Event.PLAYER_MATERIALUPDATED, DestroyThis);        
 
         numOfDice = eventManager.TriggerEvent<int>(Event.PLAYER_DICE);
         SpawnDice();
@@ -28,9 +26,9 @@ public class DiceHandler : MonoBehaviour
 
     private void OnDestroy()
     {
-        StartPlayerState.OnDiceFinish -= IsAllDiceStationary;
-        StartPlayerState.OnMaterialListUpdate -= UpdateMaterialList;
-        MaterialAction.OnUpdateMaterialUI -= DestroyThis;
+        eventManager.RemoveListener<bool>(Event.PLAYER_ROLLDICE, IsAllDiceStationary);
+        eventManager.RemoveListener(Event.PLAYER_DICE_FINISHED, UpdateMaterialList);
+        eventManager.RemoveListener(Event.PLAYER_MATERIALUPDATED, DestroyThis);
     }
 
     private void SpawnDice()

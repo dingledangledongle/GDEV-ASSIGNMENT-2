@@ -3,11 +3,7 @@ using System.Collections;
 using UnityEngine;
 public class StartPlayerState : BattleState
 {
-    public static event Action OnPlayerStart; //Subscribers : Enemy.GetIntent()
-    public static event Action OnRollDice; // BattleManager.RollDice()
-    public static event Action OnDisplayReady; //Subscribers : BattleManager.SetHUD()
-    public static event Func<bool> OnDiceFinish; //DiceHandler.IsAllDiceStatonary()
-    public static event Action OnMaterialListUpdate;
+    private EventManager eventManager = EventManager.Instance;
     public override void OnEnterState(BattleStateManager battle)
     {
    
@@ -20,11 +16,18 @@ public class StartPlayerState : BattleState
 
     private IEnumerator StartPlayerTurn()
     {
-        OnPlayerStart?.Invoke();
+        eventManager.TriggerEvent(Event.PLAYER_TURN);
         yield return new WaitForSeconds(1f);
-        OnRollDice?.Invoke();
-        OnDisplayReady?.Invoke();
-        yield return new WaitUntil(OnDiceFinish);
-        OnMaterialListUpdate?.Invoke();
+        eventManager.TriggerEvent(Event.PLAYER_ROLLDICE);
+        eventManager.TriggerEvent(Event.UPDATE_HUD);
+        
+        yield return new WaitUntil(IsDiceStationary);
+        eventManager.TriggerEvent(Event.PLAYER_DICE_FINISHED);
+    }
+
+    private bool IsDiceStationary()
+    {
+        bool stationary = eventManager.TriggerEvent<bool>(Event.PLAYER_ROLLDICE);
+        return stationary;
     }
 }

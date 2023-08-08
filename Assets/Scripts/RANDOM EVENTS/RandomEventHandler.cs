@@ -55,7 +55,7 @@ public class RandomEventHandler : MonoBehaviour
     private void EndEvent()
     {
         Destroy(currentEventObject);
-
+        this.gameObject.SetActive(false);
     }
     
 }

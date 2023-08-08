@@ -28,13 +28,14 @@ public class BattleManager : MonoBehaviour
 
         //START BATTLE EVENTS
         StartBattleState.OnBattleStart += SetupBattle;
+
         //START PLAYER EVENTS
-        StartPlayerState.OnRollDice += RollDice;
-        StartPlayerState.OnDisplayReady += UpdateHud;
+        eventManager.AddListener(Event.PLAYER_ROLLDICE, RollDice);
+
         //START ENEMY EVENTS
-        StartEnemyState.OnEnemyStart += OnEnemyStart;
-        StartEnemyState.OnEnemyFinishAction += IsEnemyDone;
-        StartEnemyState.OnEnemyAction += UpdateHud;
+        eventManager.AddListener(Event.ENEMY_TURN, OnEnemyStart);
+        eventManager.AddListener(Event.ENEMY_TURN, UpdateHud);
+        eventManager.AddListener<bool>(Event.ENEMY_TURN, IsEnemyDone);
 
         //PLAYER EVENTS
         Player.OnPlayerDamageTaken += UpdateHud;
@@ -48,13 +49,7 @@ public class BattleManager : MonoBehaviour
     {
         EncounterManager.OnBattleStart -= SetupBattle;
 
-        //START PLAYER EVENTS
-        StartPlayerState.OnRollDice -= RollDice;
-        StartPlayerState.OnDisplayReady -= UpdateHud;
         //START ENEMY EVENTS
-        StartEnemyState.OnEnemyStart -= OnEnemyStart;
-        StartEnemyState.OnEnemyFinishAction -= IsEnemyDone;
-        StartEnemyState.OnEnemyAction -= UpdateHud;
 
         //PLAYER EVENTS
         Player.OnPlayerDamageTaken -= UpdateHud;
@@ -75,6 +70,10 @@ public class BattleManager : MonoBehaviour
     private void OnEnemyStart()
     {
         enemyDone = false;
+        foreach(Enemy enemy in enemyList)
+        {
+            enemy.TurnStart();
+        }
         StartCoroutine(PerformEnemyActions());
     }
 

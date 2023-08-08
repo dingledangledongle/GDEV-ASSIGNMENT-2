@@ -47,7 +47,8 @@ public class EventManager
     {
         if (eventListeners.ContainsKey(eventName))
         {
-            foreach (var listener in eventListeners[eventName])
+            var listeners = eventListeners[eventName].ToArray();
+            foreach (var listener in listeners)
             {
                 if (listener is Action action)
                 {
@@ -86,7 +87,8 @@ public class EventManager
     {
         if (eventListeners.ContainsKey(eventName))
         {
-            foreach (var listener in eventListeners[eventName])
+            var listeners = eventListeners[eventName].ToArray();
+            foreach (var listener in listeners)
             {
                 if(listener is Action<TParam> action)
                 {
@@ -212,7 +214,14 @@ public enum Event
     UPDATE_HUD,
     MAP_NODE_CLICKED,
     BATTLE_START,
+    BATTLE_END,
+    ENEMY_TURN,
+    ENEMY_ATTACK,
+    PLAYER_TURN,
+    PLAYER_ROLLDICE,
     PLAYER_DICE,
+    PLAYER_DICE_FINISHED,
+    PLAYER_MATERIALUPDATED,
     PLAYER_ATTACK,
     PLAYER_ATTACK_FINISHED,
     PLAYER_DEFEND,
