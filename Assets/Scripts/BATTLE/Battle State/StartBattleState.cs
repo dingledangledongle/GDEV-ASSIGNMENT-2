@@ -7,7 +7,6 @@ public class StartBattleState : BattleState
         //PERFORM ACTION AT START OF BATTLE
         Debug.Log("BATTLE START");
         //MOVE TO PLAYER'S TURN
-        
         battle.SwitchState(battle.StartPlayerState);
     }
 }

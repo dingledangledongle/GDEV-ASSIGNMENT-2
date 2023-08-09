@@ -36,6 +36,7 @@ public class MaterialAction : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
         material = this.GetComponent<PlayerMaterial>();
         eventManager.AddListener(Event.PLAYER_DICE, GetMaterialList);
         eventManager.AddListener(Event.PLAYER_DICE, FinishDiceRoll);
+        eventManager.AddListener(Event.BATTLE_START, BattleStart);
     }
 
     private void OnDestroy()
@@ -94,6 +95,16 @@ public class MaterialAction : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
         {
             MaterialObject.GetComponent<MaterialPrefab>().UpdatePosition();
         }
+    }
+
+    private void BattleStart()
+    {
+        List<string> keys = new List<string>(materialList.Keys);
+        foreach (string key in keys)
+        {
+            materialList[key] = 0;
+        }
+        UpdateMaterialListUI();
     }
 
     private void ReduceMaterialCount()

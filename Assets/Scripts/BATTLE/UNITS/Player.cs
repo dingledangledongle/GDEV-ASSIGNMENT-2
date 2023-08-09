@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class Player : MonoBehaviour
 {
@@ -43,6 +45,8 @@ public class Player : MonoBehaviour
         damage = new(baseDmg, baseNumberOfHits);
 
         #region Event Subscribing
+        //BATTLE START
+        eventManager.AddListener(Event.BATTLE_START, BattleStart);
         // TURN EVENTS
         eventManager.AddListener(Event.PLAYER_TURN, TurnStart);
 
@@ -230,8 +234,12 @@ public class Player : MonoBehaviour
             animator.Play("HeroKnight_Hurt");
 
         }
-        CheckPlayerDeath();
         eventManager.TriggerEvent(Event.PLAYER_TAKEDAMAGE);
+        if (CheckPlayerDeath())
+        {
+            //trigger player death
+            SceneManager.LoadScene("Death");
+        };
     }
 
     private float CalculateShieldDamage(DamageType damage)

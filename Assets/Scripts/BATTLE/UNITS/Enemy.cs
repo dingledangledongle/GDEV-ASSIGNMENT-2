@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 
 public class Enemy : MonoBehaviour
@@ -94,8 +96,14 @@ public class Enemy : MonoBehaviour
 
         //check all other enemy is dead
         bool isAllEnemyDead = eventManager.TriggerEvent<bool>(Event.ENEMY_DEATH);
+        Node.Encounter encounterType = eventManager.TriggerEvent<Node.Encounter>(Event.ENEMY_DEATH);
         if (isAllEnemyDead)
         {
+            if (encounterType == Node.Encounter.BOSS)
+            {
+                Debug.Log("victory");
+                SceneManager.LoadScene("Victory");
+            }
             Debug.Log("all dead");
             eventManager.TriggerEvent(Event.ENEMY_DEATH);
         }

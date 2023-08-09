@@ -3,9 +3,10 @@ using UnityEngine;
 
 public class EncounterManager : MonoBehaviour
 {
-    GameObject[] battleObjects;
-    GameObject[] restObjects;
-    GameObject[] eventObjects;
+    private GameObject[] battleObjects;
+    private GameObject[] restObjects;
+    private GameObject[] eventObjects;
+    private Node.Encounter currentEncounter;
 
     private EventManager eventManager = EventManager.Instance; 
 
@@ -24,6 +25,7 @@ public class EncounterManager : MonoBehaviour
         eventManager.AddListener<Node>(Event.MAP_NODE_CLICKED,StartEncounter);
         eventManager.AddListener(Event.REST_FINISHED, EndRest);
         eventManager.AddListener(Event.BATTLE_END, EndBattle);
+        eventManager.AddListener<Node.Encounter>(Event.ENEMY_DEATH,GetCurrentEncounter);
     }
 
     private void OnDestroy()
@@ -31,10 +33,13 @@ public class EncounterManager : MonoBehaviour
         eventManager.RemoveListener<Node>(Event.MAP_NODE_CLICKED, StartEncounter);
         eventManager.RemoveListener(Event.REST_FINISHED, EndRest);
         eventManager.RemoveListener(Event.BATTLE_END, EndBattle);
+        eventManager.RemoveListener<Node.Encounter>(Event.ENEMY_DEATH, GetCurrentEncounter);
+
     }
     private void StartEncounter(Node node)
     {
         Debug.Log("start encounter");
+        currentEncounter = node.EncounterType;
         switch (node.EncounterType)
         {
             case Node.Encounter.ENEMY:
@@ -70,6 +75,11 @@ public class EncounterManager : MonoBehaviour
         {
             item.SetActive(false);
         }
+    }
+
+    private Node.Encounter GetCurrentEncounter()
+    {
+        return currentEncounter;
     }
 
     #region Random Event
