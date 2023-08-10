@@ -54,6 +54,7 @@ public class Enemy : MonoBehaviour
 
     public void TurnStart()
     {
+        //resets the enemy shield on the start of their turn
         if (isShielded)
         {
             currentDef = 0;
@@ -179,6 +180,7 @@ public class Enemy : MonoBehaviour
     {
         float outstandingDmg = Math.Max(dmgTaken - currentDef, 0);
         currentDef = Math.Max(currentDef - dmgTaken, 0);
+
         if (currentDef < 0)
         {
             isShielded = false;
@@ -191,10 +193,10 @@ public class Enemy : MonoBehaviour
         for (int i = 0; i < damage.NumberOfHits; i++)
         {
             ReduceHealth(damage.DamagePerHit);
-            yield return new WaitForSeconds(0.1f);
-            
+            yield return new WaitForSeconds(0.1f);// add a delay so the floating text and sound effects wouldn't stack together
         }
-        isFinished = true;
+
+        isFinished = true; // indicate that enemy finished taking damage
     }
     private void ReduceHealth(float dmgTaken)
     {
@@ -204,6 +206,7 @@ public class Enemy : MonoBehaviour
 
     public bool IsDamageCalculationDone()
     {
+        //check if damage calculation is completed before the enemy can end their turn
         return isFinished;
     }
     #endregion

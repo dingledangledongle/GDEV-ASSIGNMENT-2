@@ -11,17 +11,20 @@ public class MaterialPrefab : MonoBehaviour
     {
         image = this.GetComponent<Image>();
         EventManager.Instance.AddListener<GameObject>(Event.PLAYER_ENHANCE_MOUSE_RELEASE,GetAction);
+
+        //change the sprite of the prefab that spawned to match the material that was clicked
         SetSprite();
     }
 
     private void OnDestroy()
     {
         EventManager.Instance.RemoveListener<GameObject>(Event.PLAYER_ENHANCE_MOUSE_RELEASE, GetAction);
-
     }
 
     public void UpdatePosition()
     {
+        //makes the spawned icon follow the player's mouse
+
         Vector3 mousePosition = Input.mousePosition;
         Vector3 objectPosition = Camera.main.ScreenToWorldPoint(mousePosition);
         objectPosition.z = 1;
@@ -32,7 +35,7 @@ public class MaterialPrefab : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Attack") || collision.gameObject.CompareTag("Defend"))
         {
-            collidedObject = collision.gameObject;
+            collidedObject = collision.gameObject; //update the current action that it has collided with
         }
     }
 

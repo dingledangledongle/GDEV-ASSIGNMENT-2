@@ -1,5 +1,7 @@
 public class Move
 {
+    //Move class to contain all the properties a move can have
+
     public enum Type
     {
         ATTACK,
@@ -15,6 +17,7 @@ public class Move
     public Type MoveType;
     //add status class
 
+    //constructor
     public Move(Type type,float dmgPerHit = 0,int numHits = 0 ,float shieldValue=0)
     {
         MoveType = type;
@@ -24,6 +27,7 @@ public class Move
         damage = new(damagePerHit, numOfHits);
 
     }
+
     public DamageType Damage
     {
         get
@@ -31,6 +35,7 @@ public class Move
             return damage;
         }
     }
+
     public float ShieldAmt
     {
         get

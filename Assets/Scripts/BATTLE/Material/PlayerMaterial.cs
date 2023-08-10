@@ -2,6 +2,8 @@ using UnityEngine;
 
 public abstract class PlayerMaterial : MonoBehaviour
 {
+    //abstract class where the other materials inherit from
+
     private int amount;
     private float damageModifier;
     private float defenseModifier;
