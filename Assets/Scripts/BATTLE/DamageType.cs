@@ -1,10 +1,11 @@
 public class DamageType
 {
+    // Damage class that contains properties of the damage
+
     private int numberOfHits;
     private float damagePerHit;
     private bool isStatus;
     private bool isAOE;
-
 
     public DamageType(float dmgPerHit,int numOfHit,bool status = false,bool aoe = false)
     {

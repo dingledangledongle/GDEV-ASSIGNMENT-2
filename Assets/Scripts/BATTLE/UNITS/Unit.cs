@@ -3,6 +3,13 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
+    //no longer used
+
+    /* the plan was to make the player and enemy inherit this class's properties and methods
+     * as both of them has the same basic few methods that they share
+     * 
+    */
+
     public int maxHP = 10;
     public int currentHP;
     public int def = 0;

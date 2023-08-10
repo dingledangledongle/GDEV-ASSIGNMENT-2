@@ -12,6 +12,8 @@ public class ResultDetection : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // each section of the wheel is split up by separating gameobject with colliders of different names
+        // this sets the result to the corresponding gameobject the pointer is collided with
         result = collision.gameObject;
     }
 

@@ -41,22 +41,50 @@ public class Enemy : MonoBehaviour
         eventManager.RemoveListener(Event.PLAYER_TURN, GetIntent);
         eventManager.RemoveListener(Event.PLAYER_ATTACK_FINISHED, CheckDeath);
     }
+
     private void Heal(float healAmt)
     {
         currentHP += healAmt;
+        //prevent enemy from exceeding max hp
+        if(currentHP > maxHP)
+        {
+            currentHP = maxHP;
+        }
     }
 
+    public void TurnStart()
+    {
+        if (isShielded)
+        {
+            currentDef = 0;
+            isShielded = false;
+        }
+    }
+
+    #region Visual FX / Animations
     private void PlayAttackAnimation()
     {
         animator.Play("Attack");
     }
+    private void ShowFloatingText(string text)
+    {
+        //spawns a floating text to display damage on the enemy
+        Vector3 spawnPos = new(transform.position.x, transform.position.y + 10);
+        GameObject floatText = Instantiate(FloatText, spawnPos, Quaternion.identity, transform.Find("Canvas"));
+        floatText.GetComponent<TMP_Text>().text = text;
+    }
+
+    #endregion
 
     private void GetIntent()
     {
+        //get the current intent of the enemy
         currentMove = moveSet.GetMove();
     }
+
     public void PerformAction()
     {
+        // plays out the appropriate actions according to the intent of the enemy
         switch (currentMove.MoveType)
         {
             case Move.Type.ATTACK:
@@ -109,16 +137,12 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void ShowFloatingText(string text)
-    {
-        Vector3 spawnPos = new(transform.position.x, transform.position.y + 10);
-        GameObject floatText = Instantiate(FloatText,spawnPos, Quaternion.identity, transform.Find("Canvas"));
-        floatText.GetComponent<TMP_Text>().text = text;
-    }
     #region Damage Calculation
     //DAMAGE CALCULATION PART
     public void TakeDamage(DamageType damage)
     {
+        //if the enemy is shielded, the shield damage calculation occurs first
+        //any outstanding damage that the shield couldn't block would be dealt to the enemy's health
         if (isShielded)
         {
             float outstandingDmg = CalculateShieldDamage(damage);
@@ -136,13 +160,18 @@ public class Enemy : MonoBehaviour
 
     private float CalculateShieldDamage(DamageType damage)
     {
+        float outstandingDmg = 0;// set the counter for amount of outstanding damage
+
         for (int i = 0; i < damage.NumberOfHits; i++)
         {
-            float outstandingDmg = ReduceShield(damage.DamagePerHit);
-            if (outstandingDmg > 0)
-            {
-                return outstandingDmg;
-            }
+            //adds outstanding damage if any
+            outstandingDmg += ReduceShield(damage.DamagePerHit); 
+        }
+
+        //return the outstanding damage to be processed by ReduceHealth
+        if (outstandingDmg > 0)
+        {
+            return outstandingDmg;
         }
         return 0;
     }
@@ -179,16 +208,8 @@ public class Enemy : MonoBehaviour
     }
     #endregion
 
-    public void TurnStart()
-    {
-        if (isShielded)
-        {
-            currentDef = 0;
-            isShielded = false;
-        }
-    }
-
     #region GETTER / SETTER
+
     public bool IsFinished
     {
         get
@@ -200,6 +221,7 @@ public class Enemy : MonoBehaviour
             isFinished = value;
         }
     }
+
     public float CurrentHP
     {
         get
@@ -207,6 +229,7 @@ public class Enemy : MonoBehaviour
             return currentHP;
         }
     }
+
     public float MaxHP
     {
         get
@@ -237,6 +260,7 @@ public class Enemy : MonoBehaviour
             return isTargetable;
         }
     }
+
     public bool IsDead
     {
         get

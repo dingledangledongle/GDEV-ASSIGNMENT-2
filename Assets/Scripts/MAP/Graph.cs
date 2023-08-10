@@ -11,6 +11,7 @@ public class Graph
     public Dictionary<int, List<int>> EdgeList;
     public List<Edge> edgeList = new();
     //...
+
     public Graph()
     {
         AdjacencyList = new Dictionary<int, List<Node>>();
@@ -20,8 +21,10 @@ public class Graph
         //...
     }
 
-    public void AddNode(Node node) //adding the node
+    public void AddNode(Node node)
     {
+        // this method adds the node to the node list, adjacency list and edge list;
+
         NodeList.Add(node);
         AdjacencyList[node.Id] = new List<Node>();
         EdgeList[node.Id] = new List<int>();

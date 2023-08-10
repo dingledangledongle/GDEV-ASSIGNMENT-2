@@ -19,25 +19,33 @@ public class SpinTheWheel : RandomEvent
     }
 
     public override void Option_1() {
-        //activate
         Transform parentTransform = transform.parent.parent;
+        
+        //spawns the wheel for the event
         spinWheelObject = Instantiate(wheelPrefab, parentTransform);
         spinWheelScript = spinWheelObject.GetComponent<SpinWheel>();
+
+        //start spinning the wheel
         spinWheelScript.Spin();
+
+        //wait for the wheel to stop and then proceed with the rest of the coroutine
         StartCoroutine(WaitForSpin());
     }
 
     public override void Option_2() {
+        //leave the event by ending it
         eventManager.TriggerEvent(Event.RAND_EVENT_END);
     }
 
     private IEnumerator WaitForSpin()
     {
-        yield return new WaitUntil(spinWheelScript.HasStopped);
+        yield return new WaitUntil(spinWheelScript.HasStopped); // wait for the wheel to stop before continuing
         result = spinWheelScript.ReturnResult();
-        ApplyEffect(result);
-        yield return new WaitForSeconds(1);
-        Destroy(spinWheelObject);
+        ApplyEffect(result); // applies the effect according to the received result
+
+        // add a delay so the player can see where the wheel stop at before ending the event
+        yield return new WaitForSeconds(1); 
+        Destroy(spinWheelObject); 
         eventManager.TriggerEvent(Event.RAND_EVENT_END);
     }
 
@@ -52,8 +60,7 @@ public class SpinTheWheel : RandomEvent
                 eventManager.TriggerEvent<float>(Event.RAND_EVENT_HEAL, 15f);
                 break;
             case "Shanked":
-                eventManager.TriggerEvent<DamageType>(Event.RAND_EVENT_TAKEDAMAGE, damage);
-                
+                eventManager.TriggerEvent<DamageType>(Event.RAND_EVENT_TAKEDAMAGE, damage);      
                 break;
             case "UpgradeAttack":
                 eventManager.TriggerEvent<float>(Event.RAND_EVENT_UPGRADEATTACK, amtToUpgrade);

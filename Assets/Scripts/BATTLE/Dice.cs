@@ -19,8 +19,11 @@ public class Dice : MonoBehaviour
 
     private void Start()
     {
+        //getting references
         rigidBody = this.gameObject.GetComponent<Rigidbody>();
         initialSpawn = transform.position;
+
+        //randomise the dice's initial state
         SetRandomState();
     }
 

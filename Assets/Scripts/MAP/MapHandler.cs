@@ -8,29 +8,29 @@ public class MapHandler : MonoBehaviour
 
     private void Awake()
     {
+        //subscribing to the relevant events
         eventManager.AddListener(Event.MAP_NODE_CLICKED, ToggleMap);
         eventManager.AddListener(Event.RAND_EVENT_END, ToggleMap); 
     }
 
     private void OpenMap()
     {
-        //play animation?
         map.SetActive(true);
     }
 
     private void CloseMap()
     {
-        //play animation?
-
-        map.SetActive(false);
-        
+        map.SetActive(false); 
     }
+
+    //method used by the map button to open and closes the map
     public void ToggleMap()
     {
         if (map.activeInHierarchy)
         {
             CloseMap();
-        }else if (!map.activeInHierarchy)
+        }
+        else if (!map.activeInHierarchy)
         {
             OpenMap();
         }

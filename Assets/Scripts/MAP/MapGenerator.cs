@@ -11,10 +11,10 @@ public class MapGenerator : MonoBehaviour
     private int minNodePerDepth = 3;
     private int maxNodePerDepth = 5;
     private float spacing = 150f;
+    private float maxDistanceForConnection = 220f;
+
     private int offSetRangeX = 75;
     private int offSetRangeY = 15;
-
-    private float maxDistanceForConnection = 220f;
     private float screenOffSetY = -1150;
     private float screenOffSetX = -200;
     private Color disabledColor = new Color(0, 0, 0, 0.6f);
@@ -26,6 +26,8 @@ public class MapGenerator : MonoBehaviour
         {Node.Encounter.EVENT,2f},
         {Node.Encounter.REST,2f}
     };
+
+    //
     private Dictionary<RandomEvents, float> eventProbability = new Dictionary<RandomEvents, float>() {
         {RandomEvents.SpinTheWheel,1f},
         {RandomEvents.FreeUpgrade,1f},
@@ -47,6 +49,7 @@ public class MapGenerator : MonoBehaviour
 
     private void Awake()
     {
+        // subscribing to the relevant events
         EventManager.Instance.AddListener<Node>(Event.MAP_NODE_CLICKED, DisableNodesInDepth);
         EventManager.Instance.AddListener<Node>(Event.MAP_NODE_CLICKED, ConnectedNodeAccessible);
 
@@ -55,6 +58,7 @@ public class MapGenerator : MonoBehaviour
 
     private void OnDestroy()
     {
+        // unsubscribing when the object is ddestroyed
         EventManager.Instance.RemoveListener<Node>(Event.MAP_NODE_CLICKED, DisableNodesInDepth);
         EventManager.Instance.RemoveListener<Node>(Event.MAP_NODE_CLICKED, ConnectedNodeAccessible);
     }
@@ -88,10 +92,13 @@ public class MapGenerator : MonoBehaviour
         GenerateEdges();
 
         AddMasterNode();
+
+        // continuously prune the graph until the graph is clean
         while (CheckForDanglingNodes())
         {
             PruneGraph();
         }
+
         if (graph.NodeList.Count < 35)
         {
             
@@ -100,44 +107,54 @@ public class MapGenerator : MonoBehaviour
         else
         {
             DisplayGraph();
-        }
-        
+        }   
     }
 
     private void DisableNodesInDepth(Node node)
     {
+        /* It get the list of nodes in the same depth as the node that was passed in.
+         * Then, it iterates through the the list and makes the node Inaccessible
+        */
         List<Node> nodesInDepth = graph.GetNodesInDepth(node.Depth);
         foreach (Node nodeInDepth in nodesInDepth)
         {
-            if(nodeInDepth.Id == node.Id)
+            if(nodeInDepth.Id == node.Id) // skips the node that was passed in
             {
                 continue;
             }
-            string nodeObjName = "Node" + nodeInDepth.Id.ToString();
+            string nodeObjName = "Node" + nodeInDepth.Id.ToString(); // getting the name of the node in this iteration
             GameObject.Find(nodeObjName).GetComponent<NodeObject>().MakeInAccessible();
         }
     }
 
-    private void ConnectedNodeAccessible(Node node) {
-
+    private void ConnectedNodeAccessible(Node node) 
+    {
+        /* It get the list of nodes in the next depth that is connected tp the node that was passed in.
+         * Then, it iterates through the the list and makes the node accessible
+        */
         List<Node> nodesConnected = graph.GetConnected(node.Id);
         foreach (Node nodeConnected in nodesConnected)
         {
-            string nodeObjName = "Node" + nodeConnected.Id.ToString();
-            GameObject.Find(nodeObjName).GetComponent<NodeObject>().MakeAccessible();
+            string nodeObjName = "Node" + nodeConnected.Id.ToString(); // getting the name of the node in this iteration
+            GameObject.Find(nodeObjName).GetComponent<NodeObject>().MakeAccessible(); // makes the node accessible
         }
     }
 
     private void GetRandomEncounter(Node node)
     {
-        //GET WEIGHTED PROBABILITY
+        // This method assigns a random encounter type to the provided node based on weighted probabilities.
+        // The encounter type is determined using the ProbabilityManager's SelectWeightedItem method.
         if (node.Depth < 7)
         {
+            // If the node depth is < 7 , it would not assign any elite encounters to ensure the players
+            // have an easier start
+
             bool isElite = true;
             while (isElite)
             {
-                node.EncounterType = ProbabilityManager.SelectWeightedItem(encounterProbability);
-                if (node.EncounterType != Node.Encounter.ELITE)
+                node.EncounterType = ProbabilityManager.SelectWeightedItem(encounterProbability); // get a random encounter
+
+                if (node.EncounterType != Node.Encounter.ELITE) // check if the encounter is an elite
                 {
                     isElite = false;
                 }
@@ -145,40 +162,47 @@ public class MapGenerator : MonoBehaviour
         }
         else
         {
-            node.EncounterType = ProbabilityManager.SelectWeightedItem(encounterProbability);
+            node.EncounterType = ProbabilityManager.SelectWeightedItem(encounterProbability); // get a random encounter
         }
     }
 
     private void AssignEnemies(Node node)
     {
-        int numOfEnemies = UnityEngine.Random.Range(1, 3);
+        // This method assign enemies according to whether if its a normal enemy, elite or the boss
+
+        int numOfEnemies = UnityEngine.Random.Range(1, 3); // gets a random number of enemy
+
         if(node.EncounterType == Node.Encounter.ENEMY)
         {
+            // loops through according to how many enemies are going to be in this encounter
             for (int i = 0; i < numOfEnemies; i++)
             {
-                int randomIndex = UnityEngine.Random.Range(0, EnemyList.Length);
-                
-                node.AddEnemy(EnemyList[randomIndex]);
+                int randomIndex = UnityEngine.Random.Range(0, EnemyList.Length); // gets a random enemy out of the list of enemies
+                node.AddEnemy(EnemyList[randomIndex]); // adds the enemy into the node's list of enemies
             }
-        }else if(node.EncounterType == Node.Encounter.ELITE)
-        {
-            int randomIndex = UnityEngine.Random.Range(0, EliteList.Length);
-            node.AddEnemy(EliteList[randomIndex]);
-        }else if(node.EncounterType == Node.Encounter.BOSS)
-        {
-            int randomIndex = UnityEngine.Random.Range(0, BossList.Length);
-            node.AddEnemy(BossList[0]);
         }
-        
+        else if(node.EncounterType == Node.Encounter.ELITE)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, EliteList.Length); // gets a random elite out of the list of elites
+            node.AddEnemy(EliteList[randomIndex]);
+
+        }
+        else if(node.EncounterType == Node.Encounter.BOSS)
+        {
+            node.AddEnemy(BossList[0]);
+        }  
     }
 
     private void AssignRandomEvent(Node node)
     {
+        // This method assigns a random event to the node that has the event encounter
+
         if(node.EncounterType == Node.Encounter.EVENT)
         {
-            int enumLength = Enum.GetValues(typeof(RandomEvents)).Length;
-            int randIndex = UnityEngine.Random.Range(0, enumLength);
-            RandomEvents randEvent = (RandomEvents)Enum.GetValues(typeof(RandomEvents)).GetValue(randIndex);
+            int enumLength = Enum.GetValues(typeof(RandomEvents)).Length; // get the total length of the enum
+            int randIndex = UnityEngine.Random.Range(0, enumLength); // get a random index of the enum
+
+            RandomEvents randEvent = (RandomEvents)Enum.GetValues(typeof(RandomEvents)).GetValue(randIndex); // getting the correct type to assign it to the node
 
             node.RandomEvent = randEvent;
         }       
@@ -189,12 +213,16 @@ public class MapGenerator : MonoBehaviour
       * It generates the boss node located at the the highest depth and aligns itself to the middle of the x-axis
      *  It connects all the nodes from the preceding depth to it
      */
+
+        //assigning position of the boss node
         List<Node> precedingNodes = graph.GetNodesInDepth(depthCount - 1);
         float x = 0;
         float y = precedingNodes[0].Position.y + spacing;
-
-        int nodeId = graph.NodeCount;
         Vector3 position = new(x, y, 0);
+
+
+        //assigning the node's properties
+        int nodeId = graph.NodeCount;
         Node node = new();
         node.Id = nodeId;
         node.Depth = depthCount;
@@ -207,6 +235,8 @@ public class MapGenerator : MonoBehaviour
         Edge edge = new();
         edge.Id = edgeCount;
         edge.Target = node;
+
+        //adds the edges that connects to the preceding nodes from the boss node
         foreach (Node precedingNode in precedingNodes)
         {
             edge.Source = precedingNode;
@@ -227,11 +257,13 @@ public class MapGenerator : MonoBehaviour
                 float x = screenOffSetX + i * spacing + 1;
                 float y = screenOffSetY + depth * spacing;
 
+                //getting position of the node
                 int nodeId = graph.NodeCount;
                 int offsetX = UnityEngine.Random.Range(-offSetRangeX / 2, offSetRangeX);
                 int offsetY = UnityEngine.Random.Range(-offSetRangeY, offSetRangeY);
-
                 Vector3 position = new(x + offsetX, y + offsetY, 0);
+
+                //assigning node's properties
                 Node node = new();
                 node.Id = nodeId;
                 node.Depth = depth;
@@ -284,7 +316,7 @@ public class MapGenerator : MonoBehaviour
                             edge.Target = target;
                             graph.AddEdge(source.Id, target,edgeCount,edge); //adds an edge if within distance 
 
-                            //VISUAL
+                            //VISUAL AID FOR DEBUGGING
                             graph.AddToEdgeList(edgeCount, source);
                             graph.AddToEdgeList(edgeCount, target);
                             edgeCount++;
@@ -333,6 +365,10 @@ public class MapGenerator : MonoBehaviour
 
     private void DisplayLines(Node source)
     {
+        /* Instantiates a line renderer object connecting the source nodes to
+         * the nodes that it is connected to.
+         * It draws the line using the position of the source node and the position of the target node
+         */ 
         List<Node> connectedNodes = graph.GetConnected(source.Id);
         foreach (Node node in connectedNodes)
         {
@@ -371,6 +407,11 @@ public class MapGenerator : MonoBehaviour
 
     private void PruneGraph()
     {
+        /* This method goes through the list of nodes and check if the nodes are connected by a preceding node
+         * and also connected to a succeeding node.
+         * If the nodes does not have any of the above conditions, it would be deleted.
+        */
+
         List<Node> nodesToRemove = new List<Node>();
         Dictionary<int, List<Node>> AdjacencyList = graph.AdjacencyList;
         GameObject[] listObject = GameObject.FindGameObjectsWithTag("Node");
@@ -392,7 +433,9 @@ public class MapGenerator : MonoBehaviour
         //removing the nodes and edges
         foreach (Node node in nodesToRemove)
         {
+            // for visual debugging
             DisplayRemovedNodes(node, listObject, edgesRemove);
+            //
 
             graph.RemoveNode(node);
         }
@@ -400,7 +443,7 @@ public class MapGenerator : MonoBehaviour
 
     private bool CheckIfNodeIsConnected(Node node)
     {
-        /*
+     /*
      *  This method check the specific node that was passed into it
      *  if it has any edges connecting it to the nodes in the next depth or previous depth
      *  
@@ -417,9 +460,11 @@ public class MapGenerator : MonoBehaviour
                 connected = true;
             }
         }
+
         if ((!connected && node.Depth != 0))
         {
             return false;
+
         }
         else if (connectedNodes.Count < 1 && node.Depth != depthCount - 1)
         {
@@ -428,10 +473,12 @@ public class MapGenerator : MonoBehaviour
                 return true;
             }
             return false;
+
         }
         else
         {
             return true;
+
         }
     }
 

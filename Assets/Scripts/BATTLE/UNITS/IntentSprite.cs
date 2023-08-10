@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class IntentSprite : MonoBehaviour
 {
+    // class to handle changing of enemy's intent sprite
+
     public Sprite[] SpriteList;
 
     public void SetSprite(Move.Type type,Image intentIcon)

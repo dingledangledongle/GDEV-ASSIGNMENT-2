@@ -15,7 +15,6 @@ public class BattleManager : MonoBehaviour
     private void Awake()
     {
         hudHandler = new();
-
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
 
         //ENCOUNTER EVENTS
@@ -28,7 +27,6 @@ public class BattleManager : MonoBehaviour
         eventManager.AddListener(Event.PLAYER_ENHANCE_SUCCESS, UpdateHud);
         eventManager.AddListener(Event.PLAYER_ROLLDICE, RollDice);
         eventManager.AddListener(Event.PLAYER_TAKEDAMAGE, UpdateHud);
-
 
         // enemy events
         eventManager.AddListener(Event.ENEMY_TURN, OnEnemyStart);
@@ -55,47 +53,54 @@ public class BattleManager : MonoBehaviour
         eventManager.RemoveListener(Event.ENEMY_TURN, UpdateHud);
         eventManager.RemoveListener<bool>(Event.ENEMY_TURN, IsEnemyDone);
         eventManager.RemoveListener<bool>(Event.ENEMY_DEATH, CheckAllEnemyDeath);
-
-
     }
 
     private void RollDice()
     {
         Debug.Log("rolling dice");
-        Vector3 spawnPos = new(transform.position.x, transform.position.y +18, transform.position.z - 100);
+
+        //spawns the box prefab that contains all the dice function
         GameObject diceBox = Instantiate(diceBoxPrefab, GameObject.Find("Canvas").transform,false);
     }
 
     #region ENEMY FUNCTIONS
     private void OnEnemyStart()
     {
-        enemyDone = false;
-        foreach(Enemy enemy in enemyList)
+        enemyDone = false; //set the enemy's action to not finished
+
+        foreach(Enemy enemy in enemyList) //goes through the list of enemy and start "turn start" actions
         {
             enemy.TurnStart();
         }
+
+        // carry out the actions according to the enemy's intent
         StartCoroutine(PerformEnemyActions());
     }
 
-    private bool IsEnemyDone()
+    private bool IsEnemyDone() // if enemy has finished performing their action
     {
         return enemyDone;
     }
 
     private IEnumerator PerformEnemyActions()
     {
+        //goes through the enemy list and perform the actions
         foreach (Enemy enemy in enemyList)
         {
-            if (!enemy.IsDead) {
+            if (!enemy.IsDead) //only perform their actions if they are not dead
+            {
                 enemy.PerformAction();
-                yield return new WaitForSeconds(1);
+                yield return new WaitForSeconds(1); // sets a delay between each enemy's actions
             }
         }
-        enemyDone = true;
+
+        enemyDone = true; // indicate that all the actions are finished
     }
 
     private bool CheckAllEnemyDeath()
     {
+        //checks if all enemy are currently dead
+
         foreach (Enemy enemy in enemyList)
         {
             if (!enemy.IsDead)
@@ -106,9 +111,12 @@ public class BattleManager : MonoBehaviour
         return true;
     }
     #endregion
+
     private void SetupBattle()
     {
-        enemyList = new();
+        enemyList = new(); // create a new list for this battle
+
+        //adds all the enemy that was spawned in into the list
         foreach (GameObject enemyObject in GameObject.FindGameObjectsWithTag("Enemy"))
         {
             enemyList.Add(enemyObject.GetComponent<Enemy>());

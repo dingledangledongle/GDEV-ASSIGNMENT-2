@@ -12,6 +12,7 @@ public class EncounterManager : MonoBehaviour
 
     private void Start()
     {
+        //setting references to the gameobjects and setting them to inactive
         battleObjects = GameObject.FindGameObjectsWithTag("Battle");
         SetInactive(battleObjects);
 
@@ -40,6 +41,8 @@ public class EncounterManager : MonoBehaviour
     {
         Debug.Log("start encounter");
         currentEncounter = node.EncounterType;
+
+        //determining the node's encounter and start the appropriate encounters
         switch (node.EncounterType)
         {
             case Node.Encounter.ENEMY:
@@ -65,30 +68,27 @@ public class EncounterManager : MonoBehaviour
                 eventManager.TriggerEvent(Event.BATTLE_START);
                 break;
         }
+
         //DISABLE MAP CLICKY
-        //CLOSE MAP
     }
     
     private void SetInactive(GameObject[] list)
     {
-        foreach (GameObject item in list)
+        foreach (GameObject item in list) // iterates through the list and setting the objects to inactive
         {
             item.SetActive(false);
         }
     }
 
-    private Node.Encounter GetCurrentEncounter()
-    {
-        return currentEncounter;
-    }
-
     #region Random Event
     private void StartRandomEvent(Node node)
     {
-        foreach (GameObject item in eventObjects)
+        foreach (GameObject item in eventObjects) // set all the event gameobject to active
         {
             item.SetActive(true);
         }
+
+        //trigger the initialize method in RandomEventHandler class
         eventManager.TriggerEvent<Node>(Event.RAND_EVENT_INITIALIZE, node);
 
     }
@@ -107,8 +107,9 @@ public class EncounterManager : MonoBehaviour
 
         //initialize rest event
         eventManager.TriggerEvent<Node>(Event.REST_INITIALIZE,node);
+
+        //trigger method that disables node in the same depth and closes the map
         eventManager.TriggerEvent(Event.MAP_NODE_CLICKED);
-        //close map
     }
 
     private void EndRest()
@@ -134,10 +135,12 @@ public class EncounterManager : MonoBehaviour
         //spawn enemy in the container
         GameObject enemyContainer = GameObject.Find("EnemySpot");
         Debug.Log(enemyContainer.name);
+
         foreach (GameObject enemy in node.EnemyList)
         {
             Instantiate(enemy, enemyContainer.transform);
         }
+
         //close the map
         eventManager.TriggerEvent(Event.MAP_NODE_CLICKED);
     }
@@ -146,10 +149,13 @@ public class EncounterManager : MonoBehaviour
     {
         //remove enemies
         GameObject[] enemyList = GameObject.FindGameObjectsWithTag("Enemy");
+        
+        //removing all enemy object
         foreach (GameObject enemy in enemyList)
         {
             Destroy(enemy);
         }
+
         //hide battle ui
         foreach (GameObject item in battleObjects)
         {
@@ -161,4 +167,9 @@ public class EncounterManager : MonoBehaviour
     }
     #endregion
 
+
+    private Node.Encounter GetCurrentEncounter()
+    {
+        return currentEncounter;
+    }
 }

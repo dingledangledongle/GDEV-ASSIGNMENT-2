@@ -10,14 +10,17 @@ public class RandomEventHandler : MonoBehaviour
     private EventManager eventManager = EventManager.Instance;
     public GameObject[] eventPrefabs;
     private GameObject currentEventObject;
+
     private void Awake()
     {
-        //events
+        //subscribing to events
         eventManager.AddListener<Node>(Event.RAND_EVENT_INITIALIZE, Initialize);
         eventManager.AddListener(Event.RAND_EVENT_END, EndEvent);
     }
+
     private void OnDestroy()
     {
+        //unsubscribing to events
         eventManager.RemoveListener<Node>(Event.RAND_EVENT_INITIALIZE, Initialize);
         eventManager.RemoveListener(Event.RAND_EVENT_END, EndEvent);
     }
@@ -26,15 +29,12 @@ public class RandomEventHandler : MonoBehaviour
         //get current event
         eventManager.TriggerEvent(Event.MAP_NODE_CLICKED);
         currentEventName = node.RandomEvent;
-        GetEvent(currentEventName);
-    }
-   
-    public void test()
-    {
-        currentEventObject = Instantiate(eventPrefabs[2], this.transform);
+
+        // starts the corresponding event
+        InitializeEvent(currentEventName);
     }
 
-    private void GetEvent(RandomEvents eventName)
+    private void InitializeEvent(RandomEvents eventName)
     {
         switch (eventName)
         {
@@ -52,6 +52,7 @@ public class RandomEventHandler : MonoBehaviour
 
     private void EndEvent()
     {
+        //destroys the event object and set the overlay to inactive
         Destroy(currentEventObject);
         this.gameObject.SetActive(false);
     }
