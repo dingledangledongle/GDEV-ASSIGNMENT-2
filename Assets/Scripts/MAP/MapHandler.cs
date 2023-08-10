@@ -9,14 +9,12 @@ public class MapHandler : MonoBehaviour
     private void Awake()
     {
         eventManager.AddListener(Event.MAP_NODE_CLICKED, ToggleMap);
-        eventManager.AddListener(Event.RAND_EVENT_END, ToggleMap);
-        
+        eventManager.AddListener(Event.RAND_EVENT_END, ToggleMap); 
     }
 
     private void OpenMap()
     {
         //play animation?
-
         map.SetActive(true);
     }
 

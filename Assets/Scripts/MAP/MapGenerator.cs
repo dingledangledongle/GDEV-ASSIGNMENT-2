@@ -47,8 +47,6 @@ public class MapGenerator : MonoBehaviour
 
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
-
         EventManager.Instance.AddListener<Node>(Event.MAP_NODE_CLICKED, DisableNodesInDepth);
         EventManager.Instance.AddListener<Node>(Event.MAP_NODE_CLICKED, ConnectedNodeAccessible);
 

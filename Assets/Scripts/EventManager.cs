@@ -6,7 +6,7 @@ public class EventManager
 {
     private static EventManager instance;
 
-    public static EventManager Instance // making a eventmanager singleton
+    public static EventManager Instance // making the eventmanager singleton
     {
         get
         {
@@ -20,24 +20,33 @@ public class EventManager
 
     private Dictionary<Event,List<Delegate>> eventListeners;
 
-    public EventManager()
+    public EventManager() //constructor to initalize eventListeners dictionary
     {
         eventListeners = new();
     }
 
+    /* Method for add, remove and trigger events
+     * Tried to use method overloading to make all of them use the same method but with
+     * different returns and parameters
+     */
+
+    //uses the Action delegate which does not return a value
     #region ADD/REMOVE/TRIGGER (NO PARAMETERS)
     public void AddListener(Event eventName, Action listener)
     {
+        // If the event does not exist in the dictionary, add it.
         if (!eventListeners.ContainsKey(eventName))
         {
             eventListeners[eventName] = new List<Delegate>();
         }
 
+        // Add the listener to the event's list of delegates.
         eventListeners[eventName].Add(listener);
     }
 
     public void RemoveListener(Event eventName, Action listener)
     {
+        // If the event exists, remove the listener from its list of delegates.
         if (eventListeners.ContainsKey(eventName))
         {
             eventListeners[eventName].Remove(listener);
@@ -45,6 +54,7 @@ public class EventManager
     }
     public void TriggerEvent(Event eventName)
     {
+        // If the event exists, invoke all listeners associated with it.
         if (eventListeners.ContainsKey(eventName))
         {
             var listeners = eventListeners[eventName].ToArray();
@@ -58,13 +68,15 @@ public class EventManager
         }
         else
         {
-            Debug.Log("event not in list");
+            Debug.LogError("Event not in list");
         }
 
     }
     #endregion
 
+    //similar to the above but allows passing of parameters
     #region ADD/REMOVE/TRIGGER (W/ PARAM)
+    //takes in 1 parameter
     public void AddListener<TParam>(Event eventName, Action<TParam> listener) 
     {
         if (!eventListeners.ContainsKey(eventName))
@@ -98,6 +110,7 @@ public class EventManager
         }
     }
 
+    //takes in 2 parameters
     public void AddListener<TParam1,TParam2>(Event eventName, Action<TParam1,TParam2> listener)
     {
         if (!eventListeners.ContainsKey(eventName))
@@ -131,6 +144,7 @@ public class EventManager
     }
     #endregion
 
+    //uses the Func delegate which returns a value
     #region ADD/REMOVE/TRIGGER (W/ RETURN)
     public void AddListener<TResult>(Event eventName, Func<TResult> listener)
     {
@@ -170,6 +184,7 @@ public class EventManager
     }
     #endregion
 
+    //similar to the above but allows passing of parameters w/ return of a value
     #region ADD/REMOVE/TRIGGER (W/ RETURN + PARAM)
     public void AddListener<TParam,TResult>(Event eventName, Func<TParam,TResult> listener)
     {
@@ -209,6 +224,8 @@ public class EventManager
     }
     #endregion
 }
+
+//list of possible events
 public enum Event
 {
     UPDATE_HUD,
@@ -249,8 +266,5 @@ public enum Event
     RAND_EVENT_TAKEDAMAGE,
     RAND_EVENT_REDUCEMAXHEALTH,
     Victory
-    
-
-
 }
 

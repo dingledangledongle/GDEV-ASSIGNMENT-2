@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class ButtonHandler : MonoBehaviour
 {
+    //methods to load the different scenes in the game
+
     public void LoadGame()
     {
         SceneManager.LoadScene("Game");
